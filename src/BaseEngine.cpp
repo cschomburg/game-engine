@@ -29,10 +29,15 @@ bool BaseEngine::execute() {
 
 		onLoop();
 		onRender();
+		SDL_Flip(m_display);
 	}
 
 	onCleanup();
 	return true;
+}
+
+SDL_Surface * BaseEngine::display() const {
+	return m_display;
 }
 
 void BaseEngine::setDisplay(SDL_Surface * display) {
@@ -53,12 +58,6 @@ void BaseEngine::onRender() {
 	rect.h = m_display->h;
 
 	SDL_FillRect(m_display, &rect, SDL_MapRGB(m_display->format, 255, 255, 255));
-
-	SDL_Flip(m_display);
 }
 
 void BaseEngine::onCleanup() {}
-
-void BaseEngine::onExit() {
-	quit();
-}

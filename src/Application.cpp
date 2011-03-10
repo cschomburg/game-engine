@@ -3,7 +3,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "Application.h"
-#include "BaseEngine.h"
+#include "GameEngine.h"
 
 Application::Application() {
 	m_running = false;
@@ -24,7 +24,7 @@ bool Application::execute() {
 
 	m_running = true;
 
-	BaseEngine engine;
+	GameEngine engine;
 	engine.setDisplay(m_display);
 	engine.execute();
 

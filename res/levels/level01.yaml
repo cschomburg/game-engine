@@ -1,10 +1,9 @@
----
 width: 1000
 height: 1000
-background: [255, 0, 0]
+background: [255, 89, 0]
 
-objects:
-  - image: "images/island.png"
+props:
+  - image: "res/images/island.png"
     size: [100, 200]
     pos: [50, 50]
-    collision: full
+    collision: true

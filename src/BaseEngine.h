@@ -14,6 +14,7 @@ public:
 	void quit();
 	bool execute();
 
+	SDL_Surface * display() const;
 	void setDisplay(SDL_Surface * display);
 
 protected:
@@ -21,8 +22,6 @@ protected:
 	virtual void onLoop();
 	virtual void onRender();
 	virtual void onCleanup();
-
-	virtual void onExit();
 
 private:
 	bool m_running;

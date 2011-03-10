@@ -9,6 +9,9 @@ _OBJ=main.o\
 		 Application.o\
 		 BaseEngine.o\
 		 Event.o\
+		 GameEngine.o\
+		 Level.o\
+		 Texture.o\
 
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
