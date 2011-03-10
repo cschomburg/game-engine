@@ -33,7 +33,6 @@ Level * Level::fromFile(const char * file) {
 		std::cout << "Could not load level '" << file << "'!\n" << e.what() << "\n";
 		return 0;
 	}
-	printf("lol%d, %d, %d\n", r, g, b);
 
 	Level * level = new Level(width, height);
 	level->setBackground(r, g, b);
@@ -44,8 +43,6 @@ void Level::setBackground(Uint8 r, Uint8 g, Uint8 b) {
 	m_bgR = r;
 	m_bgG = g;
 	m_bgB = b;
-
-	printf("%d, %d, %d\n", r, g, b);
 }
 
 void Level::onRender(SDL_Surface * display) {
