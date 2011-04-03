@@ -22,7 +22,9 @@ private:
 	Color m_bgColorA;
 	Color m_bgColorB;
 
-	Texture * m_texture;
+	Texture * m_sun;
+	Texture * m_island;
+	Texture * m_tree;
 };
 
 #endif /* end of include guard: LEVEL_H */

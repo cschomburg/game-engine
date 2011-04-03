@@ -22,6 +22,7 @@ protected:
 
 private:
 	bool m_running;
+	int m_fps;
 };
 
 #endif /* end of include guard: BASEENGINE_H */

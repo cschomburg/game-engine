@@ -11,11 +11,15 @@ Level::Level() {
 
 	setBackground(Color(1,1,1), Color(1,1,1));
 
-	m_texture = Texture::fromFile("res/images/island.png");
+	m_sun = Texture::fromFile("res/images/sun.png");
+	m_tree = Texture::fromFile("res/images/tree.png");
+	m_island = Texture::fromFile("res/images/island.png");
 }
 
 Level::~Level() {
-	delete m_texture;
+	delete m_sun;
+	delete m_island;
+	delete m_tree;
 }
 
 void Level::setSize(int width, int height) {
@@ -29,7 +33,7 @@ void Level::setBackground(Color colorA, Color colorB) {
 }
 
 void Level::onInit() {
-	glClearColor(m_bgColorA.r, m_bgColorA.g, m_bgColorA.b, 1.0f);
+	glClearColor(0, 0, 0, 0);
 }
 
 void Level::onRender() {
@@ -44,5 +48,9 @@ void Level::onRender() {
 		glVertex3f(0, 0, -0.9f);
 	glEnd();
 
-	m_texture->draw(400, -300);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	m_sun->draw(250, 0);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	m_tree->draw(450, -191);
+	m_island->draw(400, -300);
 }

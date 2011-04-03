@@ -84,8 +84,8 @@ bool Application::onInit() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_TRUE);
 
 	SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 	return true;

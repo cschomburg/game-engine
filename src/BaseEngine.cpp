@@ -4,6 +4,7 @@
 
 BaseEngine::BaseEngine() {
 	m_running = false;
+	m_fps = 0;
 }
 
 BaseEngine::~BaseEngine() {}
@@ -23,9 +24,20 @@ bool BaseEngine::execute() {
 
 	m_running = true;
 	SDL_Event event;
+
+	Uint32 lastTime = SDL_GetTicks();
+	int frameCount = 0;
+
 	while (m_running) {
 		while (SDL_PollEvent(&event)) {
 			onEvent(&event);
+		}
+
+		frameCount++;
+		if ((SDL_GetTicks() - lastTime) >= 1000) {
+			m_fps = frameCount;
+			frameCount = 0;
+			lastTime = SDL_GetTicks();
 		}
 
 		onLoop();
