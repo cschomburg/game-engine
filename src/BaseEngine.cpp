@@ -38,9 +38,10 @@ bool BaseEngine::execute() {
 			m_fps = frameCount;
 			frameCount = 0;
 			lastTime = SDL_GetTicks();
+			//printf("%d\n", m_fps);
 		}
 
-		onLoop();
+		onUpdate();
 		onRender();
 		SDL_GL_SwapBuffers();
 	}
@@ -53,7 +54,7 @@ bool BaseEngine::onInit() {
 	return true;
 }
 
-void BaseEngine::onLoop() {}
+void BaseEngine::onUpdate() {}
 
 void BaseEngine::onRender() {
 	glLoadIdentity();

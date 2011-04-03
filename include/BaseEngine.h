@@ -16,7 +16,7 @@ public:
 
 protected:
 	virtual bool onInit();
-	virtual void onLoop();
+	virtual void onUpdate();
 	virtual void onRender();
 	virtual void onCleanup();
 

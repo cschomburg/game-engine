@@ -3,6 +3,7 @@
 
 #include "BaseEngine.h"
 #include "Level.h"
+#include "Camera.h"
 
 class GameEngine : public BaseEngine {
 public:
@@ -17,8 +18,12 @@ private:
 	void onExit();
 	void onCleanup();
 
+	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
+	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
+
 private:
 	Level * m_level;
+	Camera * m_camera;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */

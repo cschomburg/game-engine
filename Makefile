@@ -8,12 +8,15 @@ SDIR=src
 _OBJ=main.o\
 		 Application.o\
 		 BaseEngine.o\
+		 Camera.o\
 		 Event.o\
 		 GameEngine.o\
 		 Level.o\
+		 Positionable.o\
+		 Primitives.o\
 		 Texture.o\
 		 YamlLoader.o\
-		 Primitives.o\
+		 Vector2.o\
 
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 

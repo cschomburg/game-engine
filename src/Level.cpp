@@ -37,20 +37,19 @@ void Level::onInit() {
 }
 
 void Level::onRender() {
-	glTranslatef(-m_width/2, m_height/2, 0);
 
 	glBegin(GL_QUADS);
 		glColor3f(m_bgColorB.r, m_bgColorB.g, m_bgColorB.b);
-		glVertex3f(0, -m_height, -0.9f);
-		glVertex3f(m_width, -m_height, -0.9f);
-		glColor3f(m_bgColorA.r, m_bgColorA.g, m_bgColorA.b);
-		glVertex3f(m_width, 0, -0.9f);
 		glVertex3f(0, 0, -0.9f);
+		glVertex3f(m_width, 0, -0.9f);
+		glColor3f(m_bgColorA.r, m_bgColorA.g, m_bgColorA.b);
+		glVertex3f(m_width, m_height, -0.9f);
+		glVertex3f(0, m_height, -0.9f);
 	glEnd();
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	m_sun->draw(250, 0);
+	m_sun->draw(512, 287);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	m_tree->draw(450, -191);
-	m_island->draw(400, -300);
+	m_tree->draw(512, 287 + 58);
+	m_island->draw(512, 287 - 60);
 }
