@@ -1,7 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <SDL/SDL.h>
+class SDL_Surface;
 
 class Application {
 public:

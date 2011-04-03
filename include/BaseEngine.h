@@ -14,9 +14,6 @@ public:
 	void quit();
 	bool execute();
 
-	SDL_Surface * display() const;
-	void setDisplay(SDL_Surface * display);
-
 protected:
 	virtual bool onInit();
 	virtual void onLoop();
@@ -25,7 +22,6 @@ protected:
 
 private:
 	bool m_running;
-	SDL_Surface * m_display;
 };
 
 #endif /* end of include guard: BASEENGINE_H */

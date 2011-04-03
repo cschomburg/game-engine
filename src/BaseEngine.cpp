@@ -1,8 +1,9 @@
+#include <SDL/SDL_opengl.h>
+
 #include "BaseEngine.h"
 
 BaseEngine::BaseEngine() {
 	m_running = false;
-	m_display = 0;
 }
 
 BaseEngine::~BaseEngine() {}
@@ -29,19 +30,11 @@ bool BaseEngine::execute() {
 
 		onLoop();
 		onRender();
-		SDL_Flip(m_display);
+		SDL_GL_SwapBuffers();
 	}
 
 	onCleanup();
 	return true;
-}
-
-SDL_Surface * BaseEngine::display() const {
-	return m_display;
-}
-
-void BaseEngine::setDisplay(SDL_Surface * display) {
-	m_display = display;
 }
 
 bool BaseEngine::onInit() {
@@ -51,13 +44,7 @@ bool BaseEngine::onInit() {
 void BaseEngine::onLoop() {}
 
 void BaseEngine::onRender() {
-	SDL_Rect rect;
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = m_display->w;
-	rect.h = m_display->h;
-
-	SDL_FillRect(m_display, &rect, SDL_MapRGB(m_display->format, 255, 255, 255));
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void BaseEngine::onCleanup() {}

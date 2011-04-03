@@ -3,7 +3,6 @@
 
 #include "BaseEngine.h"
 #include "Level.h"
-#include "Texture.h"
 
 class GameEngine : public BaseEngine {
 public:
@@ -20,7 +19,6 @@ private:
 
 private:
 	Level * m_level;
-	Texture * m_texture;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */

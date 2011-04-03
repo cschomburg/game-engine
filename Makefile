@@ -1,7 +1,7 @@
-IDIR=src
+IDIR=include
 CC=g++
 CFLAGS=-g -I$(IDIR)
-LIBS=-lyaml-cpp -lSDLmain -lSDL_image -lSDL
+LIBS=-lyaml-cpp -lSDLmain -lSDL_image -lSDL -lGL
 
 ODIR=obj
 SDIR=src
@@ -12,6 +12,7 @@ _OBJ=main.o\
 		 GameEngine.o\
 		 Level.o\
 		 Texture.o\
+		 YamlLoader.o\
 
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
