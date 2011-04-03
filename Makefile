@@ -13,6 +13,7 @@ _OBJ=main.o\
 		 Level.o\
 		 Texture.o\
 		 YamlLoader.o\
+		 Primitives.o\
 
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 

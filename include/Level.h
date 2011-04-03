@@ -2,6 +2,7 @@
 #define LEVEL_H
 
 #include "Texture.h"
+#include "Primitives.h"
 
 class Level {
 public:
@@ -9,17 +10,17 @@ public:
 	virtual ~Level();
 
 	void setSize(int width, int height);
-	void setBackground(int r, int g, int b);
+	void setBackground(Color colorA, Color colorB);
 
+	void onInit();
 	void onRender();
 
 private:
 	int m_width;
 	int m_height;
 
-	int m_backgroundR;
-	int m_backgroundG;
-	int m_backgroundB;
+	Color m_bgColorA;
+	Color m_bgColorB;
 
 	Texture * m_texture;
 };

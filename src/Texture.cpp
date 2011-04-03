@@ -71,10 +71,10 @@ void Texture::draw(float x, float y, float width, float height) {
 		height = m_height;
 	}
 
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
 	glBegin(GL_QUADS);
-
 		glTexCoord2i(0, 1);
 		glVertex3f(x, y - height, 0.0f);
 
@@ -87,4 +87,5 @@ void Texture::draw(float x, float y, float width, float height) {
 		glTexCoord2i(0, 0);
 		glVertex3f(x, y, 0.0f);
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 }

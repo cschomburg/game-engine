@@ -14,6 +14,7 @@ bool GameEngine::loadLevel(const char * file) {
 	if (m_level == 0) {
 		return false;
 	}
+	m_level->onInit();
 
 	return true;
 }
