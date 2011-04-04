@@ -1,8 +1,9 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "Texture.h"
 #include "Primitives.h"
+#include "Prop.h"
+#include "Vector2.h"
 
 class Level {
 public:
@@ -16,15 +17,14 @@ public:
 	void onRender();
 
 private:
-	int m_width;
-	int m_height;
+	Vector2 m_size;
 
 	Color m_bgColorA;
 	Color m_bgColorB;
 
-	Texture * m_sun;
-	Texture * m_island;
-	Texture * m_tree;
+	Prop * m_sun;
+	Prop * m_island;
+	Prop * m_tree;
 };
 
 #endif /* end of include guard: LEVEL_H */

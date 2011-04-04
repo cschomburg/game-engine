@@ -5,7 +5,13 @@ background:
   colorB: [180, 20, 0]
 
 props:
-  - image: "res/images/island.png"
-    size: [100, 200]
-    pos: [50, 50]
+  - texture: "res/images/sun.png"
+    size: [512, 512]
+    pos: [512, 287]
+  - texture: "res/images/tree.png"
+    size: [100, 110]
+    pos: [512, 245]
+  - texture: "res/images/island.png"
+    size: [200, 128]
+    pos: [512, 227]
     collision: true

@@ -14,6 +14,7 @@ _OBJ=main.o\
 		 Level.o\
 		 Positionable.o\
 		 Primitives.o\
+		 Prop.o\
 		 Texture.o\
 		 YamlLoader.o\
 		 Vector2.o\
