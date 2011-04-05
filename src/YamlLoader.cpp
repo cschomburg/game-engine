@@ -3,32 +3,48 @@
 
 #include "Level.h"
 #include "Primitives.h"
+#include "Prop.h"
 
-namespace YamlLoader {
+void YamlLoader::openFile(YAML::Node &node, const char * file) {
+	std::ifstream fin(file);
+	YAML::Parser parser(fin);
+	parser.GetNextDocument(node);
+}
 
-	void openFile(YAML::Node &node, const char * file) {
-		std::ifstream fin(file);
-		YAML::Parser parser(fin);
-		parser.GetNextDocument(node);
-	}
+Level * YamlLoader::loadLevel(const char * file) {
+	Level * level = new Level();
 
-	Level * loadLevel(const char * file) {
-		Level * level = new Level();
+	try {
+		YAML::Node node;
+		openFile(node, file);
+		node >> level;
 
-		try {
-			YAML::Node node;
-			openFile(node, file);
-			node >> level;
-		} catch (YAML::Exception &e) {
-			printf("error: Could not load '%s': %s\n", file, e.what());
-			if (level != 0) {
-				delete level;
-				level = 0;
-			}
+		const YAML::Node &nProps = node["props"];
+		for (YAML::Iterator i = nProps.begin(); i != nProps.end(); ++i) {
+			level->addProp(loadProp(*i));
 		}
-
-		return level;
+			
+	} catch (YAML::Exception &e) {
+		printf("error: Could not load '%s': %s\n", file, e.what());
+		if (level != 0) {
+			delete level;
+			level = 0;
+		}
 	}
+
+	return level;
+}
+
+Prop * YamlLoader::loadProp(const YAML::Node &node) {
+	int x, y, w, h;
+	node["pos"][0] >> x;
+	node["pos"][1] >> y;
+	node["size"][0] >> w;
+	node["size"][1] >> h;
+
+	std::string texturePath;
+	node["texture"] >> texturePath;
+	return new Prop(x, y, w, h, texturePath.c_str());
 }
 
 void operator >> (const YAML::Node &node, Level * level) {

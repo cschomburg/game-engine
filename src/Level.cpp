@@ -9,16 +9,13 @@ Level::Level() {
 	m_size.y = 0;
 
 	setBackground(Color(1,1,1), Color(1,1,1));
-
-	m_sun = new Prop(512, 287, 512, 512, "res/images/sun.png");
-	m_tree = new Prop(512, 287 + 58, 100, 110, "res/images/tree.png");
-	m_island = new Prop(512, 287 - 60, 200, 128, "res/images/island.png");
 }
 
 Level::~Level() {
-	delete m_sun;
-	delete m_tree;
-	delete m_island;
+	for (propVector::iterator i = m_props.begin(); i != m_props.end(); ++i) {
+		delete *i;
+	}
+	m_props.clear();
 }
 
 void Level::setSize(int width, int height) {
@@ -29,6 +26,10 @@ void Level::setSize(int width, int height) {
 void Level::setBackground(Color colorA, Color colorB) {
 	m_bgColorA = colorA;
 	m_bgColorB = colorB;
+}
+
+void Level::addProp(Prop * prop) {
+	m_props.push_back(prop);
 }
 
 void Level::onInit() {
@@ -45,9 +46,7 @@ void Level::onRender() {
 		glVertex3f(0, m_size.y, -0.9f);
 	glEnd();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	m_sun->onRender();
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	m_tree->onRender();
-	m_island->onRender();
+	for (propVector::iterator i = m_props.begin(); i != m_props.end(); ++i) {
+		(*i)->onRender();
+	}
 }

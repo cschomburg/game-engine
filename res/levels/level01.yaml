@@ -8,10 +8,30 @@ props:
   - texture: "res/images/sun.png"
     size: [512, 512]
     pos: [512, 287]
-  - texture: "res/images/tree.png"
-    size: [100, 110]
-    pos: [512, 245]
+
+  # Main island
   - texture: "res/images/island.png"
     size: [200, 128]
     pos: [512, 227]
-    collision: true
+  - texture: "res/images/tree.png"
+    size: [100, 110]
+    pos: [512, 345]
+
+  # Small island
+  - texture: "res/images/island.png"
+    size: [-40, 25]
+    pos: [712, 226]
+  - texture: "res/images/tree.png"
+    size: [20, 22]
+    pos: [712, 245]
+
+  # Medium island
+  - texture: "res/images/island.png"
+    size: [80, 51]
+    pos: [212, 402]
+  - texture: "res/images/island.png"
+    size: [80, 51]
+    pos: [242, 402]
+  - texture: "res/images/tree.png"
+    size: [40, 44]
+    pos: [242, 445]
