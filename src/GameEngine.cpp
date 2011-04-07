@@ -27,7 +27,7 @@ bool GameEngine::onInit() {
 		return false;
 
 	m_player = new Player();
-	m_player->setPos(572, 306);
+	m_player->setPos(572, 1000);
 
 	m_camera = new Camera();
 	m_camera->setPos(m_player->pos());
@@ -62,24 +62,27 @@ void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
 	switch(sym) {
 		case SDLK_UP:
 		case SDLK_k:
-			m_player->addPos(0, 2); break;
+			m_player->setAcceleration(0, 500); break;
 		case SDLK_DOWN:
 		case SDLK_j:
-			m_player->addPos(0, -2); break;
+			m_player->setAcceleration(0, -500); break;
 		case SDLK_LEFT:
 		case SDLK_h:
-			m_player->setAcceleration(-100, 0); break;
+			m_player->setAcceleration(-500, 0); break;
 		case SDLK_RIGHT:
 		case SDLK_l:
-			m_player->setAcceleration(100, 0); break;
+			m_player->setAcceleration(500, 0); break;
 	}
 }
 
 void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
 	switch(sym) {
+		case SDLK_UP:
+		case SDLK_k:
 		case SDLK_LEFT:
 		case SDLK_h:
-			m_player->setAcceleration(0, 0); break;
+		case SDLK_DOWN:
+		case SDLK_j:
 		case SDLK_RIGHT:
 		case SDLK_l:
 			m_player->setAcceleration(0, 0); break;
