@@ -5,13 +5,13 @@
 
 class Color;
 class Level;
-class Prop;
+class Renderable;
 
 namespace YamlLoader {
 	void openFile(YAML::Node &node, const char * file);
 
 	Level * loadLevel(const char * file);
-	Prop * loadProp(const YAML::Node &node);
+	Renderable * loadRenderable(const YAML::Node &node);
 }
 
 void operator >> (const YAML::Node &node, Level * level);

@@ -4,10 +4,10 @@
 #include <vector>
 
 #include "Primitives.h"
-#include "Prop.h"
+#include "Renderable.h"
 #include "Vector2.h"
 
-typedef std::vector<Prop *> propVector;
+typedef std::vector<Renderable *> renderableVector;
 
 class Level {
 public:
@@ -16,7 +16,7 @@ public:
 
 	void setSize(int width, int height);
 	void setBackground(Color colorA, Color colorB);
-	void addProp(Prop * prop);
+	void addRenderable(Renderable * renderable);
 
 	void onInit();
 	void onRender();
@@ -27,11 +27,7 @@ private:
 	Color m_bgColorA;
 	Color m_bgColorB;
 
-	propVector m_props;
-
-	Prop * m_sun;
-	Prop * m_island;
-	Prop * m_tree;
+	renderableVector m_renderables;
 };
 
 #endif /* end of include guard: LEVEL_H */

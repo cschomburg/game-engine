@@ -6,7 +6,8 @@
 
 GameEngine::GameEngine() {
 	m_level = 0;
-	m_camera = new Camera();
+	m_player = 0;
+	m_camera = 0;
 }
 
 GameEngine::~GameEngine() {}
@@ -25,15 +26,25 @@ bool GameEngine::onInit() {
 	if(!loadLevel("res/levels/level01.yaml"))
 		return false;
 
-	m_camera->setPos(512, 287);
+	m_player = new Player();
+	m_player->setPos(572, 306);
+
+	m_camera = new Camera();
+	m_camera->setPos(m_player->pos());
 
 	return true;
+}
+
+void GameEngine::onUpdate() {
+	m_player->onUpdate();
+	m_camera->setPos(m_player->pos());
 }
 
 void GameEngine::onRender() {
 	BaseEngine::onRender();
 	m_camera->onRender();
 	m_level->onRender();
+	m_player->onRender();
 }
 
 void GameEngine::onExit() {
@@ -51,18 +62,26 @@ void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
 	switch(sym) {
 		case SDLK_UP:
 		case SDLK_k:
-			m_camera->addPos(0, 2); break;
+			m_player->addPos(0, 2); break;
 		case SDLK_DOWN:
 		case SDLK_j:
-			m_camera->addPos(0, -2); break;
+			m_player->addPos(0, -2); break;
 		case SDLK_LEFT:
 		case SDLK_h:
-			m_camera->addPos(-2, 0); break;
+			m_player->setAcceleration(-100, 0); break;
 		case SDLK_RIGHT:
 		case SDLK_l:
-			m_camera->addPos(2, 0); break;
+			m_player->setAcceleration(100, 0); break;
 	}
 }
 
 void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
+	switch(sym) {
+		case SDLK_LEFT:
+		case SDLK_h:
+			m_player->setAcceleration(0, 0); break;
+		case SDLK_RIGHT:
+		case SDLK_l:
+			m_player->setAcceleration(0, 0); break;
+	}
 }

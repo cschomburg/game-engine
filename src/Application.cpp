@@ -21,10 +21,7 @@ Application * Application::instance() {
 		return App;
 	App = new Application();
 	return App;
-}
-
-bool Application::running() const {
-	return m_running;
+} bool Application::running() const { return m_running;
 }
 
 void Application::quit() {
@@ -57,6 +54,7 @@ bool Application::execute() {
 		m_engine->onUpdate();
 		m_engine->onRender();
 		SDL_GL_SwapBuffers();
+		SDL_Delay(0);
 	}
 
 	m_engine->onCleanup();
@@ -134,6 +132,10 @@ void Application::onCleanup() {
 	}
 	SDL_FreeSurface(m_display);
 	m_display = 0;
+}
+
+int Application::time() const {
+	return SDL_GetTicks();
 }
 
 BaseEngine * Application::engine() const {

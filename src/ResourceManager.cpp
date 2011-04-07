@@ -9,6 +9,6 @@ Texture * ResourceManager::getTexture(const std::string &name) {
 		return dynamic_cast<Texture *>(res);
 
 	Texture * tex = new Texture(name);
-	m_resources[name] = dynamic_cast<Resource *>(tex);
+	m_resources[name] = tex;
 	return tex;
 }

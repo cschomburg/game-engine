@@ -12,10 +12,10 @@ Level::Level() {
 }
 
 Level::~Level() {
-	for (propVector::iterator i = m_props.begin(); i != m_props.end(); ++i) {
+	for (renderableVector::iterator i = m_renderables.begin(); i != m_renderables.end(); ++i) {
 		delete *i;
 	}
-	m_props.clear();
+	m_renderables.clear();
 }
 
 void Level::setSize(int width, int height) {
@@ -28,8 +28,8 @@ void Level::setBackground(Color colorA, Color colorB) {
 	m_bgColorB = colorB;
 }
 
-void Level::addProp(Prop * prop) {
-	m_props.push_back(prop);
+void Level::addRenderable(Renderable * renderable) {
+	m_renderables.push_back(renderable);
 }
 
 void Level::onInit() {
@@ -46,7 +46,9 @@ void Level::onRender() {
 		glVertex3f(0, m_size.y, -0.9f);
 	glEnd();
 
-	for (propVector::iterator i = m_props.begin(); i != m_props.end(); ++i) {
+	glColor3f(1, 1, 1);
+
+	for (renderableVector::iterator i = m_renderables.begin(); i != m_renderables.end(); ++i) {
 		(*i)->onRender();
 	}
 }

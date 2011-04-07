@@ -3,7 +3,7 @@
 
 #include "Level.h"
 #include "Primitives.h"
-#include "Prop.h"
+#include "Renderable.h"
 
 void YamlLoader::openFile(YAML::Node &node, const char * file) {
 	std::ifstream fin(file);
@@ -19,9 +19,9 @@ Level * YamlLoader::loadLevel(const char * file) {
 		openFile(node, file);
 		node >> level;
 
-		const YAML::Node &nProps = node["props"];
-		for (YAML::Iterator i = nProps.begin(); i != nProps.end(); ++i) {
-			level->addProp(loadProp(*i));
+		const YAML::Node &nRenderables = node["props"];
+		for (YAML::Iterator i = nRenderables.begin(); i != nRenderables.end(); ++i) {
+			level->addRenderable(loadRenderable(*i));
 		}
 			
 	} catch (YAML::Exception &e) {
@@ -35,7 +35,7 @@ Level * YamlLoader::loadLevel(const char * file) {
 	return level;
 }
 
-Prop * YamlLoader::loadProp(const YAML::Node &node) {
+Renderable * YamlLoader::loadRenderable(const YAML::Node &node) {
 	int x, y, w, h;
 	node["pos"][0] >> x;
 	node["pos"][1] >> y;
@@ -44,7 +44,13 @@ Prop * YamlLoader::loadProp(const YAML::Node &node) {
 
 	std::string texturePath;
 	node["texture"] >> texturePath;
-	return new Prop(x, y, w, h, texturePath);
+	
+	Renderable * renderable = new Renderable();
+	renderable->setPos(x, y);
+	renderable->setSize(w, h);
+	renderable->setTexture(texturePath);
+
+	return renderable;
 }
 
 void operator >> (const YAML::Node &node, Level * level) {

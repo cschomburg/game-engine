@@ -4,6 +4,7 @@
 #include "BaseEngine.h"
 #include "Level.h"
 #include "Camera.h"
+#include "Player.h"
 
 class GameEngine : public BaseEngine {
 public:
@@ -14,6 +15,7 @@ public:
 
 private:
 	bool onInit();
+	void onUpdate();
 	void onRender();
 	void onExit();
 	void onCleanup();
@@ -24,6 +26,7 @@ private:
 private:
 	Level * m_level;
 	Camera * m_camera;
+	Player * m_player;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */

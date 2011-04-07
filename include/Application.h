@@ -18,6 +18,8 @@ public:
 	bool onInit();
 	void onCleanup();
 
+	int time() const;
+
 	BaseEngine * engine() const;
 	ResourceManager * manager() const;
 
