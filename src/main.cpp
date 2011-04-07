@@ -2,6 +2,5 @@
 
 int main(int argc, const char *argv[])
 {
-	Application app;
-	return app.execute();
+	return Application::instance()->execute();
 }

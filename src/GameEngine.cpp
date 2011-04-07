@@ -1,5 +1,6 @@
 #include <SDL/SDL_opengl.h>
 
+#include "Application.h"
 #include "GameEngine.h"
 #include "YamlLoader.h"
 
@@ -36,7 +37,7 @@ void GameEngine::onRender() {
 }
 
 void GameEngine::onExit() {
-	quit();
+	App->quit();
 }
 
 void GameEngine::onCleanup() {
@@ -49,12 +50,16 @@ void GameEngine::onCleanup() {
 void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
 	switch(sym) {
 		case SDLK_UP:
+		case SDLK_k:
 			m_camera->addPos(0, 2); break;
 		case SDLK_DOWN:
+		case SDLK_j:
 			m_camera->addPos(0, -2); break;
 		case SDLK_LEFT:
+		case SDLK_h:
 			m_camera->addPos(-2, 0); break;
 		case SDLK_RIGHT:
+		case SDLK_l:
 			m_camera->addPos(2, 0); break;
 	}
 }

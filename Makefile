@@ -9,12 +9,13 @@ _OBJ=main.o\
 		 Application.o\
 		 BaseEngine.o\
 		 Camera.o\
-		 Event.o\
 		 GameEngine.o\
 		 Level.o\
 		 Positionable.o\
 		 Primitives.o\
 		 Prop.o\
+		 Resource.o\
+		 ResourceManager.o\
 		 Texture.o\
 		 YamlLoader.o\
 		 Vector2.o\

@@ -44,7 +44,7 @@ Prop * YamlLoader::loadProp(const YAML::Node &node) {
 
 	std::string texturePath;
 	node["texture"] >> texturePath;
-	return new Prop(x, y, w, h, texturePath.c_str());
+	return new Prop(x, y, w, h, texturePath);
 }
 
 void operator >> (const YAML::Node &node, Level * level) {

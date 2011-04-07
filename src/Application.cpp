@@ -10,6 +10,17 @@
 Application::Application() {
 	m_running = false;
 	m_display = 0;
+	m_fps = 0;
+
+	m_engine = 0;
+	m_manager = new ResourceManager();
+}
+
+Application * Application::instance() {
+	if (App)
+		return App;
+	App = new Application();
+	return App;
 }
 
 bool Application::running() const {
@@ -25,11 +36,30 @@ bool Application::execute() {
 		return -1;
 
 	m_running = true;
+	SDL_Event event;
 
-	GameEngine engine;
-	engine.execute();
+	Uint32 lastTime = SDL_GetTicks();
+	int frameCount = 0;
 
-	onCleanup();
+	while (m_running) {
+		while (SDL_PollEvent(&event)) {
+			m_engine->onEvent(&event);
+		}
+
+		frameCount++;
+		if ((SDL_GetTicks() - lastTime) >= 1000) {
+			m_fps = frameCount;
+			frameCount = 0;
+			lastTime = SDL_GetTicks();
+			//printf("%d\n", m_fps);
+		}
+
+		m_engine->onUpdate();
+		m_engine->onRender();
+		SDL_GL_SwapBuffers();
+	}
+
+	m_engine->onCleanup();
 
 	return 0;
 }
@@ -88,10 +118,28 @@ bool Application::onInit() {
 	//glDepthMask(GL_TRUE);
 
 	SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+
+	// Initialize game
+	m_engine = new GameEngine();
+	m_engine->onInit();
+
 	return true;
 }
 
 void Application::onCleanup() {
+	if (m_engine) {
+		m_engine->onCleanup();
+		delete m_engine;
+		m_engine = 0;
+	}
 	SDL_FreeSurface(m_display);
 	m_display = 0;
+}
+
+BaseEngine * Application::engine() const {
+	return m_engine;
+}
+
+ResourceManager * Application::manager() const {
+	return m_manager;
 }

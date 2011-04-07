@@ -1,19 +1,23 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <string>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-class Texture {
+#include "Resource.h"
 
+class Texture : public Resource {
 public:
-	Texture(GLuint texture, int width, int height);
-	~Texture();
+	Texture(const std::string &file);
 
-	static Texture * fromFile(const char * file);
 	void draw(float x, float y, float width = 0, float height = 0);
 
+	void load();
+	void destroy();
+
 private:
+	std::string m_filePath;
 	GLuint m_texture;
 	int m_width;
 	int m_height;
