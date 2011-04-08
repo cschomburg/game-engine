@@ -27,7 +27,7 @@ bool GameEngine::onInit() {
 		return false;
 
 	m_player = new Player();
-	m_player->setPos(572, 1000);
+	m_player->setPos(572, 306);
 
 	m_camera = new Camera();
 	m_camera->setPos(m_player->pos());
@@ -36,6 +36,11 @@ bool GameEngine::onInit() {
 }
 
 void GameEngine::onUpdate() {
+	Uint8 * keystate = SDL_GetKeyState(0);
+	float x = keystate[SDLK_RIGHT] - keystate[SDLK_LEFT];
+	float y = keystate[SDLK_UP] - keystate[SDLK_DOWN];
+	m_player->setMovement(x, y);
+
 	m_player->onUpdate();
 	m_camera->setPos(m_player->pos());
 }
@@ -59,32 +64,7 @@ void GameEngine::onCleanup() {
 }
 
 void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
-	switch(sym) {
-		case SDLK_UP:
-		case SDLK_k:
-			m_player->setAcceleration(0, 500); break;
-		case SDLK_DOWN:
-		case SDLK_j:
-			m_player->setAcceleration(0, -500); break;
-		case SDLK_LEFT:
-		case SDLK_h:
-			m_player->setAcceleration(-500, 0); break;
-		case SDLK_RIGHT:
-		case SDLK_l:
-			m_player->setAcceleration(500, 0); break;
-	}
 }
 
 void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
-	switch(sym) {
-		case SDLK_UP:
-		case SDLK_k:
-		case SDLK_LEFT:
-		case SDLK_h:
-		case SDLK_DOWN:
-		case SDLK_j:
-		case SDLK_RIGHT:
-		case SDLK_l:
-			m_player->setAcceleration(0, 0); break;
-	}
 }

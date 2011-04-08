@@ -12,6 +12,7 @@ public:
 
 	void setVelocity(float x, float y);
 	void setAcceleration(float x, float y);
+	void setAcceleration(const Vector2 &acceleration);
 
 	const Vector2 &velocity() const;
 	const Vector2 &acceleration() const;

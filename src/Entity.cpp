@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "Entity.h"
 
-static Vector2 gravitation(0, -1500);
+static Vector2 gravitation(0, 0);
 
 Entity::Entity() {
 	m_lastTime = Application::instance()->time();
@@ -14,7 +14,7 @@ void Entity::onUpdate() {
 	float elapsed = float(time - m_lastTime) / 1000;
 	m_lastTime = time;
 
-	Vector2 accel = m_acceleration - m_velocity * 4 + gravitation;
+	Vector2 accel = m_acceleration - m_velocity * 2 + gravitation;
 
 	m_velocity += accel * elapsed;
 	addPos(m_velocity * elapsed);
@@ -28,6 +28,10 @@ void Entity::setVelocity(float x, float y) {
 void Entity::setAcceleration(float x, float y) {
 	m_acceleration.x = x;
 	m_acceleration.y = y;
+}
+
+void Entity::setAcceleration(const Vector2 &acceleration) {
+	m_acceleration = acceleration;
 }
 
 const Vector2 &Entity::velocity() const {
