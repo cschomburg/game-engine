@@ -68,3 +68,7 @@ void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
 
 void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
 }
+
+Level * GameEngine::level() const {
+	return m_level;
+}

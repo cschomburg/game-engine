@@ -23,6 +23,8 @@ private:
 	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
 	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
 
+	Level * level() const;
+
 private:
 	Level * m_level;
 	Camera * m_camera;

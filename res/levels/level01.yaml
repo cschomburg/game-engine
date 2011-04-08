@@ -1,5 +1,6 @@
 width: 2000
 height: 1000
+gravitation: [1, -1500]
 background:
   colorA: [255, 89, 0]
   colorB: [180, 20, 0]

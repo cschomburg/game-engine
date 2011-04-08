@@ -21,6 +21,9 @@ public:
 	void onInit();
 	void onRender();
 
+	void setGravitation(const Vector2 &gravitation);
+	const Vector2 &gravitation() const;
+
 private:
 	Vector2 m_size;
 
@@ -28,6 +31,7 @@ private:
 	Color m_bgColorB;
 
 	renderableVector m_renderables;
+	Vector2 m_gravitation;
 };
 
 #endif /* end of include guard: LEVEL_H */

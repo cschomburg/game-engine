@@ -6,6 +6,7 @@
 class Color;
 class Level;
 class Renderable;
+class Vector2;
 
 namespace YamlLoader {
 	void openFile(YAML::Node &node, const char * file);
@@ -16,5 +17,6 @@ namespace YamlLoader {
 
 void operator >> (const YAML::Node &node, Level * level);
 void operator >> (const YAML::Node &node, Color &color);
+void operator >> (const YAML::Node &node, Vector2 &vector);
 
 #endif /* end of include guard: YAMLLOADER_H */
