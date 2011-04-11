@@ -1,7 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "BaseEngine.h"
+#include "GameEngine.h"
 #include "ResourceManager.h"
 
 class SDL_Surface;
@@ -20,14 +20,14 @@ public:
 
 	int time() const;
 
-	BaseEngine * engine() const;
+	GameEngine * engine() const;
 	ResourceManager * manager() const;
 
 private:
 	bool m_running;
 	int m_fps;
 
-	BaseEngine * m_engine;
+	GameEngine * m_engine;
 	ResourceManager * m_manager;
 	SDL_Surface * m_display;
 };

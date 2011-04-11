@@ -53,7 +53,7 @@ void GameEngine::onRender() {
 }
 
 void GameEngine::onExit() {
-	App->quit();
+	Application::instance()->quit();
 }
 
 void GameEngine::onCleanup() {

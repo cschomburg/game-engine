@@ -5,7 +5,6 @@
 #include <SDL/SDL_opengl.h>
 
 #include "Application.h"
-#include "GameEngine.h"
 
 Application::Application() {
 	m_running = false;
@@ -138,7 +137,7 @@ int Application::time() const {
 	return SDL_GetTicks();
 }
 
-BaseEngine * Application::engine() const {
+GameEngine * Application::engine() const {
 	return m_engine;
 }
 

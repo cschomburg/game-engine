@@ -13,17 +13,18 @@ public:
 
 	bool loadLevel(const char * file);
 
-private:
 	bool onInit();
 	void onUpdate();
 	void onRender();
 	void onExit();
 	void onCleanup();
 
+	Level * level() const;
+
+protected:
+
 	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
 	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
-
-	Level * level() const;
 
 private:
 	Level * m_level;
