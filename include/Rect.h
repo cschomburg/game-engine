@@ -24,7 +24,8 @@ public:
 	Vector2 center() const;
 
 	bool intersects(const Rect &other) const;
-	bool contains(const Vector2 &vec) const;
+	bool contains(const Vector2 &point) const;
+	bool contains(const Rect &other) const;
 
 	Rect united(const Rect &other) const;
 	Rect intersected(const Rect &other) const;

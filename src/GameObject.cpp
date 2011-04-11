@@ -4,6 +4,7 @@
 GameObject::GameObject(GameObject * parent) {
 	m_parent = parent;
 	m_texture = 0;
+	m_collision = false;
 }
 
 GameObject::~GameObject() {
@@ -22,6 +23,10 @@ GameObject * GameObject::parent() const {
 	return m_parent;
 }
 
+const GameObjectsVector &GameObject::children() const {
+	return m_children;
+}
+
 void GameObject::setParent(GameObject * parent) {
 	m_parent = parent;
 }
@@ -37,6 +42,21 @@ Vector2 GameObject::worldPos() {
 		return pos();
 }
 
+bool GameObject::collision() const {
+	return m_collision;
+}
+
+void GameObject::setCollision(bool collision) {
+	m_collision = collision;
+}
+
+bool GameObject::collides(GameObject * object) {
+	if (!m_collision)
+		return false;
+
+	return intersects(*object);
+}
+
 void GameObject::setTexture(const std::string &texturePath) {
 	if (m_texture) {
 		m_texture->free();
@@ -48,7 +68,7 @@ void GameObject::setTexture(const std::string &texturePath) {
 void GameObject::onRender() {
 	if (m_texture) {
 		Vector2 pos = worldPos();
-		m_texture->draw(pos.x, pos.y, size().x, size().y);
+		m_texture->draw(pos.x, pos.y, w, h);
 	}
 
 	for (GameObjectsVector::iterator i = m_children.begin(); i != m_children.end(); ++i) {

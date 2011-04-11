@@ -17,10 +17,15 @@ public:
 	virtual ~GameObject();
 
 	GameObject * parent() const;
+	const GameObjectsVector &children() const;
 	void setParent(GameObject * parent);
 	void addChild(GameObject * object);
 
 	Vector2 worldPos();
+
+	bool collision() const;
+	void setCollision(bool collision);
+	virtual bool collides(GameObject * object);
 
 	void setTexture(const std::string &texturePath);
 	virtual void onRender();
@@ -28,6 +33,8 @@ public:
 private:
 	GameObject * m_parent;
 	GameObjectsVector m_children;
+
+	bool m_collision;
 
 	Texture * m_texture;
 };

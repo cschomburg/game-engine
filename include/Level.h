@@ -20,6 +20,8 @@ public:
 	void setGravitation(const Vector2 &gravitation);
 	const Vector2 &gravitation() const;
 
+	bool collides(GameObject * object);
+
 private:
 	Color m_bgColorA;
 	Color m_bgColorB;

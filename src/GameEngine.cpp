@@ -32,8 +32,6 @@ bool GameEngine::onInit() {
 	m_camera = new Camera();
 	m_camera->setPos(m_player->pos());
 
-	printf("%f %f\n", level()->w, level()->h);
-
 	return true;
 }
 
@@ -73,4 +71,20 @@ void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
 
 Level * GameEngine::level() const {
 	return m_level;
+}
+
+bool GameEngine::checkCollision(GameObject * object) {
+	return checkCollision(object, m_level);
+}
+
+bool GameEngine::checkCollision(GameObject * object, GameObject * other) {
+	if (!object->collision())
+		return false;
+	if (other->collides(object))
+		return true;
+
+	for (GameObjectsVector::const_iterator i = other->children().begin(); i != other->children().end(); ++i) {
+		if ((*i)->collides(object))
+			return true;
+	}
 }

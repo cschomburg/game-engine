@@ -1,6 +1,7 @@
 #include "Player.h"
 
 Player::Player() {
+	setCollision(true);
 	setSize(Vector2(32, 32));
 	setTexture("res/images/foo.png");
 }

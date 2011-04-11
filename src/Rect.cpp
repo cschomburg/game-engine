@@ -42,7 +42,7 @@ void Rect::setSize(const Vector2 &size) {
 float Rect::left() const { return x; }
 float Rect::right() const { return x + w; }
 float Rect::top() const { return y; }
-float Rect::bottom() const { return y + h; }
+float Rect::bottom() const { return y - h; }
 
 Vector2 Rect::center() const {
 	return pos() + size()/2;
@@ -51,15 +51,22 @@ Vector2 Rect::center() const {
 bool Rect::intersects(const Rect &other) const {
 	return !(  (left() > other.right() )
 			|| (right() < other.left() )
-			|| (top() > other.bottom() )
-			|| (bottom() < other.top() ));
+			|| (top() < other.bottom() )
+			|| (bottom() > other.top() ));
 }
 
-bool Rect::contains(const Vector2 &vec) const {
-	return (   (vec.x > left())
-		    && (vec.y > bottom())
-		    && (vec.x < right())
-		    && (vec.y < top()));
+bool Rect::contains(const Vector2 &point) const {
+	return (   (point.x > left())
+		    && (point.y > bottom())
+		    && (point.x < right())
+		    && (point.y < top()));
+}
+
+bool Rect::contains(const Rect &other) const {
+	return (   (left() < other.left())
+			&& (right() > other.right())
+			&& (top() > other.top())
+			&& (bottom() < other.bottom()));
 }
 
 Rect Rect::united(const Rect &other) const {

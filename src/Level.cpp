@@ -48,3 +48,7 @@ void Level::setGravitation(const Vector2 &gravitation) {
 const Vector2 &Level::gravitation() const {
 	return m_gravitation;
 }
+
+bool Level::collides(GameObject * object) {
+	return !contains(*object);
+}

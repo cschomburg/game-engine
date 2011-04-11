@@ -20,21 +20,18 @@ void Texture::draw(float x, float y, float width, float height) {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	float width2 = width/2;
-	float height2 = height/2;
-
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 1);
-		glVertex3f(x - width2, y - height2, 0.0f);
+		glVertex3f(x, y - height, 0.0f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(x + width2, y - height2, 0.0f);
+		glVertex3f(x + width, y - height, 0.0f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(x + width2, y + height2, 0.0f);
+		glVertex3f(x + width, y, 0.0f);
 
 		glTexCoord2i(0, 0);
-		glVertex3f(x - width2, y + height2, 0.0f);
+		glVertex3f(x, y, 0.0f);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 }

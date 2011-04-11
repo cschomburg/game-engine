@@ -6,6 +6,8 @@
 #include "GameObject.h"
 #include "Vector2.h"
 
+using namespace YamlLoader;
+
 void YamlLoader::openFile(YAML::Node &node, const char * file) {
 	std::ifstream fin(file);
 	YAML::Parser parser(fin);
@@ -19,15 +21,6 @@ Level * YamlLoader::loadLevel(const char * file) {
 		YAML::Node node;
 		openFile(node, file);
 		node >> level;
-
-		level->setGravitation(loadVector2(node["gravitation"]));
-		level->setSpawn(loadVector2(node["spawn"]));
-
-		const YAML::Node &nObjects = node["objects"];
-		for (YAML::Iterator i = nObjects.begin(); i != nObjects.end(); ++i) {
-			level->addChild(loadGameObject(*i));
-		}
-			
 	} catch (YAML::Exception &e) {
 		printf("error: Could not load '%s': %s\n", file, e.what());
 		if (level != 0) {
@@ -49,6 +42,10 @@ GameObject * YamlLoader::loadGameObject(const YAML::Node &node) {
 	object->setSize(loadVector2(node["size"]));
 	object->setTexture(texturePath);
 
+	if (const YAML::Node *nCollision = node.FindValue("collision")) {
+		object->setCollision(nCollision);
+	}
+
 	if (const YAML::Node *nObjects = node.FindValue("children")) {
 		for (YAML::Iterator i = nObjects->begin(); i != nObjects->end(); ++i) {
 			GameObject * child = loadGameObject(*i);
@@ -62,12 +59,21 @@ GameObject * YamlLoader::loadGameObject(const YAML::Node &node) {
 
 void operator >> (const YAML::Node &node, Level * level) {
 	level->setSize(Vector2(node["width"], node["height"]));
+	level->y = level->h;
 
 	Color bgColorA;
 	Color bgColorB;
 	node["background"]["colorA"] >> bgColorA;
 	node["background"]["colorB"] >> bgColorB;
 	level->setBackground(bgColorA, bgColorB);
+
+	level->setGravitation(loadVector2(node["gravitation"]));
+	level->setSpawn(loadVector2(node["spawn"]));
+
+	const YAML::Node &nObjects = node["objects"];
+	for (YAML::Iterator i = nObjects.begin(); i != nObjects.end(); ++i) {
+		level->addChild(loadGameObject(*i));
+	}
 }
 
 void operator >> (const YAML::Node &node, Color &color) {

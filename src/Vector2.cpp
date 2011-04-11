@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Vector2.h"
 
 Vector2::Vector2(float x, float y) {
@@ -52,4 +54,8 @@ bool Vector2::operator==(const Vector2 &vec) {
 
 bool Vector2::operator!=(const Vector2 &vec) {
 	return x != vec.x || y != vec.y;
+}
+
+float Vector2::magnitude() const {
+	return sqrtf(x*x + y*y);
 }

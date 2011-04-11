@@ -20,6 +20,8 @@ public:
 	void onCleanup();
 
 	Level * level() const;
+	bool checkCollision(GameObject * object);
+	bool checkCollision(GameObject * object, GameObject * other);
 
 protected:
 

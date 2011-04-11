@@ -16,7 +16,22 @@ void Entity::onUpdate() {
 	accel += Application::instance()->engine()->level()->gravitation();
 
 	m_velocity += accel * elapsed;
-	addPos(m_velocity * elapsed);
+
+	if (m_velocity.x > 0.1 || m_velocity.x < -0.1) {
+		float oldX = x;
+		x += m_velocity.x * elapsed;
+		if (Application::instance()->engine()->checkCollision(this)) {
+			x = oldX;
+		}
+	}
+
+	if (m_velocity.y > 0.1 || m_velocity.y < -0.1) {
+		float oldY = y;
+		y += m_velocity.y * elapsed;
+		if (Application::instance()->engine()->checkCollision(this)) {
+			y = oldY;
+		}
+	}
 }
 
 void Entity::setVelocity(float x, float y) {

@@ -19,6 +19,8 @@ public:
 	bool operator==(const Vector2 &vec);
 	bool operator!=(const Vector2 &vec);
 
+	float magnitude() const;
+
 public:
 	float x;
 	float y;
