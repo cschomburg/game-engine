@@ -38,8 +38,8 @@ bool GameEngine::onInit() {
 void GameEngine::onUpdate() {
 	Uint8 * keystate = SDL_GetKeyState(0);
 	float x = keystate[SDLK_RIGHT] - keystate[SDLK_LEFT];
-	float y = keystate[SDLK_UP] - keystate[SDLK_DOWN];
-	m_player->setMovement(x, y);
+	//float y = keystate[SDLK_UP] - keystate[SDLK_DOWN];
+	m_player->setMovement(x, 0);
 
 	m_player->onUpdate();
 	m_camera->setPos(m_player->pos());
@@ -64,6 +64,9 @@ void GameEngine::onCleanup() {
 }
 
 void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
+	if (sym == SDLK_UP) {
+		m_player->setVelocity(m_player->velocity() + Vector2(0, 1000));
+	}
 }
 
 void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {

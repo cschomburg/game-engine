@@ -114,7 +114,7 @@ bool Application::onInit() {
 	//glEnable(GL_DEPTH_TEST);
 	//glDepthMask(GL_TRUE);
 
-	SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+	//SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
 	// Initialize game
 	m_engine = new GameEngine();

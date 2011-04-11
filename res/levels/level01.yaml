@@ -1,7 +1,7 @@
 width: 2000
-height: 1000
+height: 1500
 spawn: [572, 456]
-gravitation: [0, -500]
+gravitation: [0, -800]
 background:
     colorA: [255, 89, 0]
     colorB: [180, 20, 0]
@@ -21,6 +21,16 @@ objects:
         size: [100, 110]
         pos: [0, 108]
 
+  # Left middle island
+  - texture: "res/images/island.png"
+    size: [100, 64]
+    pos: [202, 327]
+    collision: true
+    children:
+      - texture: "res/images/tree.png"
+        size: [100, 110]
+        pos: [0, 108]
+
   # Small island
   - texture: "res/images/island.png"
     size: [-40, 25]
@@ -29,3 +39,13 @@ objects:
       - texture: "res/images/tree.png"
         size: [20, 22]
         pos: [-25, 19]
+
+  # Top island
+  - texture: "res/images/island.png"
+    size: [100, 64]
+    pos: [602, 827]
+    collision: true
+    children:
+      - texture: "res/images/tree.png"
+        size: [100, 110]
+        pos: [0, 108]

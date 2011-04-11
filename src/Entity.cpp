@@ -12,9 +12,7 @@ void Entity::onUpdate() {
 	float elapsed = float(time - m_lastTime) / 1000;
 	m_lastTime = time;
 
-	Vector2 accel = m_acceleration - m_velocity * 2;
-	accel += Application::instance()->engine()->level()->gravitation();
-
+	Vector2 accel = m_acceleration - m_velocity * 2+ Application::instance()->engine()->level()->gravitation();
 	m_velocity += accel * elapsed;
 
 	if (m_velocity.x > 0.1 || m_velocity.x < -0.1) {
@@ -34,14 +32,8 @@ void Entity::onUpdate() {
 	}
 }
 
-void Entity::setVelocity(float x, float y) {
-	m_velocity.x = x;
-	m_velocity.y = y;
-}
-
-void Entity::setAcceleration(float x, float y) {
-	m_acceleration.x = x;
-	m_acceleration.y = y;
+void Entity::setVelocity(const Vector2 &velocity) {
+	m_velocity = velocity;
 }
 
 void Entity::setAcceleration(const Vector2 &acceleration) {

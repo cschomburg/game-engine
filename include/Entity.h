@@ -10,8 +10,7 @@ public:
 
 	virtual void onUpdate();
 
-	void setVelocity(float x, float y);
-	void setAcceleration(float x, float y);
+	void setVelocity(const Vector2 &acceleration);
 	void setAcceleration(const Vector2 &acceleration);
 
 	const Vector2 &velocity() const;
