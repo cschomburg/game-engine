@@ -15,6 +15,7 @@ _OBJ=main.o\
 		 GameObject.o\
 		 Level.o\
 		 Player.o\
+		 Rect.o\
 		 Resource.o\
 		 ResourceManager.o\
 		 Texture.o\

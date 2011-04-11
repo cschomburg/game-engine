@@ -32,6 +32,8 @@ bool GameEngine::onInit() {
 	m_camera = new Camera();
 	m_camera->setPos(m_player->pos());
 
+	printf("%f %f\n", level()->w, level()->h);
+
 	return true;
 }
 

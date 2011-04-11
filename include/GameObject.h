@@ -5,12 +5,13 @@
 #include <vector>
 
 #include "Texture.h"
+#include "Rect.h"
 #include "Vector2.h"
 
 class GameObject;
 typedef std::vector<GameObject *> GameObjectsVector;
 
-class GameObject {
+class GameObject : public Rect {
 public:
 	GameObject(GameObject * parent = 0);
 	virtual ~GameObject();
@@ -19,13 +20,7 @@ public:
 	void setParent(GameObject * parent);
 	void addChild(GameObject * object);
 
-	const Vector2 &pos() const;
 	Vector2 worldPos();
-	void setPos(const Vector2 &pos);
-	void addPos(const Vector2 &pos);
-
-	const Vector2 &size() const;
-	void setSize(const Vector2 &size);
 
 	void setTexture(const std::string &texturePath);
 	virtual void onRender();
@@ -33,9 +28,6 @@ public:
 private:
 	GameObject * m_parent;
 	GameObjectsVector m_children;
-
-	Vector2 m_pos;
-	Vector2 m_size;
 
 	Texture * m_texture;
 };

@@ -30,31 +30,11 @@ void GameObject::addChild(GameObject * object) {
 	m_children.push_back(object);
 }
 
-const Vector2 &GameObject::pos() const {
-	return m_pos;
-}
-
 Vector2 GameObject::worldPos() {
 	if (m_parent)
 		return m_parent->worldPos() + pos();
 	else
 		return pos();
-}
-
-void GameObject::setPos(const Vector2 &pos) {
-	m_pos = pos;
-}
-
-void GameObject::addPos(const Vector2 &pos) {
-	m_pos += pos;
-}
-
-const Vector2 &GameObject::size() const {
-	return m_size;
-}
-
-void GameObject::setSize(const Vector2 &size) {
-	m_size = size;
 }
 
 void GameObject::setTexture(const std::string &texturePath) {

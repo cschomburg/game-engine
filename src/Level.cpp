@@ -23,10 +23,10 @@ void Level::onRender() {
 	glBegin(GL_QUADS);
 		glColor3f(m_bgColorB.r, m_bgColorB.g, m_bgColorB.b);
 		glVertex3f(0, 0, -0.9f);
-		glVertex3f(size().x, 0, -0.9f);
+		glVertex3f(w, 0, -0.9f);
 		glColor3f(m_bgColorA.r, m_bgColorA.g, m_bgColorA.b);
-		glVertex3f(size().x, size().y, -0.9f);
-		glVertex3f(0, size().y, -0.9f);
+		glVertex3f(w, h, -0.9f);
+		glVertex3f(0, h, -0.9f);
 	glEnd();
 
 	glColor3f(1, 1, 1);
