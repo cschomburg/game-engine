@@ -1,4 +1,4 @@
-#include "Primitives.h"
+#include "Color.h"
 
 Color::Color() {
 	r = 0;

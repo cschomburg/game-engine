@@ -5,14 +5,15 @@
 
 class Color;
 class Level;
-class Renderable;
+class GameObject;
 class Vector2;
 
 namespace YamlLoader {
 	void openFile(YAML::Node &node, const char * file);
 
 	Level * loadLevel(const char * file);
-	Renderable * loadRenderable(const YAML::Node &node);
+	GameObject * loadGameObject(const YAML::Node &node);
+	const Vector2 loadVector2(const YAML::Node &node);
 }
 
 void operator >> (const YAML::Node &node, Level * level);

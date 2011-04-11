@@ -1,9 +1,9 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Renderable.h"
+#include "GameObject.h"
 
-class Entity : public Renderable {
+class Entity : public GameObject {
 public:
 	Entity();
 	virtual ~Entity();

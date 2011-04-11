@@ -47,7 +47,7 @@ bool Application::execute() {
 			m_fps = frameCount;
 			frameCount = 0;
 			lastTime = SDL_GetTicks();
-			//printf("%d\n", m_fps);
+			printf("%d\n", m_fps);
 		}
 
 		m_engine->onUpdate();

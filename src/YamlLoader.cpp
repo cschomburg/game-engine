@@ -2,8 +2,8 @@
 #include "YamlLoader.h"
 
 #include "Level.h"
-#include "Primitives.h"
-#include "Renderable.h"
+#include "Color.h"
+#include "GameObject.h"
 #include "Vector2.h"
 
 void YamlLoader::openFile(YAML::Node &node, const char * file) {
@@ -20,13 +20,12 @@ Level * YamlLoader::loadLevel(const char * file) {
 		openFile(node, file);
 		node >> level;
 
-		Vector2 gravitation;
-		node["gravitation"] >> gravitation;
-		level->setGravitation(gravitation);
+		level->setGravitation(loadVector2(node["gravitation"]));
+		level->setSpawn(loadVector2(node["spawn"]));
 
-		const YAML::Node &nRenderables = node["props"];
-		for (YAML::Iterator i = nRenderables.begin(); i != nRenderables.end(); ++i) {
-			level->addRenderable(loadRenderable(*i));
+		const YAML::Node &nObjects = node["objects"];
+		for (YAML::Iterator i = nObjects.begin(); i != nObjects.end(); ++i) {
+			level->addChild(loadGameObject(*i));
 		}
 			
 	} catch (YAML::Exception &e) {
@@ -40,26 +39,29 @@ Level * YamlLoader::loadLevel(const char * file) {
 	return level;
 }
 
-Renderable * YamlLoader::loadRenderable(const YAML::Node &node) {
+GameObject * YamlLoader::loadGameObject(const YAML::Node &node) {
 	int x, y, w, h;
-	node["pos"][0] >> x;
-	node["pos"][1] >> y;
-	node["size"][0] >> w;
-	node["size"][1] >> h;
-
 	std::string texturePath;
 	node["texture"] >> texturePath;
 	
-	Renderable * renderable = new Renderable();
-	renderable->setPos(x, y);
-	renderable->setSize(w, h);
-	renderable->setTexture(texturePath);
+	GameObject * object = new GameObject();
+	object->setPos(loadVector2(node["pos"]));
+	object->setSize(loadVector2(node["size"]));
+	object->setTexture(texturePath);
 
-	return renderable;
+	if (const YAML::Node *nObjects = node.FindValue("children")) {
+		for (YAML::Iterator i = nObjects->begin(); i != nObjects->end(); ++i) {
+			GameObject * child = loadGameObject(*i);
+			child->setParent(object);
+			object->addChild(child);
+		}
+	}
+
+	return object;
 }
 
 void operator >> (const YAML::Node &node, Level * level) {
-	level->setSize(node["width"], node["height"]);
+	level->setSize(Vector2(node["width"], node["height"]));
 
 	Color bgColorA;
 	Color bgColorB;
@@ -81,4 +83,10 @@ void operator >> (const YAML::Node &node, Color &color) {
 void operator >> (const YAML::Node &node, Vector2 &vector) {
 	node[0] >> vector.x;
 	node[1] >> vector.y;
+}
+
+const Vector2 YamlLoader::loadVector2(const YAML::Node &node) {
+	Vector2 vec;
+	node >> vec;
+	return node;
 }

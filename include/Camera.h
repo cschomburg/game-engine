@@ -1,9 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Positionable.h"
+#include "Entity.h"
 
-class Camera : public Positionable {
+class Camera : public Entity {
 public:
 	void onRender();
 };

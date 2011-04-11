@@ -9,13 +9,12 @@ _OBJ=main.o\
 		 Application.o\
 		 BaseEngine.o\
 		 Camera.o\
+		 Color.o\
 		 Entity.o\
 		 GameEngine.o\
+		 GameObject.o\
 		 Level.o\
 		 Player.o\
-		 Positionable.o\
-		 Primitives.o\
-		 Renderable.o\
 		 Resource.o\
 		 ResourceManager.o\
 		 Texture.o\

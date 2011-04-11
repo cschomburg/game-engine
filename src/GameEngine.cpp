@@ -27,7 +27,7 @@ bool GameEngine::onInit() {
 		return false;
 
 	m_player = new Player();
-	m_player->setPos(572, 306);
+	m_player->setPos(level()->spawn());
 
 	m_camera = new Camera();
 	m_camera->setPos(m_player->pos());
