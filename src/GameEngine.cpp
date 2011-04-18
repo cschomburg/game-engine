@@ -30,7 +30,7 @@ bool GameEngine::onInit() {
 	m_player->setPos(level()->spawn());
 
 	m_camera = new Camera();
-	m_camera->setPos(m_player->pos());
+	m_camera->track(m_player);
 
 	return true;
 }
@@ -42,7 +42,7 @@ void GameEngine::onUpdate() {
 	m_player->setMovement(x, 0);
 
 	m_player->onUpdate();
-	m_camera->setPos(m_player->pos());
+	m_camera->onUpdate();
 }
 
 void GameEngine::onRender() {
@@ -60,7 +60,11 @@ void GameEngine::onCleanup() {
 	BaseEngine::onCleanup();
 
 	delete m_level;
+	delete m_player;
+	delete m_camera;
 	m_level = 0;
+	m_player = 0;
+	m_camera = 0;
 }
 
 void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {

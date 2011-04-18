@@ -12,7 +12,7 @@ public:
 
 	Vector2 pos() const;
 	Vector2 size() const;
-	void setPos(const Vector2 &pos);
+	void setPos(const Vector2 &pos, bool centered =false);
 	void addPos(const Vector2 &pos);
 	void setSize(const Vector2 &pos);
 

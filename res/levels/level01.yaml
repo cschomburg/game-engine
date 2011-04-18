@@ -19,7 +19,7 @@ objects:
     children:
       - texture: "res/images/tree.png"
         size: [100, 110]
-        pos: [0, 108]
+        pos: [0, 127]
 
   # Left middle island
   - texture: "res/images/island.png"
@@ -29,7 +29,7 @@ objects:
     children:
       - texture: "res/images/tree.png"
         size: [100, 110]
-        pos: [0, 108]
+        pos: [0, 63]
 
   # Small island
   - texture: "res/images/island.png"
@@ -38,7 +38,7 @@ objects:
     children:
       - texture: "res/images/tree.png"
         size: [20, 22]
-        pos: [-25, 19]
+        pos: [-25, 24]
 
   # Top island
   - texture: "res/images/island.png"
@@ -48,4 +48,4 @@ objects:
     children:
       - texture: "res/images/tree.png"
         size: [100, 110]
-        pos: [0, 108]
+        pos: [0, 63]

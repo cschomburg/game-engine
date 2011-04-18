@@ -99,6 +99,10 @@ bool Application::onInit() {
 		return false;
 	}
 
+	m_windowed = windowed;
+	m_displayWidth = width;
+	m_displayHeight = height;
+
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glViewport(0, 0, width, height);
 
@@ -135,6 +139,18 @@ void Application::onCleanup() {
 
 int Application::time() const {
 	return SDL_GetTicks();
+}
+
+bool Application::windowed() const {
+	return m_windowed;
+}
+
+int Application::displayWidth() const {
+	return m_displayWidth;
+}
+
+int Application::displayHeight() const {
+	return m_displayHeight;
 }
 
 GameEngine * Application::engine() const {

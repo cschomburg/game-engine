@@ -20,9 +20,14 @@ Vector2 Rect::pos() const {
 	return Vector2(x, y);
 }
 
-void Rect::setPos(const Vector2 &pos) {
-	x = pos.x;
-	y = pos.y;
+void Rect::setPos(const Vector2 &pos, bool centered) {
+	if (centered) {
+		x = pos.x - w/2;
+		y = pos.y - h/2;
+	} else {
+		x = pos.x;
+		y = pos.y;
+	}
 }
 
 void Rect::addPos(const Vector2 &pos) {
@@ -41,8 +46,8 @@ void Rect::setSize(const Vector2 &size) {
 
 float Rect::left() const { return x; }
 float Rect::right() const { return x + w; }
-float Rect::top() const { return y; }
-float Rect::bottom() const { return y - h; }
+float Rect::top() const { return y + h; }
+float Rect::bottom() const { return y; }
 
 Vector2 Rect::center() const {
 	return pos() + size()/2;
