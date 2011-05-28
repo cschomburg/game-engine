@@ -1,5 +1,4 @@
-width: 2000
-height: 1500
+size: [2000, 1500]
 spawn: [572, 456]
 gravitation: [0, -800]
 background:

@@ -2,8 +2,9 @@
 #define GAMEENGINE_H
 
 #include "BaseEngine.h"
-#include "Level.h"
 #include "Camera.h"
+#include "Level.h"
+#include "LuaWrapper.h"
 #include "Player.h"
 
 class GameEngine : public BaseEngine {
@@ -30,6 +31,7 @@ protected:
 
 private:
 	Level * m_level;
+	LuaWrapper * m_lua;
 	Camera * m_camera;
 	Player * m_player;
 };

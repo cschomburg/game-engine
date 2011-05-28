@@ -58,7 +58,7 @@ GameObject * YamlLoader::loadGameObject(const YAML::Node &node) {
 }
 
 void operator >> (const YAML::Node &node, Level * level) {
-	level->setSize(Vector2(node["width"], node["height"]));
+	level->setSize(loadVector2(node["size"]));
 
 	Color bgColorA;
 	Color bgColorB;
@@ -93,5 +93,5 @@ void operator >> (const YAML::Node &node, Vector2 &vector) {
 const Vector2 YamlLoader::loadVector2(const YAML::Node &node) {
 	Vector2 vec;
 	node >> vec;
-	return node;
+	return vec;
 }

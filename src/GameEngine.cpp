@@ -8,6 +8,8 @@ GameEngine::GameEngine() {
 	m_level = 0;
 	m_player = 0;
 	m_camera = 0;
+
+	m_lua = new LuaWrapper();
 }
 
 GameEngine::~GameEngine() {}
@@ -23,7 +25,12 @@ bool GameEngine::loadLevel(const char * file) {
 }
 
 bool GameEngine::onInit() {
-	if(!loadLevel("res/levels/level01.yaml"))
+	if (!m_lua->init())
+		return false;
+	if (!loadLevel("res/levels/level01.yaml"))
+		return false;
+
+	if (!m_lua->loadFile("res/lua/init.lua"))
 		return false;
 
 	m_player = new Player();
@@ -43,6 +50,8 @@ void GameEngine::onUpdate() {
 
 	m_player->onUpdate();
 	m_camera->onUpdate();
+
+	m_lua->update();
 }
 
 void GameEngine::onRender() {
@@ -60,9 +69,11 @@ void GameEngine::onCleanup() {
 	BaseEngine::onCleanup();
 
 	delete m_level;
+	delete m_lua;
 	delete m_player;
 	delete m_camera;
 	m_level = 0;
+	m_lua = 0;
 	m_player = 0;
 	m_camera = 0;
 }

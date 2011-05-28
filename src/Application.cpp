@@ -20,7 +20,10 @@ Application * Application::instance() {
 		return App;
 	App = new Application();
 	return App;
-} bool Application::running() const { return m_running;
+}
+
+bool Application::running() const {
+	return m_running;
 }
 
 void Application::quit() {
@@ -34,20 +37,9 @@ bool Application::execute() {
 	m_running = true;
 	SDL_Event event;
 
-	Uint32 lastTime = SDL_GetTicks();
-	int frameCount = 0;
-
 	while (m_running) {
 		while (SDL_PollEvent(&event)) {
 			m_engine->onEvent(&event);
-		}
-
-		frameCount++;
-		if ((SDL_GetTicks() - lastTime) >= 1000) {
-			m_fps = frameCount;
-			frameCount = 0;
-			lastTime = SDL_GetTicks();
-			printf("%d\n", m_fps);
 		}
 
 		m_engine->onUpdate();
@@ -122,7 +114,10 @@ bool Application::onInit() {
 
 	// Initialize game
 	m_engine = new GameEngine();
-	m_engine->onInit();
+	if(!m_engine->onInit()) {
+		std::cout << "Could not initialize game engine!" << std::endl;
+		return false;
+	}
 
 	return true;
 }
