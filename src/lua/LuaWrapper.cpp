@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Application.h"
-#include "LuaWrapper.h"
+#include "lua/LuaWrapper.h"
 
 LuaWrapper::LuaWrapper() {
 	L = 0;
@@ -28,6 +28,10 @@ void LuaWrapper::destroy() {
 		lua_close(L);
 		L = 0;
 	}
+}
+
+lua_State * LuaWrapper::state() const {
+	return L;
 }
 
 bool LuaWrapper::loadFile(const char * file) {

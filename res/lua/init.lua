@@ -8,5 +8,7 @@ function onUpdate(elapsed)
 		print(frameCount)
 		lastUpdate = 0
 		frameCount = 0
+
+		--player:setVelocity(0, 1000)
 	end
 end

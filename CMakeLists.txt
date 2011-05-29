@@ -12,7 +12,6 @@ set (
 	src/GameObject.cpp
 	src/GlInterface.cpp
 	src/Level.cpp
-	src/LuaWrapper.cpp
 	src/Player.cpp
 	src/Rect.cpp
 	src/Resource.cpp
@@ -21,6 +20,10 @@ set (
 	src/Vector2.cpp
 	src/YamlLoader.cpp
 	src/main.cpp
+
+	src/lua/LuaWrapper.cpp
+	include/lua/luna.h
+	src/lua/LuaPlayer.cpp
 )
 
 Find_Package (SDL REQUIRED)

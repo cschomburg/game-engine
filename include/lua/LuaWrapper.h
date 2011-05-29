@@ -14,6 +14,7 @@ public:
 
 	bool init();
 	void destroy();
+	lua_State * state() const;
 
 	bool loadFile(const char * file);
 	bool update();

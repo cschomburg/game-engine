@@ -4,7 +4,7 @@
 #include "BaseEngine.h"
 #include "Camera.h"
 #include "Level.h"
-#include "LuaWrapper.h"
+#include "lua/LuaWrapper.h"
 #include "Player.h"
 
 class GameEngine : public BaseEngine {
