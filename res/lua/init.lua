@@ -9,6 +9,7 @@ function onUpdate(elapsed)
 		lastUpdate = 0
 		frameCount = 0
 
-		--player:setVelocity(0, 1000)
+		local x, y = player:velocity()
+		player:setVelocity(x, y + 1000)
 	end
 end

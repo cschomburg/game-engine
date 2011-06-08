@@ -18,9 +18,8 @@ GameEngine::~GameEngine() {}
 
 bool GameEngine::loadLevel(const char * file) {
 	m_level = YamlLoader::loadLevel(file);
-	if (m_level == 0) {
+	if (!m_level)
 		return false;
-	}
 	m_level->onInit();
 
 	return true;
@@ -37,7 +36,9 @@ bool GameEngine::onInit() {
 
 	lua_State * L = m_lua->state();
 
-	m_player = Luna<LuaPlayer>::createNew(L);
+	m_player = new Player();
+	LuaPlayer *luaPlayer = new LuaPlayer(m_player);
+	Luna<LuaEntity>::createFromExisting(L, luaPlayer);
 	lua_setfield(L, LUA_GLOBALSINDEX, "player");
 	m_player->setPos(level()->spawn());
 

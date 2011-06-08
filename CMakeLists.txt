@@ -23,6 +23,9 @@ set (
 
 	src/lua/LuaWrapper.cpp
 	include/lua/luna.h
+	src/lua/LuaObject.cpp
+	src/lua/LuaEntity.cpp
+	src/lua/LuaEntity.cpp
 	src/lua/LuaPlayer.cpp
 )
 
