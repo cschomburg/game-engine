@@ -55,9 +55,15 @@ bool LuaWrapper::update() {
 	float elapsed = float(time - m_lastTime) / 1000;
 	m_lastTime = time;
 
-	lua_getfield(L, LUA_GLOBALSINDEX, "onUpdate");
+	lua_getfield(L, LUA_GLOBALSINDEX, "OnUpdate");
 	lua_pushnumber(L, elapsed);
-	lua_call(L, 1, 0);
+	int status = lua_pcall(L, 1, 0, 0);
+	if (status != 0) {
+		printError(status);
+		return false;
+	}
+
+	return true;
 }
 
 void LuaWrapper::printError(int status) {
@@ -65,4 +71,14 @@ void LuaWrapper::printError(int status) {
 		std::cout << "Lua err: " << lua_tostring(L, -1) << std::endl;
 		lua_pop(L, 1);
 	}
+}
+
+void LuaWrapper::push(Entity * entity, const char * name) {
+	if (m_objects[entity])
+		return;
+
+	LuaEntity * luaEntity = new LuaEntity(entity);
+	Luna<LuaEntity>::createFromExisting(L, luaEntity);
+	lua_setfield(L, LUA_GLOBALSINDEX, name);
+	m_objects[entity] = luaEntity;
 }

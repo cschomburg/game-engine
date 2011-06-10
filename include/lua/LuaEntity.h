@@ -13,6 +13,8 @@ public:
 
 	int velocity(lua_State * L);
 	int setVelocity(lua_State * L);
+	int acceleration(lua_State * L);
+	int setAcceleration(lua_State * L);
 
 public:
 	static const char * className;

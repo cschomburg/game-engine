@@ -4,8 +4,6 @@
 #include "GameEngine.h"
 #include "YamlLoader.h"
 
-#include "lua/LuaPlayer.h"
-
 GameEngine::GameEngine() {
 	m_level = 0;
 	m_player = 0;
@@ -26,24 +24,20 @@ bool GameEngine::loadLevel(const char * file) {
 }
 
 bool GameEngine::onInit() {
-	if (!m_lua->init())
-		return false;
 	if (!loadLevel("res/levels/level01.yaml"))
 		return false;
 
-	if (!m_lua->loadFile("res/lua/init.lua"))
-		return false;
-
-	lua_State * L = m_lua->state();
-
 	m_player = new Player();
-	LuaPlayer *luaPlayer = new LuaPlayer(m_player);
-	Luna<LuaEntity>::createFromExisting(L, luaPlayer);
-	lua_setfield(L, LUA_GLOBALSINDEX, "player");
 	m_player->setPos(level()->spawn());
 
 	m_camera = new Camera();
 	m_camera->track(m_player);
+
+	if (!m_lua->init())
+		return false;
+	m_lua->push(m_player, "Player");
+	if (!m_lua->loadFile("res/lua/init.lua"))
+		return false;
 
 	return true;
 }

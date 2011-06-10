@@ -10,11 +10,10 @@ public:
 
 	virtual void onUpdate();
 
-	void setVelocity(const Vector2 &acceleration);
-	void setAcceleration(const Vector2 &acceleration);
-
 	const Vector2 &velocity() const;
+	void setVelocity(const Vector2 &acceleration);
 	const Vector2 &acceleration() const;
+	void setAcceleration(const Vector2 &acceleration);
 
 private:
 	Uint32 m_lastTime;

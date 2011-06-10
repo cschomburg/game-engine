@@ -16,6 +16,8 @@ const char * LuaPlayer::className = "Player";
 const Luna<LuaPlayer>::FunctionType LuaPlayer::Functions[] = {
 	{ "velocity", &LuaEntity::velocity },
 	{ "setVelocity", &LuaEntity::setVelocity },
+	{ "acceleration", &LuaEntity::acceleration },
+	{ "setAcceleration", &LuaEntity::setAcceleration },
 	{0}
 };
 const Luna<LuaPlayer>::PropertyType LuaPlayer::Properties[] = {

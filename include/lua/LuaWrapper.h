@@ -1,11 +1,15 @@
 #ifndef LUAWRAPPER_H
 #define LUAWRAPPER_H
 
+#include <map>
+
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 }
+
+#include "lua/LuaEntity.h"
 
 class LuaWrapper {
 public:
@@ -20,9 +24,12 @@ public:
 	bool update();
 	void printError(int status);
 
+	void push(Entity * object, const char * name);
+
 private:
 	lua_State * L;
 	Uint32 m_lastTime;
+	std::map<void *, LuaObject *> m_objects;
 };
 
 #endif /* end of include guard: LUAWRAPPER_H */
