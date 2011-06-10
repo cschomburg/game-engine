@@ -12,7 +12,7 @@ function OnUpdate(elapsed)
 		frameCount = 0
 	end
 
-	--Player:addVelocity(300 * elapsed, 0)
+	Player:addVelocity(300 * elapsed, 0)
 end
 
 function Player:addVelocity(x, y)

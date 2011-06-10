@@ -24,7 +24,8 @@ public:
 	bool update();
 	void printError(int status);
 
-	void push(Entity * object, const char * name);
+	template<class T, class S> void push(T * object, const char * name);
+	void push(Entity * entity, const char * name);
 
 private:
 	lua_State * L;
