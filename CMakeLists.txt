@@ -5,28 +5,26 @@ set (
 	SOURCES
 	src/Application.cpp
 	src/BaseEngine.cpp
-	src/Camera.cpp
 	src/Color.cpp
-	src/Entity.cpp
+	src/Component.cpp
 	src/GameEngine.cpp
-	src/GameObject.cpp
-	src/GlInterface.cpp
-	src/Level.cpp
-	src/Player.cpp
-	src/Rect.cpp
+	src/Object.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp
 	src/Texture.cpp
 	src/Vector2.cpp
-	src/YamlLoader.cpp
 	src/main.cpp
 
-	src/lua/LuaWrapper.cpp
-	include/lua/luna.h
-	src/lua/LuaObject.cpp
-	src/lua/LuaEntity.cpp
-	src/lua/LuaEntity.cpp
-	src/lua/LuaPlayer.cpp
+	src/components/Movable.cpp
+	src/components/Positionable.cpp
+	src/components/Renderable.cpp
+	src/components/Shape.cpp
+	src/components/Tracker.cpp
+	src/components/Walkable.cpp
+
+	#src/lua/LuaWrapper.cpp
+	#include/lua/luna.h
+	#src/lua/LuaObject.cpp
 )
 
 Find_Package (SDL REQUIRED)
@@ -46,8 +44,7 @@ link_libraries (
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
 	SDLmain
-	yaml-cpp
-	lua
+	#lua
 )
 
 add_executable (

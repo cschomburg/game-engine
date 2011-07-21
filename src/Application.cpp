@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <yaml-cpp/yaml.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
@@ -57,10 +56,11 @@ bool Application::onInit() {
 
 	// load configuration
 	
-	int width;
-	int height;
-	bool windowed;
+	int width = 1024;
+	int height = 576;
+	bool windowed = true;
 
+	/*
 	try {
 		std::ifstream fin("properties/config.yaml");
 		YAML::Parser parser(fin);
@@ -73,7 +73,7 @@ bool Application::onInit() {
 	} catch (YAML::Exception &e) {
 		std::cout << "Could not load configuration file!" << "\n" << e.what() << "\n";
 		return false;
-	}
+	}*/
 
 	// initialize SDL
 

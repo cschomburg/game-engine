@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iomanip>
 
 #include "Vector2.h"
 
@@ -17,6 +18,10 @@ Vector2 Vector2::operator-(const Vector2 &vec) const {
 
 Vector2 Vector2::operator*(float t) const {
 	return Vector2(t * x, t * y);
+}
+
+Vector2 Vector2::operator*(const Vector2 &vec) const {
+	return Vector2(x * vec.x, y * vec.y);
 }
 
 Vector2 Vector2::operator/(float t) const {
@@ -58,4 +63,15 @@ bool Vector2::operator!=(const Vector2 &vec) {
 
 float Vector2::magnitude() const {
 	return sqrtf(x*x + y*y);
+}
+
+Vector2 Vector2::normalize() const {
+	float mag = magnitude();
+	if (mag == 0)
+		return Vector2(0 ,0);
+	return Vector2(x/mag, y/mag);
+}
+
+std::ostream& operator<<(std::ostream &o, const Vector2 &a) {
+	return o << "[" << std::setprecision(2) << a.x << ", " << a.y << "]";
 }

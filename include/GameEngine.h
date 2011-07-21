@@ -1,11 +1,11 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+#include <vector>
+
 #include "BaseEngine.h"
-#include "Camera.h"
-#include "Level.h"
-#include "lua/LuaWrapper.h"
-#include "Player.h"
+#include "Object.h"
+//#include "lua/LuaWrapper.h"
 
 class GameEngine : public BaseEngine {
 public:
@@ -20,20 +20,17 @@ public:
 	void onExit();
 	void onCleanup();
 
-	Level * level() const;
-	bool checkCollision(GameObject * object);
-	bool checkCollision(GameObject * object, GameObject * other);
-
 protected:
 
 	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
 	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
 
 private:
-	Level * m_level;
-	LuaWrapper * m_lua;
-	Camera * m_camera;
-	Player * m_player;
+	Object * m_level;
+//	LuaWrapper * m_lua;
+	Object * m_player;
+	Object * m_camera;
+	std::vector<Object *> m_objects;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */
