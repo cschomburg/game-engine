@@ -1,7 +1,4 @@
-#include "components/Positionable.h"
 #include "components/Shape.h"
-#include "Object.h"
-#include "Rect.h"
 
 const ComponentType Shape::componentType = "Shape";
 
@@ -10,23 +7,15 @@ Shape::Shape(Object *object)
 
 Shape::~Shape() {}
 
-Vector2 Shape::size() const {
-	return m_size;
+Polygon Shape::shape() const {
+	return m_shape;
 }
 
-void Shape::setSize(const Vector2 &size) {
-	m_size = size;
+void Shape::setShape(const Polygon &shape) {
+	m_shape = shape;
+	m_boundingBox = shape.boundingBox();
 }
 
 Rect Shape::boundingBox() const {
-	return Rect(Vector2(), m_size);
-}
-
-Rect Shape::worldBoundingBox() const {
-	Positionable *positionable = object()->component<Positionable>();
-
-	if (!positionable)
-		return boundingBox();
-
-	return Rect(positionable->pos(), m_size);
+	return m_boundingBox;
 }

@@ -1,4 +1,5 @@
 #include "components/Collidable.h"
+#include "components/Positionable.h"
 #include "components/Shape.h"
 #include "Object.h"
 #include "Rect.h"
@@ -11,20 +12,35 @@ Collidable::Collidable(Object *object)
 
 Collidable::~Collidable() {}
 
-Vector2 Collidable::collides(Object *other) {
+bool Collidable::collides(Object *other, Vector2 *collVector) {
 	if (other == object() || !other->component<Collidable>())
-		return Vector2();
+		return false;
 
 	Shape *shape = object()->component<Shape>();
 	Shape *otherShape = other->component<Shape>();
 	if (!shape || !otherShape)
-		return Vector2();
+		return false;
 
-	Rect rect = shape->worldBoundingBox();
-	Rect otherRect = otherShape->worldBoundingBox();
+	Positionable *pos = object()->component<Positionable>();
+	Positionable *otherPos = other->component<Positionable>();
+	if (!pos || !otherPos)
+		return false;
 
+	Rect rect = shape->boundingBox();
+	Rect otherRect = otherShape->boundingBox();
+	rect.translate(pos->pos());
+	otherRect.translate(otherPos->pos());
+
+
+	// Test bounding box collision
 	if (!rect.intersects(otherRect))
-		return Vector2();
+		return false;
 
-	return Vector2(1, 1);
+	// At last, polygon collision
+	Polygon poly = shape->shape();
+	Polygon otherPoly = otherShape->shape();
+	poly.translate(pos->pos());
+	otherPoly.translate(otherPos->pos());
+
+	return poly.intersects(otherPoly, collVector);
 }

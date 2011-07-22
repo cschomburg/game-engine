@@ -49,6 +49,22 @@ float Rect::right() const { return x + w; }
 float Rect::top() const { return y + h; }
 float Rect::bottom() const { return y; }
 
+Vector2 Rect::bottomLeft() const {
+	return pos();
+}
+
+Vector2 Rect::bottomRight() const {
+	return Vector2(x + w, y);
+}
+
+Vector2 Rect::topRight() const {
+	return Vector2(x + w, y + h);
+}
+
+Vector2 Rect::topLeft() const {
+	return Vector2(x, y + h);
+}
+
 Vector2 Rect::center() const {
 	return pos() + size()/2;
 }

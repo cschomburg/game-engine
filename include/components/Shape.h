@@ -1,7 +1,11 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include <vector>
+
 #include "Component.h"
+#include "Polygon.h"
+#include "Rect.h"
 #include "Vector2.h"
 
 class Rect;
@@ -11,16 +15,16 @@ public:
 	Shape(Object *object);
 	virtual ~Shape();
 
-	Vector2 size() const;
-	void setSize(const Vector2 &size);
+	Polygon shape() const;
+	void setShape(const Polygon &shape);
 
 	Rect boundingBox() const;
-	Rect worldBoundingBox() const;
 
 	static const ComponentType componentType;
 
 private:
-	Vector2 m_size;
+	Polygon m_shape;
+	Rect m_boundingBox;
 };
 
 #endif /* end of include guard: SHAPE_H */

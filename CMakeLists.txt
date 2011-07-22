@@ -9,6 +9,7 @@ set (
 	src/Component.cpp
 	src/GameEngine.cpp
 	src/Object.cpp
+	src/Polygon.cpp
 	src/Rect.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp

@@ -28,6 +28,10 @@ Vector2 Vector2::operator/(float t) const {
 	return Vector2(x / t, y / t);
 }
 
+float Vector2::dot(const Vector2 &vec) const {
+	return (x * vec.x) + (y * vec.y);
+}
+
 void Vector2::operator+=(const Vector2 &vec) {
 	x += vec.x;
 	y += vec.y;
@@ -65,11 +69,13 @@ float Vector2::magnitude() const {
 	return sqrtf(x*x + y*y);
 }
 
-Vector2 Vector2::normalize() const {
+void Vector2::normalize() {
+	if (x == 0 && y == 0)
+		return;
+
 	float mag = magnitude();
-	if (mag == 0)
-		return Vector2(0 ,0);
-	return Vector2(x/mag, y/mag);
+	x /= mag;
+	y /= mag;
 }
 
 bool Vector2::isZero() const {

@@ -21,6 +21,10 @@ public:
 	float top() const;
 	float bottom() const;
 
+	Vector2 bottomLeft() const;
+	Vector2 bottomRight() const;
+	Vector2 topRight() const;
+	Vector2 topLeft() const;
 	Vector2 center() const;
 
 	bool intersects(const Rect &other) const;

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "components/all.h"
 #include "GameEngine.h"
+#include "Polygon.h"
 #include "Vector2.h"
 
 GameEngine::GameEngine() {
@@ -19,43 +20,48 @@ bool GameEngine::loadLevel(const char * file) {
 
 	// Level
 	m_level = new Object();
-	m_level->createComponent<Positionable>();
-	m_level->createComponent<Shape>()->setSize(Vector2(2000, 1500));
+	m_level->createComponent<Positionable>()->setPos(Vector2(1000, 750));
+	m_level->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(2000, 1500)));
 	m_level->createComponent<Renderable>()->setGradient(Color::fromInt(255, 89, 0),
 														Color::fromInt(180, 20, 0));
 	m_objects.push_back(m_level);
 
 	// Sun
 	Object *sun = new Object();
-	sun->createComponent<Positionable>()->setPos(Vector2(512, 587));
-	sun->createComponent<Shape>()->setSize(Vector2(512, 512));
+	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
+	sun->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
 	m_objects.push_back(sun);
+
+	Polygon triangle;
+	triangle.points.push_back(Vector2(-100, 64));
+	triangle.points.push_back(Vector2(100, 64));
+	triangle.points.push_back(Vector2(0, -64));
 
 	// Main Island
 	Object *island = new Object();
 	island->createComponent<Positionable>()->setPos(Vector2(512, 327));
-	island->createComponent<Shape>()->setSize(Vector2(200, 128));
+	island->createComponent<Shape>()->setShape(triangle);
 	island->createComponent<Renderable>()->setTexture("res/images/island.png");
 	island->createComponent<Collidable>();
 	m_objects.push_back(island);
 
 	// Tree
 	Object *tree = new Object();
-	tree->createComponent<Positionable>()->setPos(Vector2(512, 455));
-	tree->createComponent<Shape>()->setSize(Vector2(100, 110));
+	tree->createComponent<Positionable>()->setPos(Vector2(512, 445));
+	tree->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(100, 110)));
 	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
 	m_objects.push_back(tree);
 
 	// Enemy
 	Object *enemy = new Object();
-	enemy->createComponent<Positionable>()->setPos(Vector2(512, 512));
-	enemy->createComponent<Shape>()->setSize(Vector2(24, 24));
+	enemy->createComponent<Positionable>()->setPos(Vector2(0, 0));
+	enemy->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(24, 24)));
 	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	enemy->createComponent<Movable>();
 	enemy->createComponent<Walkable>()->setAcceleration(Vector2(1500, 1500));
 	enemy->createComponent<Tracker>();
-	enemy->createComponent<Collidable>();
+	//enemy->createComponent<Collidable>();
 	m_objects.push_back(enemy);
 
 	return true;
@@ -71,7 +77,7 @@ bool GameEngine::onInit() {
 	enemy->component<Tracker>()->setTracked(m_player);
 
 	m_player->createComponent<Positionable>()->setPos(Vector2(572, 456));
-	m_player->createComponent<Shape>()->setSize(Vector2(32, 32));
+	m_player->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(32, 32)));
 	m_player->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	m_player->createComponent<Movable>();
 	m_player->createComponent<Walkable>()->setAcceleration(Vector2(1500, 1500));
@@ -137,19 +143,18 @@ void GameEngine::onCleanup() {
 	m_camera = 0;
 }
 
-Vector2 GameEngine::checkCollision(Object *object) {
+bool GameEngine::checkCollision(Object *object, Vector2 *collVector) {
 	Collidable *collidable = object->component<Collidable>();
 	Shape *shape = object->component<Shape>();
 	if (!collidable || !shape)
-		return Vector2();
+		return false;
 
 	for (std::vector<Object *>::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {
-		Vector2 vec = collidable->collides(*i);
-		if (!vec.isZero())
-			return vec;
+		if (collidable->collides(*i, collVector))
+			return true;
 	}
 
-	return Vector2();
+	return false;
 }
 
 void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {

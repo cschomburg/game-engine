@@ -10,7 +10,7 @@ public:
 	Collidable(Object *object);
 	virtual ~Collidable();
 
-	Vector2 collides(Object *other);
+	bool collides(Object *other, Vector2 *collVector = 0);
 
 	static const ComponentType componentType;
 };

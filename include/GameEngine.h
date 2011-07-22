@@ -22,7 +22,7 @@ public:
 	void onExit();
 	void onCleanup();
 
-	Vector2 checkCollision(Object *object);
+	bool checkCollision(Object *object, Vector2 *collVector);
 
 protected:
 

@@ -13,6 +13,8 @@ public:
 	Vector2 operator*(const Vector2& vec) const;
 	Vector2 operator/(float t) const;
 
+	float dot(const Vector2 &vec) const;
+
 	void operator+=(const Vector2 &vec);
 	void operator-=(const Vector2 &vec);
 	void operator*=(float t);
@@ -23,7 +25,7 @@ public:
 	bool operator!=(const Vector2 &vec);
 
 	float magnitude() const;
-	Vector2 normalize() const;
+	void normalize();
 	bool isZero() const;
 
 public:

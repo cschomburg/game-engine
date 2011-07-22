@@ -9,7 +9,8 @@ Walkable::Walkable(Object *object)
 Walkable::~Walkable() {}
 
 void Walkable::setDirection(const Vector2 &direction) {
-	m_direction = direction.normalize();
+	m_direction = direction;
+	m_direction.normalize();
 }
 
 void Walkable::setAcceleration(const Vector2 &acceleration) {

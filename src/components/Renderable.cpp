@@ -5,6 +5,7 @@
 #include "components/Positionable.h"
 #include "components/Renderable.h"
 #include "components/Shape.h"
+#include "Rect.h"
 #include "Texture.h"
 
 const ComponentType Renderable::componentType = "Renderable";
@@ -35,22 +36,22 @@ void Renderable::onRender() {
 	if (!positionable || !shape)
 		return;
 
-	Vector2 pos = positionable->pos();
-	Vector2 size = shape->size();
+	Rect rect = shape->boundingBox();
+	rect.translate(positionable->pos());
 
 	if (m_colorA.a > 0 || m_colorB.a > 0) {
 		glBegin(GL_QUADS);
 			glColor3f(m_colorB.r, m_colorB.g, m_colorB.b);
-			glVertex3f(pos.x, pos.y, -0.9f);
-			glVertex3f(pos.x + size.x, pos.y, -0.9f);
+			glVertex3f(rect.x, rect.y, -0.9f);
+			glVertex3f(rect.x + rect.w, rect.y, -0.9f);
 			glColor3f(m_colorA.r, m_colorA.g, m_colorA.b);
-			glVertex3f(pos.x + size.x, pos.y + size.y, -0.9f);
-			glVertex3f(pos.x, pos.y + size.y, -0.9f);
+			glVertex3f(rect.x + rect.w, rect.y + rect.h, -0.9f);
+			glVertex3f(rect.x, rect.y + rect.h, -0.9f);
 		glEnd();
 
 		glColor3f(1, 1, 1); // Reset
 	}
 	if (m_texture) {
-		m_texture->draw(pos.x, pos.y, size.x, size.y);
+		m_texture->draw(rect.x, rect.y, rect.w, rect.h);
 	}
 }
