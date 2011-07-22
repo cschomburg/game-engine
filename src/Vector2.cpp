@@ -72,6 +72,10 @@ Vector2 Vector2::normalize() const {
 	return Vector2(x/mag, y/mag);
 }
 
+bool Vector2::isZero() const {
+	return x == 0 && y == 0;
+}
+
 std::ostream& operator<<(std::ostream &o, const Vector2 &a) {
 	return o << "[" << std::setprecision(2) << a.x << ", " << a.y << "]";
 }

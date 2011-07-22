@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "Vector2.h"
 
+class Rect;
+
 class Shape : public Component {
 public:
 	Shape(Object *object);
@@ -11,6 +13,9 @@ public:
 
 	Vector2 size() const;
 	void setSize(const Vector2 &size);
+
+	Rect boundingBox() const;
+	Rect worldBoundingBox() const;
 
 	static const ComponentType componentType;
 

@@ -24,6 +24,7 @@ public:
 
 	float magnitude() const;
 	Vector2 normalize() const;
+	bool isZero() const;
 
 public:
 	float x;

@@ -9,12 +9,13 @@ set (
 	src/Component.cpp
 	src/GameEngine.cpp
 	src/Object.cpp
+	src/Rect.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp
 	src/Texture.cpp
 	src/Vector2.cpp
-	src/main.cpp
 
+	src/components/Collidable.cpp
 	src/components/Movable.cpp
 	src/components/Positionable.cpp
 	src/components/Renderable.cpp
@@ -22,9 +23,9 @@ set (
 	src/components/Tracker.cpp
 	src/components/Walkable.cpp
 
-	#src/lua/LuaWrapper.cpp
-	#include/lua/luna.h
-	#src/lua/LuaObject.cpp
+	src/lua/LuaWrapper.cpp
+
+	src/main.cpp
 )
 
 Find_Package (SDL REQUIRED)
@@ -44,7 +45,7 @@ link_libraries (
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
 	SDLmain
-	#lua
+	lua
 )
 
 add_executable (

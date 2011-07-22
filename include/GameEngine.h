@@ -5,7 +5,9 @@
 
 #include "BaseEngine.h"
 #include "Object.h"
-//#include "lua/LuaWrapper.h"
+#include "lua/LuaWrapper.h"
+
+class Vector2;
 
 class GameEngine : public BaseEngine {
 public:
@@ -20,14 +22,16 @@ public:
 	void onExit();
 	void onCleanup();
 
+	Vector2 checkCollision(Object *object);
+
 protected:
 
 	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
 	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
 
 private:
+	LuaWrapper * m_lua;
 	Object * m_level;
-//	LuaWrapper * m_lua;
 	Object * m_player;
 	Object * m_camera;
 	std::vector<Object *> m_objects;

@@ -18,6 +18,10 @@ void Movable::setVelocity(const Vector2 &velocity) {
 	m_velocity = velocity;
 }
 
+void Movable::modifyVelocity(const Vector2 &velocity) {
+	m_velocity += velocity;
+}
+
 Vector2 Movable::acceleration() const {
 	return m_acceleration;
 }
@@ -42,6 +46,10 @@ void Movable::onUpdate() {
 	Vector2 accel = m_acceleration - m_velocity * 2;// + Application::instance()->engine()->level()->gravitation();
 	m_velocity += accel * elapsed;
 
+	//positionable->modifyPos(m_velocity * elapsed);
+
+	if (m_velocity.magnitude() < 1)
+		return;
+
 	positionable->modifyPos(m_velocity * elapsed);
-	// TODO: Collision
 }

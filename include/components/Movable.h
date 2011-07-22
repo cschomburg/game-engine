@@ -12,6 +12,7 @@ public:
 
 	Vector2 velocity() const;
 	void setVelocity(const Vector2 &velocity);
+	void modifyVelocity(const Vector2 &velocity);
 
 	Vector2 acceleration() const;
 	void setAcceleration(const Vector2 &acceleration);

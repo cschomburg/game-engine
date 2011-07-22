@@ -20,6 +20,12 @@ public:
 		return static_cast<T *>(getComponent(T::componentType));
 	}
 
+	template<class T> T * createComponent() {
+		T * component = new T(this);
+		m_components[T::componentType] = component;
+		return component;
+	}
+
 	void onUpdate();
 
 private:

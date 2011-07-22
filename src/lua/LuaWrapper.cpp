@@ -72,18 +72,3 @@ void LuaWrapper::printError(int status) {
 		lua_pop(L, 1);
 	}
 }
-
-template<class T, class S>
-void LuaWrapper::push(T * object, const char * name) {
-	if (m_objects[object])
-		return;
-
-	S * luaObject = new S(object);
-	Luna<S>::createFromExisting(L, luaObject);
-	lua_setfield(L, LUA_GLOBALSINDEX, name);
-	m_objects[object] = luaObject;
-}
-
-void LuaWrapper::push(Entity * entity, const char * name) {
-	push<Entity, LuaEntity>(entity, name);
-}

@@ -1,3 +1,4 @@
+#include "Application.h"
 #include "components/Positionable.h"
 
 const ComponentType Positionable::componentType = "Positionable";
@@ -12,9 +13,15 @@ Vector2 Positionable::pos() const {
 }
 
 void Positionable::setPos(const Vector2 &pos) {
+	Vector2 oldPos = m_pos;
 	m_pos = pos;
+
+	Vector2 collVec = Application::instance()->engine()->checkCollision(object());
+	if (!collVec.isZero()) {
+		m_pos = oldPos;
+	}
 }
 
 void Positionable::modifyPos(const Vector2 &pos) {
-	m_pos += pos;
+	setPos(m_pos + pos);
 }

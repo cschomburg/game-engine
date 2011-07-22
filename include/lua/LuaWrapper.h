@@ -9,8 +9,6 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "lua/LuaEntity.h"
-
 class LuaWrapper {
 public:
 	LuaWrapper();
@@ -24,13 +22,9 @@ public:
 	bool update();
 	void printError(int status);
 
-	template<class T, class S> void push(T * object, const char * name);
-	void push(Entity * entity, const char * name);
-
 private:
 	lua_State * L;
 	Uint32 m_lastTime;
-	std::map<void *, LuaObject *> m_objects;
 };
 
 #endif /* end of include guard: LUAWRAPPER_H */
