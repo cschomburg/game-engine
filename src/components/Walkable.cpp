@@ -23,13 +23,13 @@ void Walkable::jump(const Vector2 &velocity) {
 	Movable *movable = object()->component<Movable>();
 	if (!collidable || !movable)
 		return;
-/*
+
 	Vector2 collVec = collidable->lastCollisionVector();
 	if (collVec.isZero())
 		return;
-*/
 
-	movable->modifyVelocity(velocity);
+	collVec.normalize();
+	movable->modifyVelocity(collVec * velocity.magnitude());
 }
 
 void Walkable::onUpdate() {

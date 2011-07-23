@@ -58,10 +58,11 @@ void Movable::onUpdate() {
 	accel += Vector2(0, -1500); // Gravity
 	m_velocity += accel * elapsed;
 
-	if (m_velocity.magnitude() < 1)
+	Vector2 relPos = m_velocity * elapsed;
+	if (relPos.magnitude() < 0.001)
 		return;
 
-	positionable->modifyPos(m_velocity * elapsed);
+	positionable->modifyPos(relPos);
 
 	Collidable *collidable = object()->component<Collidable>();
 	if (!collidable)

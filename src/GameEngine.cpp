@@ -78,7 +78,7 @@ bool GameEngine::loadLevel(const char * file) {
 
 	// Block
 	Object *block = new Object();
-	block->createComponent<Positionable>()->setPos(Vector2(1000, 1000));
+	block->createComponent<Positionable>()->setPos(Vector2(300, 500));
 	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(300, 300)));
 	block->createComponent<Renderable>()->setGradient(Color::fromInt(0, 0, 0),
 													  Color::fromInt(0, 0, 0));
@@ -88,7 +88,7 @@ bool GameEngine::loadLevel(const char * file) {
 	// Enemy
 	Object *enemy = new Object();
 	enemy->createComponent<Positionable>()->setPos(Vector2(422, 400));
-	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(24, 24)));
+	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
 	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	enemy->createComponent<Movable>();
 	enemy->createComponent<Walkable>()->setAcceleration(Vector2(200, 0));

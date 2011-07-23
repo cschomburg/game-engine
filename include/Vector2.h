@@ -25,9 +25,10 @@ public:
 	bool operator!=(const Vector2 &vec);
 
 	float magnitude() const;
-	void normalize();
 	bool isZero() const;
 
+	void normalize();
+	Vector2 normalized() const;
 	Vector2 perpendicular() const;
 
 public:

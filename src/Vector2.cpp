@@ -69,6 +69,10 @@ float Vector2::magnitude() const {
 	return sqrtf(x*x + y*y);
 }
 
+bool Vector2::isZero() const {
+	return x == 0 && y == 0;
+}
+
 void Vector2::normalize() {
 	if (x == 0 && y == 0)
 		return;
@@ -78,8 +82,10 @@ void Vector2::normalize() {
 	y /= mag;
 }
 
-bool Vector2::isZero() const {
-	return x == 0 && y == 0;
+Vector2 Vector2::normalized() const {
+	Vector2 vec = *this;
+	vec.normalize();
+	return vec;
 }
 
 Vector2 Vector2::perpendicular() const {
