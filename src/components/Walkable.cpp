@@ -22,6 +22,5 @@ void Walkable::onUpdate() {
 	if (!movable)
 		return;
 
-	movable->modifyAcceleration((m_direction-m_lastDirection) * m_acceleration);
-	m_lastDirection = m_direction;
+	movable->setControlAcceleration(m_direction * m_acceleration);
 }

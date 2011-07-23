@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "components/Positionable.h"
+#include "components/Movable.h"
 
 const ComponentType Positionable::componentType = "Positionable";
 
@@ -18,7 +19,13 @@ void Positionable::setPos(const Vector2 &pos) {
 
 	Vector2 collVec;
 	if (Application::instance()->engine()->checkCollision(object(), &collVec)) {
-		m_pos = oldPos;
+		m_pos += collVec;
+
+		Movable *movable = object()->component<Movable>();
+		if (movable) {
+			collVec.normalize();
+			movable->modifyVelocity((collVec * -1) * (movable->velocity().dot(collVec)));
+		}
 	}
 }
 

@@ -53,13 +53,22 @@ bool GameEngine::loadLevel(const char * file) {
 	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
 	m_objects.push_back(tree);
 
+	// Block
+	Object *block = new Object();
+	block->createComponent<Positionable>()->setPos(Vector2(1000, 1000));
+	block->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(300, 300)));
+	block->createComponent<Renderable>()->setGradient(Color::fromInt(0, 0, 0),
+													  Color::fromInt(0, 0, 0));
+	block->createComponent<Collidable>();
+	m_objects.push_back(block);
+
 	// Enemy
 	Object *enemy = new Object();
 	enemy->createComponent<Positionable>()->setPos(Vector2(0, 0));
 	enemy->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(24, 24)));
 	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	enemy->createComponent<Movable>();
-	enemy->createComponent<Walkable>()->setAcceleration(Vector2(1500, 1500));
+	enemy->createComponent<Walkable>()->setAcceleration(Vector2(200, 200));
 	enemy->createComponent<Tracker>();
 	//enemy->createComponent<Collidable>();
 	m_objects.push_back(enemy);
@@ -74,9 +83,9 @@ bool GameEngine::onInit() {
 	m_player = new Object();
 
 	Object *enemy = m_objects.back();
-	enemy->component<Tracker>()->setTracked(m_player);
+	//enemy->component<Tracker>()->setTracked(m_player);
 
-	m_player->createComponent<Positionable>()->setPos(Vector2(572, 456));
+	m_player->createComponent<Positionable>()->setPos(Vector2(0, 0));
 	m_player->createComponent<Shape>()->setShape(Polygon::fromSize(Vector2(32, 32)));
 	m_player->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	m_player->createComponent<Movable>();

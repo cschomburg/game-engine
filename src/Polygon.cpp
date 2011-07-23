@@ -1,3 +1,5 @@
+#include <SDL/SDL_opengl.h>
+
 #include <algorithm>
 #include <limits>
 
@@ -25,6 +27,19 @@ Rect Polygon::boundingBox() const {
 	}
 
 	return Rect(xMin, yMin, xMax-xMin, yMax-yMin);
+}
+
+Vector2 Polygon::center() const {
+	if (points.size() == 0)
+		return Vector2();
+
+	float sX = 0;
+	float sY = 0;
+	for (std::vector<Vector2>::const_iterator i = points.begin(); i != points.end(); ++i) {
+		sX += i->x;
+		sY += i->y;
+	}
+	return Vector2(sX/points.size(), sY/points.size());
 }
 
 Polygon Polygon::fromSize(const Vector2 &size) {
@@ -77,8 +92,8 @@ bool Polygon::intersects(const Polygon &other, Vector2 *collVector) {
 		// Project object 1 onto axis
 		float min1 = std::numeric_limits<float>::max();
 		float max1 = -min1;
-		for (int i = 0; i < p1Size; i++) {
-			float dot = axis.dot(points[i]);
+		for (int j = 0; j < p1Size; j++) {
+			float dot = axis.dot(points[j]);
 			min1 = std::min(min1, dot);
 			max1 = std::max(max1, dot);
 		}
@@ -86,8 +101,8 @@ bool Polygon::intersects(const Polygon &other, Vector2 *collVector) {
 		// Project object 2 onto axis
 		float min2 = std::numeric_limits<float>::max();
 		float max2 = -min2;
-		for (int i = 0; i < p2Size; i++) {
-			float dot = axis.dot(other.points[i]);
+		for (int j = 0; j < p2Size; j++) {
+			float dot = axis.dot(other.points[j]);
 			min2 = std::min(min2, dot);
 			max2 = std::max(max2, dot);
 		}
@@ -114,6 +129,9 @@ bool Polygon::intersects(const Polygon &other, Vector2 *collVector) {
 
 	// Return collision vector
 	if (collVector) {
+		Vector2 dist = center() - other.center();
+		if (dist.dot(minAxis) < 0) // Orient vector outwards
+			minAxis *= -1;
 		*collVector = minAxis * minDistance;
 	}
 

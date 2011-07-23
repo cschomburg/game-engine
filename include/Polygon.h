@@ -15,6 +15,7 @@ public:
 	void translate(const Vector2 &pos);
 
 	Rect boundingBox() const;
+	Vector2 center() const;
 
 	bool intersects(const Polygon &other, Vector2 *collVector = 0);
 

@@ -18,6 +18,9 @@ public:
 	void setAcceleration(const Vector2 &acceleration);
 	void modifyAcceleration(const Vector2 &acceleration);
 
+	Vector2 controlAcceleration() const;
+	void setControlAcceleration(const Vector2 &acceleration);
+
 	void onUpdate();
 
 	static const ComponentType componentType;
@@ -26,6 +29,8 @@ private:
 	Uint32 m_lastTime;
 	Vector2 m_velocity;
 	Vector2 m_acceleration;
+	Vector2 m_direction;
+	Vector2 m_controlAcceleration;
 };
 
 #endif /* end of include guard: MOVABLE_H */

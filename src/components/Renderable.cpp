@@ -2,6 +2,7 @@
 #include <SDL/SDL_opengl.h>
 
 #include "Application.h"
+#include "components/Movable.h"
 #include "components/Positionable.h"
 #include "components/Renderable.h"
 #include "components/Shape.h"
@@ -54,4 +55,50 @@ void Renderable::onRender() {
 	if (m_texture) {
 		m_texture->draw(rect.x, rect.y, rect.w, rect.h);
 	}
+
+	// Debug shape 
+	glColor3f(0, 1, 0);
+	Polygon poly = shape->shape();
+	poly.translate(positionable->pos());
+	glBegin(GL_LINES);
+	for (int i = 0; i < poly.points.size(); i++) {
+		Vector2 axis = poly.points[i] - poly.points[(i+1) % poly.points.size()];
+
+		Vector2 start = poly.points[(i+1) % poly.points.size()];
+		Vector2 end = start + axis;
+
+		glVertex3f(start.x, start.y, 0.1f);
+		glVertex3f(end.x, end.y, 0.1f);
+	}
+	glEnd();
+
+	// Debug velocity and acceleration
+	Movable *movable = object()->component<Movable>();
+	if (movable) {
+		Vector2 pos = positionable->pos();
+		Vector2 vel = pos + movable->velocity()/5;
+		Vector2 acc = pos + movable->acceleration()/100;
+		glBegin(GL_LINES);
+		glColor3f(0, 0, 1);
+		glVertex3f(pos.x, pos.y, 0.1f);
+		glVertex3f(vel.x, vel.y, 0.1f);
+		glColor3f(1, 1, 0);
+		glVertex3f(pos.x, pos.y, 0.1f);
+		glVertex3f(acc.x, acc.y, 0.1f);
+		glEnd();
+	}
+
+	// Collision vector
+	Vector2 collVec;
+	if (Application::instance()->engine()->checkCollision(object(), &collVec)) {
+		Vector2 pos = positionable->pos();
+		collVec += pos;
+		glBegin(GL_LINES);
+		glColor3f(0, 1, 1);
+		glVertex3f(pos.x, pos.y, 0.1f);
+		glVertex3f(collVec.x, collVec.y, 0.1f);
+		glEnd();
+	}
+
+	glColor3f(1, 1, 1); // Reset
 }
