@@ -4,26 +4,27 @@
 #include <vector>
 
 #include "Component.h"
-#include "Polygon.h"
 #include "Rect.h"
 #include "Vector2.h"
+#include "Convex.h"
 
 class Rect;
+class Convex;
 
 class Shape : public Component {
 public:
 	Shape(Object *object);
 	virtual ~Shape();
 
-	Polygon shape() const;
-	void setShape(const Polygon &shape);
+	Convex shape() const;
+	void setShape(const Convex &shape);
 
 	Rect boundingBox() const;
 
 	static const ComponentType componentType;
 
 private:
-	Polygon m_shape;
+	Convex m_shape;
 	Rect m_boundingBox;
 };
 

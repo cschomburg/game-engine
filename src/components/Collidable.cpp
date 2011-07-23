@@ -3,7 +3,6 @@
 #include "components/Shape.h"
 #include "Object.h"
 #include "Rect.h"
-#include "Vector2.h"
 
 const ComponentType Collidable::componentType = "Collidable";
 
@@ -36,11 +35,19 @@ bool Collidable::collides(Object *other, Vector2 *collVector) {
 	if (!rect.intersects(otherRect))
 		return false;
 
-	// At last, polygon collision
-	Polygon poly = shape->shape();
-	Polygon otherPoly = otherShape->shape();
-	poly.translate(pos->pos());
-	otherPoly.translate(otherPos->pos());
+	// At last, convex convexgon collision
+	Convex convex = shape->shape();
+	Convex otherConvex = otherShape->shape();
+	convex.translate(pos->pos());
+	otherConvex.translate(otherPos->pos());
 
-	return poly.intersects(otherPoly, collVector);
+	return convex.intersects(otherConvex, collVector);
+}
+
+Vector2 Collidable::lastCollisionVector() const {
+	return m_lastCollVector;
+}
+
+void Collidable::setLastCollisionVector(const Vector2 &collVector) {
+	m_lastCollVector = collVector;
 }

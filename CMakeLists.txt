@@ -9,7 +9,7 @@ set (
 	src/Component.cpp
 	src/GameEngine.cpp
 	src/Object.cpp
-	src/Polygon.cpp
+	src/Convex.cpp
 	src/Rect.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp
@@ -29,6 +29,11 @@ set (
 	src/main.cpp
 )
 
+option (DEFINE_DEBUG "Build project with debugging code" OFF)
+if (DEFINE_DEBUG)
+	add_definitions( -DDEBUG_RENDERABLE )
+endif (DEFINE_DEBUG)
+
 Find_Package (SDL REQUIRED)
 Find_Package (SDL_image REQUIRED)
 Find_Package (OpenGL REQUIRED)
@@ -37,7 +42,7 @@ if (NOT SDL_FOUND)
 	message (FATAL_ERROR "SDL not found!")
 endif (NOT SDL_FOUND)
 
-set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 include_directories ( "include" )
 

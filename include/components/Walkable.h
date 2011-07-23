@@ -11,6 +11,7 @@ public:
 
 	void setDirection(const Vector2 &direction);
 	void setAcceleration(const Vector2 &acceleration);
+	void jump(const Vector2 &velocity);
 
 	void onUpdate();
 

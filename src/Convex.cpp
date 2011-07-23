@@ -3,14 +3,14 @@
 #include <algorithm>
 #include <limits>
 
-#include "Polygon.h"
+#include "Convex.h"
 #include "Rect.h"
 
-Polygon::Polygon() {}
+Convex::Convex() {}
 
-Polygon::~Polygon() {}
+Convex::~Convex() {}
 
-Rect Polygon::boundingBox() const {
+Rect Convex::boundingBox() const {
 	if (points.size() == 0)
 		return Rect();
 
@@ -29,7 +29,7 @@ Rect Polygon::boundingBox() const {
 	return Rect(xMin, yMin, xMax-xMin, yMax-yMin);
 }
 
-Vector2 Polygon::center() const {
+Vector2 Convex::center() const {
 	if (points.size() == 0)
 		return Vector2();
 
@@ -42,33 +42,33 @@ Vector2 Polygon::center() const {
 	return Vector2(sX/points.size(), sY/points.size());
 }
 
-Polygon Polygon::fromSize(const Vector2 &size) {
-	Polygon poly;
-	poly.points.reserve(4);
-	poly.points.push_back(Vector2(-size.x/2, -size.y/2));
-	poly.points.push_back(Vector2(size.x/2, -size.y/2));
-	poly.points.push_back(Vector2(size.x/2, size.y/2));
-	poly.points.push_back(Vector2(-size.x/2, size.y/2));
-	return poly;
+Convex Convex::fromSize(const Vector2 &size) {
+	Convex convex;
+	convex.points.reserve(4);
+	convex.points.push_back(Vector2(-size.x/2, -size.y/2));
+	convex.points.push_back(Vector2(size.x/2, -size.y/2));
+	convex.points.push_back(Vector2(size.x/2, size.y/2));
+	convex.points.push_back(Vector2(-size.x/2, size.y/2));
+	return convex;
 }
 
-Polygon Polygon::fromRect(const Rect &rect) {
-	Polygon poly;
-	poly.points.reserve(4);
-	poly.points.push_back(rect.bottomLeft());
-	poly.points.push_back(rect.bottomRight());
-	poly.points.push_back(rect.topRight());
-	poly.points.push_back(rect.topLeft());
-	return poly;
+Convex Convex::fromRect(const Rect &rect) {
+	Convex convex;
+	convex.points.reserve(4);
+	convex.points.push_back(rect.bottomLeft());
+	convex.points.push_back(rect.bottomRight());
+	convex.points.push_back(rect.topRight());
+	convex.points.push_back(rect.topLeft());
+	return convex;
 }
 
-void Polygon::translate(const Vector2 &pos) {
+void Convex::translate(const Vector2 &pos) {
 	for (std::vector<Vector2>::iterator i = points.begin(); i != points.end(); ++i) {
 		(*i) += pos;
 	}
 }
 
-bool Polygon::intersects(const Polygon &other, Vector2 *collVector) {
+bool Convex::intersects(const Convex &other, Vector2 *collVector) {
 	Vector2 minAxis;
 	float minDistance = std::numeric_limits<float>::max();
 
@@ -79,14 +79,14 @@ bool Polygon::intersects(const Polygon &other, Vector2 *collVector) {
 	for (int i = 0; i < p1Size+p2Size; i++) {
 
 		// Get the edge 
-		Vector2 axis;
+		Vector2 edge;
 		if (i < p1Size) { // Object 1
-			axis = points[i] - points[(i+1) % p1Size];
+			edge = points[i] - points[(i+1) % p1Size];
 		} else { // Object 2
 			int pI = i-p1Size;
-			axis = other.points[pI] - other.points[(pI+1) % p2Size];
+			edge = other.points[pI] - other.points[(pI+1) % p2Size];
 		}
-		axis.y = -axis.y; // Create axis perpendicular to edge
+		Vector2 axis = edge.perpendicular();
 		axis.normalize();
 
 		// Project object 1 onto axis

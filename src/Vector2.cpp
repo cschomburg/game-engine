@@ -82,6 +82,10 @@ bool Vector2::isZero() const {
 	return x == 0 && y == 0;
 }
 
+Vector2 Vector2::perpendicular() const {
+	return Vector2(-y, x);
+}
+
 std::ostream& operator<<(std::ostream &o, const Vector2 &a) {
 	return o << "[" << std::setprecision(2) << a.x << ", " << a.y << "]";
 }

@@ -28,6 +28,8 @@ public:
 	void normalize();
 	bool isZero() const;
 
+	Vector2 perpendicular() const;
+
 public:
 	float x;
 	float y;

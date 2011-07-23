@@ -1,3 +1,4 @@
+#include "components/Collidable.h"
 #include "components/Movable.h"
 #include "components/Walkable.h"
 
@@ -17,6 +18,20 @@ void Walkable::setAcceleration(const Vector2 &acceleration) {
 	m_acceleration = acceleration;
 }
 
+void Walkable::jump(const Vector2 &velocity) {
+	Collidable *collidable = object()->component<Collidable>();
+	Movable *movable = object()->component<Movable>();
+	if (!collidable || !movable)
+		return;
+/*
+	Vector2 collVec = collidable->lastCollisionVector();
+	if (collVec.isZero())
+		return;
+*/
+
+	movable->modifyVelocity(velocity);
+}
+
 void Walkable::onUpdate() {
 	Movable *movable = object()->component<Movable>();
 	if (!movable)
@@ -24,3 +39,4 @@ void Walkable::onUpdate() {
 
 	movable->setControlAcceleration(m_direction * m_acceleration);
 }
+

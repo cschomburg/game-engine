@@ -7,11 +7,11 @@ Shape::Shape(Object *object)
 
 Shape::~Shape() {}
 
-Polygon Shape::shape() const {
+Convex Shape::shape() const {
 	return m_shape;
 }
 
-void Shape::setShape(const Polygon &shape) {
+void Shape::setShape(const Convex &shape) {
 	m_shape = shape;
 	m_boundingBox = shape.boundingBox();
 }

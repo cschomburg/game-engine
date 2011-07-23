@@ -1,3 +1,4 @@
+#include "components/Collidable.h"
 #include "components/Movable.h"
 #include "components/Positionable.h"
 
@@ -51,13 +52,29 @@ void Movable::onUpdate() {
 	if (!positionable)
 		return;
 
-	Vector2 accel = m_acceleration; // + Application::instance()->engine()->level()->gravitation();
+	Vector2 accel = m_acceleration;
 	accel -= m_velocity * 2;
 	accel += m_controlAcceleration;
+	accel += Vector2(0, -1500); // Gravity
 	m_velocity += accel * elapsed;
 
 	if (m_velocity.magnitude() < 1)
 		return;
 
 	positionable->modifyPos(m_velocity * elapsed);
+
+	Collidable *collidable = object()->component<Collidable>();
+	if (!collidable)
+		return;
+
+	Vector2 collVec;
+	if (Application::instance()->engine()->checkCollision(object(), &collVec)) {
+		collidable->setLastCollisionVector(collVec);
+		positionable->modifyPos(collVec);
+
+		collVec.normalize();
+		m_velocity -= collVec * m_velocity.dot(collVec);
+	} else {
+		collidable->setLastCollisionVector(Vector2());
+	}
 }
