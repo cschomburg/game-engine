@@ -29,6 +29,8 @@ set (
 	src/main.cpp
 )
 
+file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 option (DEFINE_DEBUG "Build project with debugging code" OFF)
 if (DEFINE_DEBUG)
 	add_definitions( -DDEBUG_RENDERABLE )
@@ -37,13 +39,11 @@ endif (DEFINE_DEBUG)
 Find_Package (SDL REQUIRED)
 Find_Package (SDL_image REQUIRED)
 Find_Package (OpenGL REQUIRED)
-
-if (NOT SDL_FOUND)
-	message (FATAL_ERROR "SDL not found!")
-endif (NOT SDL_FOUND)
+find_package (Boost 1.36.0 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
+include_directories(${Boost_INCLUDE_DIRS})
 include_directories ( "include" )
 
 link_libraries (
