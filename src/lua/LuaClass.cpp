@@ -50,13 +50,21 @@ void *LuaClass::check(lua_State *L, int index) {
 	return instance;
 }
 
-void LuaClass::push(lua_State *L, void *instance) {
+int LuaClass::push(lua_State *L, void *instance) {
 	if (!instance) {
 		lua_pushnil(L);
-		return;
+		return 1;
 	}
 
-	lua_newtable(L); // Push new table
+	// Query registry for existing instance table
+	lua_pushlightuserdata(L, instance); // Push instance pointer
+	lua_rawget(L, LUA_REGISTRYINDEX); // Query registry for instance table
+	if (!lua_isnil(L, -1)) // Return existing table
+		return 1;
+	lua_pop(L, 1); // Pop nil
+
+	// Create new instance table ...
+	lua_newtable(L); // Push new table for instance
 
 	luaL_getmetatable(L, m_name.c_str()); // Push class metatable from registry
 	lua_setmetatable(L, -2); // setmetatable(table, metatable)
@@ -64,4 +72,12 @@ void LuaClass::push(lua_State *L, void *instance) {
 	lua_pushnumber(L, 0);
 	lua_pushlightuserdata(L, instance);
 	lua_rawset(L, -3); // table[0] = userdata
+
+	// ... and store in registry
+	lua_pushlightuserdata(L, instance); // Push instance pointer
+	lua_pushvalue(L, -2); // Dup instance table
+	lua_rawset(L, LUA_REGISTRYINDEX);
+
+	// Return instance table
+	return 1;
 }

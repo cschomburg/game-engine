@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "Application.h"
 #include "lua/LuaWrapper.h"
@@ -40,8 +41,8 @@ lua_State * LuaWrapper::state() const {
 	return L;
 }
 
-bool LuaWrapper::loadFile(const char * file) {
-	int status = luaL_loadfile(L, file);
+bool LuaWrapper::loadFile(const std::string &file) {
+	int status = luaL_loadfile(L, file.c_str());
 	if (status != 0) {
 		printError(status);
 		return false;
@@ -72,7 +73,7 @@ bool LuaWrapper::update() {
 	return true;
 }
 
-void LuaWrapper::printError(int status) {
+void LuaWrapper::printError(int status) const {
 	if (status != 0) {
 		std::cout << "Lua err: " << lua_tostring(L, -1) << std::endl;
 		lua_pop(L, 1);

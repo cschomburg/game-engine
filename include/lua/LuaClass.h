@@ -18,7 +18,7 @@ public:
 
 	void registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]);
 	void *check(lua_State *L, int index);
-	void push(lua_State *L, void *instance);
+	int push(lua_State *L, void *instance);
 
 private:
 	std::string m_name;

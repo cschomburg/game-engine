@@ -13,19 +13,26 @@ function OnUpdate(elapsed)
 	end
 end
 
-local found = {}
 function dump(o)
-	if type(o) == 'table' and not found[o] then
-		found[o] = true
-		local s = '{ '
-		for k,v in pairs(o) do
-			if type(k) ~= 'number' then k = '"'..k..'"' end
-			s = s .. '['..k..'] = ' .. dump(v) .. ','
+	local found = {}
+	local function dump_r(o)
+		if type(o) == 'table' and not found[o] then
+			found[o] = true
+			local s = '{ '
+			for k,v in pairs(o) do
+				if type(k) ~= 'number' then k = '"'..k..'"' end
+				s = s .. '['..k..'] = ' .. dump_r(v) .. ','
+			end
+			return s .. '} '
+		else
+			return tostring(o)
 		end
-		return s .. '} '
-	else
-		return tostring(o)
 	end
+	print(dump_r(o))
 end
 
-print(dump(player:component("Positionable"):type()))
+player.test = true
+
+dump(player)
+dump(player:component("Positionable"):object())
+dump(player == player:component("Positionable"):object())

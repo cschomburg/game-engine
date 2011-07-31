@@ -1,8 +1,6 @@
 #ifndef LUAWRAPPER_H
 #define LUAWRAPPER_H
 
-#include <map>
-
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -20,9 +18,9 @@ public:
 	void destroy();
 	lua_State * state() const;
 
-	bool loadFile(const char * file);
+	bool loadFile(const std::string &file);
 	bool update();
-	void printError(int status);
+	void printError(int status) const;
 
 	void push(LuaClass *luaClass, void *instance, const char *field);
 
