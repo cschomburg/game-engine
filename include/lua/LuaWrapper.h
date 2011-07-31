@@ -9,6 +9,8 @@ extern "C" {
 #include "lauxlib.h"
 }
 
+class LuaClass;
+
 class LuaWrapper {
 public:
 	LuaWrapper();
@@ -21,6 +23,8 @@ public:
 	bool loadFile(const char * file);
 	bool update();
 	void printError(int status);
+
+	void push(LuaClass *luaClass, void *instance, const char *field);
 
 private:
 	lua_State * L;

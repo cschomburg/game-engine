@@ -1,7 +1,7 @@
-cmake_minimum_required (VERSION 2.6)
-project (game)
+cmake_minimum_required(VERSION 2.6)
+project(game)
 
-set (
+set(
 	SOURCES
 	src/Application.cpp
 	src/BaseEngine.cpp
@@ -25,28 +25,30 @@ set (
 	src/components/Walkable.cpp
 
 	src/lua/LuaWrapper.cpp
+	src/lua/LuaClass.cpp
+	src/lua/LuaObject.cpp
 
 	src/main.cpp
 )
 
 file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-option (DEFINE_DEBUG "Build project with debugging code" OFF)
-if (DEFINE_DEBUG)
-	add_definitions( -DDEBUG_RENDERABLE )
-endif (DEFINE_DEBUG)
+option(DEFINE_DEBUG "Build project with debugging code" OFF)
+if(DEFINE_DEBUG)
+	add_definitions(-DDEBUG_RENDERABLE)
+endif(DEFINE_DEBUG)
 
-Find_Package (SDL REQUIRED)
-Find_Package (SDL_image REQUIRED)
-Find_Package (OpenGL REQUIRED)
-find_package (Boost 1.36.0 REQUIRED)
+Find_Package(SDL REQUIRED)
+Find_Package(SDL_image REQUIRED)
+Find_Package(OpenGL REQUIRED)
+find_package(Boost 1.36.0 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories ( "include" )
+include_directories( "include")
 
-link_libraries (
+link_libraries(
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
@@ -54,7 +56,7 @@ link_libraries (
 	lua
 )
 
-add_executable (
+add_executable(
 	game
 	WIN32
 	${SOURCES}

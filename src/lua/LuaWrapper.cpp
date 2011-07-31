@@ -2,6 +2,8 @@
 
 #include "Application.h"
 #include "lua/LuaWrapper.h"
+#include "lua/LuaClass.h"
+#include "lua/LuaObject.h"
 
 LuaWrapper::LuaWrapper() {
 	L = 0;
@@ -18,6 +20,9 @@ bool LuaWrapper::init() {
 
 	L = lua_open();
 	luaL_openlibs(L);
+
+	std::cout << luaObject.name() << std::endl;
+	LuaObject_classSetup(L);
 
 	m_lastTime = Application::instance()->time();
 	return true;
@@ -71,4 +76,14 @@ void LuaWrapper::printError(int status) {
 		std::cout << "Lua err: " << lua_tostring(L, -1) << std::endl;
 		lua_pop(L, 1);
 	}
+}
+
+void LuaWrapper::push(LuaClass *luaClass, void *instance, const char *field) {
+	luaClass->push(L, instance);
+
+	lua_pushstring(L, field);
+	lua_pushvalue(L, -2); // Dup table
+	lua_rawset(L, LUA_GLOBALSINDEX); // globals[field] = table
+
+	lua_pop(L, -1);
 }
