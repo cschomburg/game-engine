@@ -3,11 +3,23 @@
 
 Object::Object() {}
 
+Object::Object(const std::string &name) {
+	m_name = name;
+}
+
 Object::~Object() {
 	for (ComponentMap::iterator i = m_components.begin(); i != m_components.end(); ++i) {
 		delete i->second;
 	}
 	m_components.clear();
+}
+
+std::string Object::name() const {
+	return m_name;
+}
+
+void Object::setName(const std::string &name) {
+	m_name = name;
 }
 
 Component * Object::getComponent(ComponentType type) {

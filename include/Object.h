@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include <map>
+#include <string>
 
 #include "Component.h"
 #include "Vector2.h"
@@ -9,7 +10,11 @@
 class Object {
 public:
 	Object();
+	Object(const std::string &name);
 	virtual ~Object();
+
+	std::string name() const;
+	void setName(const std::string &name);
 
 	Component * getComponent(ComponentType type);
 	void addComponent(Component * component);
@@ -30,6 +35,7 @@ public:
 
 private:
 	ComponentMap m_components;
+	std::string m_name;
 };
 
 #endif /* end of include guard: OBJECT_H */

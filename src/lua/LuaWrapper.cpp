@@ -21,7 +21,6 @@ bool LuaWrapper::init() {
 	L = lua_open();
 	luaL_openlibs(L);
 
-	std::cout << luaObject.name() << std::endl;
 	LuaObject_classSetup(L);
 
 	m_lastTime = Application::instance()->time();

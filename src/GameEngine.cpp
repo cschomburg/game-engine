@@ -21,7 +21,7 @@ GameEngine::~GameEngine() {}
 bool GameEngine::loadLevel(const char * file) {
 
 	// Level
-	m_level = new Object();
+	m_level = new Object("Level");
 	m_level->createComponent<Positionable>()->setPos(Vector2(1000, 750));
 	m_level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(2000, 1500)));
 	m_level->createComponent<Renderable>()->setGradient(Color::fromInt(255, 89, 0),
@@ -29,7 +29,7 @@ bool GameEngine::loadLevel(const char * file) {
 	m_objects.push_back(m_level);
 
 	// Sun
-	Object *sun = new Object();
+	Object *sun = new Object("Sun");
 	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
 	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
@@ -39,7 +39,7 @@ bool GameEngine::loadLevel(const char * file) {
 	conv.points.push_back(Vector2(-100, 64));
 	conv.points.push_back(Vector2(200, 32));
 	conv.points.push_back(Vector2(50, -64));
-	Object *test = new Object();
+	Object *test = new Object("Conv");
 	test->createComponent<Positionable>()->setPos(Vector2(722, 327));
 	test->createComponent<Shape>()->setShape(conv);
 	test->createComponent<Collidable>();
@@ -51,7 +51,7 @@ bool GameEngine::loadLevel(const char * file) {
 	conv2.points.push_back(Vector2(-40, -40));
 	conv2.points.push_back(Vector2(0, 60));
 	conv2.points.push_back(Vector2(100, -128));
-	Object *test2 = new Object();
+	Object *test2 = new Object("Conv2");
 	test2->createComponent<Positionable>()->setPos(Vector2(722, 507));
 	test2->createComponent<Shape>()->setShape(conv2);
 	test2->createComponent<Collidable>();
@@ -64,7 +64,7 @@ bool GameEngine::loadLevel(const char * file) {
 	triangle.points.push_back(Vector2(0, -64));
 
 	// Main Island
-	Object *island = new Object();
+	Object *island = new Object("Island");
 	island->createComponent<Positionable>()->setPos(Vector2(512, 327));
 	island->createComponent<Shape>()->setShape(triangle);
 	island->createComponent<Renderable>()->setTexture("res/images/island.png");
@@ -72,14 +72,14 @@ bool GameEngine::loadLevel(const char * file) {
 	m_objects.push_back(island);
 
 	// Tree
-	Object *tree = new Object();
+	Object *tree = new Object("Tree");
 	tree->createComponent<Positionable>()->setPos(Vector2(512, 445));
 	tree->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(100, 110)));
 	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
 	m_objects.push_back(tree);
 
 	// Block
-	Object *block = new Object();
+	Object *block = new Object("Block");
 	block->createComponent<Positionable>()->setPos(Vector2(300, 500));
 	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(300, 300)));
 	block->createComponent<Renderable>()->setGradient(Color::fromInt(0, 0, 0),
@@ -88,7 +88,7 @@ bool GameEngine::loadLevel(const char * file) {
 	m_objects.push_back(block);
 
 	// Enemy
-	Object *enemy = new Object();
+	Object *enemy = new Object("Enemy");
 	enemy->createComponent<Positionable>()->setPos(Vector2(422, 400));
 	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
 	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
@@ -105,7 +105,7 @@ bool GameEngine::onInit() {
 	if (!loadLevel("res/levels/level01.yaml"))
 		return false;
 
-	m_player = new Object();
+	m_player = new Object("Player");
 
 	Object *enemy = m_objects.back();
 	enemy->component<Tracker>()->setTracked(m_player);
@@ -118,7 +118,7 @@ bool GameEngine::onInit() {
 	m_player->createComponent<Collidable>();
 	m_objects.push_back(m_player);
 	
-	m_camera = new Object();
+	m_camera = new Object("Camera");
 	m_camera->createComponent<Positionable>();
 	m_camera->createComponent<Tracker>()->setTracked(m_player);
 	m_objects.push_back(m_camera);
