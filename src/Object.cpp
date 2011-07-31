@@ -22,7 +22,7 @@ void Object::setName(const std::string &name) {
 	m_name = name;
 }
 
-Component * Object::getComponent(ComponentType type) {
+Component * Object::component(ComponentType type) {
 	ComponentMap::iterator i = m_components.find(type);
 	if (i == m_components.end())
 		return 0;

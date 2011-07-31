@@ -16,13 +16,13 @@ public:
 	std::string name() const;
 	void setName(const std::string &name);
 
-	Component * getComponent(ComponentType type);
+	Component * component(ComponentType type);
 	void addComponent(Component * component);
 	void removeComponent(Component * component);
 	Component * removeComponent(ComponentType type);
 
 	template<class T> T * component() {
-		return static_cast<T *>(getComponent(T::componentType));
+		return static_cast<T *>(component(T::componentType));
 	}
 
 	template<class T> T * createComponent() {
