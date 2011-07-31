@@ -1,7 +1,9 @@
-#include "lua/LuaComponent.h"
 #include "lua/LuaObject.h"
-#include "Component.h"
 #include "Object.h"
+
+#include "components/all.h"
+#include "lua/LuaComponent.h"
+#include "lua/LuaPositionable.h"
 
 LuaClass luaObject("Object");
 
@@ -28,7 +30,11 @@ int LuaObject_component(lua_State *L) {
 	const char *type = luaL_checkstring(L, 2);
 	lua_pop(L, 2);
 
-	luaComponent.push(L, object->component(type));
+	LuaClass *luaClass = LuaClass::get(type);
+	if (!luaClass)
+		luaClass = &luaComponent;
+
+	luaClass->push(L, object->component(type));
 	return 1;
 }
 

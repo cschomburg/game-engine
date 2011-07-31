@@ -6,8 +6,6 @@
 #include "Convex.h"
 #include "Vector2.h"
 
-#include "lua/LuaObject.h"
-
 GameEngine::GameEngine() {
 	m_level = 0;
 	m_player = 0;
@@ -125,7 +123,7 @@ bool GameEngine::onInit() {
 
 	if (!m_lua->init())
 		return false;
-	m_lua->push(&luaObject, m_player, "player");
+	m_lua->push("Object", m_player, "player");
 	if (!m_lua->loadFile("res/lua/init.lua"))
 		return false;
 

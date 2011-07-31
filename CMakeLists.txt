@@ -28,6 +28,7 @@ set(
 	src/lua/LuaClass.cpp
 	src/lua/LuaComponent.cpp
 	src/lua/LuaObject.cpp
+	src/lua/LuaPositionable.cpp
 
 	src/main.cpp
 )

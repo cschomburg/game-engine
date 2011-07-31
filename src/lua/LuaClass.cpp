@@ -1,15 +1,42 @@
 #include <iostream>
 #include "lua/LuaClass.h"
 
+std::map<std::string, LuaClass *> LuaClass::m_classes;
 
-LuaClass::LuaClass(const std::string &name) {
+LuaClass::LuaClass(const std::string &name, LuaClass *parent) {
 	m_name = name;
+	m_parent = parent;
 }
 
 LuaClass::~LuaClass() {}
 
 std::string LuaClass::name() const {
 	return m_name;
+}
+
+LuaClass *LuaClass::parent() const {
+	return m_parent;
+}
+
+bool LuaClass::isDescendant(lua_State *L, int index) {
+	if (!lua_istable(L, index))
+		return false;
+
+	luaL_getmetatable(L, m_name.c_str()); // Fetch class metatable
+	lua_pushvalue(L, index); // Dup instance table
+	while (lua_getmetatable(L, -1)) { // getmetatable(table)
+		lua_remove(L, -2); // Remove table
+		if (lua_rawequal(L, -1, -2)) { // metatable == class metatable?
+			lua_pop(L, 2); // Pop metatable and class metatable 
+			return true;
+		}
+		lua_pushliteral(L, "__index");
+		lua_rawget(L, -2); // metatable['__index'] => table
+		lua_remove(L, -2); // Remove metatable
+	}
+
+	lua_pop(L, 2); // Pop last table and metatable
+	return false;
 }
 
 void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]) {
@@ -27,20 +54,22 @@ void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_
 	lua_pushvalue(L, -3); // Dup methods table
 	lua_rawset(L, -3); // metatable.__index = methods
 
-	lua_pop(L, 2); // Drop metatable and methods
+	lua_pop(L, 1); // Drop metatable
+
+	if (m_parent) { // Inherit methods from parent table
+		luaL_getmetatable(L, m_parent->name().c_str()); // Get parent metatable from registry
+		lua_setmetatable(L, -2); // setmetatable(methods, parents_metatable)
+	}
+
+	lua_pop(L, 1); // Drop methods table
+	m_classes[m_name] = this;
 }
 
 void *LuaClass::check(lua_State *L, int index) {
-	const char *name = m_name.c_str();
-	luaL_getmetatable(L, name); // Push class metatable from registry
-	if (!lua_istable(L, index)
-		|| !lua_getmetatable(L, index)
-		|| !lua_rawequal(L, -1, -2))
-	{
-		luaL_typerror(L, index, name);
+	if (!isDescendant(L, index)) {
+		luaL_typerror(L, index, m_name.c_str());
 		return 0;
 	}
-	lua_pop(L, 2); // Pop metatables
 
 	lua_pushnumber(L, 0);
 	lua_rawget(L, index); // Fetch userdata of object-table
@@ -80,4 +109,8 @@ int LuaClass::push(lua_State *L, void *instance) {
 
 	// Return instance table
 	return 1;
+}
+
+LuaClass *LuaClass::get(const std::string &name) {
+	return m_classes.find(name)->second;
 }

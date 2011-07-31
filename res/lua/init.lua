@@ -10,17 +10,18 @@ function OnUpdate(elapsed)
 		print(frameCount)
 		lastUpdate = 0
 		frameCount = 0
+		--player:component("Positionable"):modifyPos(0, 100)
 	end
 end
 
-function dump(o)
+function dump(...)
 	local found = {}
 	local function dump_r(o)
 		if type(o) == 'table' and not found[o] then
 			found[o] = true
 			local s = '{ '
 			for k,v in pairs(o) do
-				if type(k) ~= 'number' then k = '"'..k..'"' end
+				if type(k) ~= 'number' then k = '"'..tostring(k)..'"' end
 				s = s .. '['..k..'] = ' .. dump_r(v) .. ','
 			end
 			return s .. '} '
@@ -28,11 +29,12 @@ function dump(o)
 			return tostring(o)
 		end
 	end
-	print(dump_r(o))
+
+	local str = ""
+	for i=1, select('#', ...) do
+		if str ~= "" then str = str .. ", " end
+		str = str .. dump_r(select(i, ...))
+	end
+	print(str)
 end
 
-player.test = true
-
-dump(player)
-dump(player:component("Positionable"):object())
-dump(player == player:component("Positionable"):object())

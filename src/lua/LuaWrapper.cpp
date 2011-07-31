@@ -1,11 +1,19 @@
 #include <iostream>
 #include <string>
 
+
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 #include "Application.h"
 #include "lua/LuaWrapper.h"
 #include "lua/LuaClass.h"
 #include "lua/LuaComponent.h"
 #include "lua/LuaObject.h"
+#include "lua/LuaPositionable.h"
 
 LuaWrapper::LuaWrapper() {
 	L = 0;
@@ -25,6 +33,7 @@ bool LuaWrapper::init() {
 
 	LuaComponent_classSetup(L);
 	LuaObject_classSetup(L);
+	LuaPositionable_classSetup(L);
 
 	m_lastTime = Application::instance()->time();
 	return true;
@@ -37,7 +46,7 @@ void LuaWrapper::destroy() {
 	}
 }
 
-lua_State * LuaWrapper::state() const {
+lua_State *LuaWrapper::state() const {
 	return L;
 }
 
@@ -80,7 +89,10 @@ void LuaWrapper::printError(int status) const {
 	}
 }
 
-void LuaWrapper::push(LuaClass *luaClass, void *instance, const char *field) {
+void LuaWrapper::push(const std::string &className, void *instance, const char *field) {
+	LuaClass *luaClass = LuaClass::get(className);
+	if (!luaClass)
+		return;
 	luaClass->push(L, instance);
 
 	lua_pushstring(L, field);
