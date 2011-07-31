@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "lua/LuaWrapper.h"
 #include "lua/LuaClass.h"
+#include "lua/LuaComponent.h"
 #include "lua/LuaObject.h"
 
 LuaWrapper::LuaWrapper() {
@@ -21,6 +22,7 @@ bool LuaWrapper::init() {
 	L = lua_open();
 	luaL_openlibs(L);
 
+	LuaComponent_classSetup(L);
 	LuaObject_classSetup(L);
 
 	m_lastTime = Application::instance()->time();

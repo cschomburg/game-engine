@@ -1,4 +1,6 @@
+#include "lua/LuaComponent.h"
 #include "lua/LuaObject.h"
+#include "Component.h"
 #include "Object.h"
 
 LuaClass luaObject("Object");
@@ -21,10 +23,20 @@ int LuaObject_setName(lua_State *L) {
 	return 1;
 }
 
+int LuaObject_component(lua_State *L) {
+	Object *object = static_cast<Object *>(luaObject.check(L, 1));
+	const char *type = luaL_checkstring(L, 2);
+	lua_pop(L, 2);
+
+	luaComponent.push(L, object->component(type));
+	return 1;
+}
+
 void LuaObject_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "name", LuaObject_name },
 		{ "setName", LuaObject_setName },
+		{ "component", LuaObject_component },
 		{ 0, 0 },
 	};
 

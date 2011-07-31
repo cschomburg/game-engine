@@ -28,4 +28,4 @@ function dump(o)
 	end
 end
 
-print(player:name())
+print(dump(player:component("Positionable"):type()))

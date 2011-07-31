@@ -51,6 +51,11 @@ void *LuaClass::check(lua_State *L, int index) {
 }
 
 void LuaClass::push(lua_State *L, void *instance) {
+	if (!instance) {
+		lua_pushnil(L);
+		return;
+	}
+
 	lua_newtable(L); // Push new table
 
 	luaL_getmetatable(L, m_name.c_str()); // Push class metatable from registry

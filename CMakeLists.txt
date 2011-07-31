@@ -26,6 +26,7 @@ set(
 
 	src/lua/LuaWrapper.cpp
 	src/lua/LuaClass.cpp
+	src/lua/LuaComponent.cpp
 	src/lua/LuaObject.cpp
 
 	src/main.cpp
