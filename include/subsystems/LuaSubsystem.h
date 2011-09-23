@@ -1,26 +1,29 @@
-#ifndef LUAWRAPPER_H
-#define LUAWRAPPER_H
+#ifndef LUASUBSYSTEM_H
+#define LUASUBSYSTEM_H
+
+#include "Subsystem.h"
 
 class lua_State;
 
-class LuaWrapper {
+class LuaSubsystem : public Subsystem {
 public:
-	LuaWrapper();
-	virtual ~LuaWrapper();
+	LuaSubsystem(GameEngine *engine);
+	virtual ~LuaSubsystem();
 
 	bool init();
+	void update();
 	void destroy();
+
 	lua_State *state() const;
 
 	bool loadFile(const std::string &file);
-	bool update();
 	void printError(int status) const;
 
 	void push(const std::string &className, void *instance, const char *field);
 
 private:
 	lua_State *L;
-	Uint32 m_lastTime;
+	int m_lastTime;
 };
 
-#endif /* end of include guard: LUAWRAPPER_H */
+#endif /* end of include guard: LUASUBSYSTEM_H*/

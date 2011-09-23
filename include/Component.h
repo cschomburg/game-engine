@@ -17,8 +17,6 @@ public:
 	ComponentType type() const;
 	Object * object() const;
 
-	virtual void onUpdate();
-
 private:
 	ComponentType m_type;
 	Object *m_object;

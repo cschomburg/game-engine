@@ -15,7 +15,7 @@ public:
 	void setGradient(const Color &colorA, const Color &colorB);
 	void setTexture(const std::string &texturePath);
 
-	void onRender();
+	void render();
 
 	static const ComponentType componentType;
 

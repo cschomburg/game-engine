@@ -30,50 +30,36 @@ void Application::quit() {
 }
 
 bool Application::execute() {
-	if (!onInit())
-		return -1;
+	if (!init())
+		return false;
 
-	m_running = true;
-	SDL_Event event;
-
-	while (m_running) {
-		while (SDL_PollEvent(&event)) {
-			m_engine->onEvent(&event);
-		}
-
-		m_engine->onUpdate();
-		m_engine->onRender();
-		SDL_GL_SwapBuffers();
-		SDL_Delay(0);
+	m_engine = new GameEngine();
+	if (!m_engine->init()) {
+		std::cout << "Could not initialize game engine!" << std::endl;
+		return false;
 	}
 
-	m_engine->onCleanup();
+	m_running = true;
+	while (m_running) {
+		m_engine->update();
+	}
 
-	return 0;
+	m_engine->destroy();
+	delete m_engine;
+	m_engine = 0;
+
+	destroy();
+
+	return true;
 }
 
-bool Application::onInit() {
+bool Application::init() {
 
 	// load configuration
 	
 	int width = 1024;
 	int height = 576;
 	bool windowed = true;
-
-	/*
-	try {
-		std::ifstream fin("properties/config.yaml");
-		YAML::Parser parser(fin);
-		YAML::Node config;
-		parser.GetNextDocument(config);
-
-		config["screen"]["width"] >> width;
-		config["screen"]["height"] >> height;
-		config["screen"]["windowed"] >> windowed;
-	} catch (YAML::Exception &e) {
-		std::cout << "Could not load configuration file!" << "\n" << e.what() << "\n";
-		return false;
-	}*/
 
 	// initialize SDL
 
@@ -95,39 +81,12 @@ bool Application::onInit() {
 	m_displayWidth = width;
 	m_displayHeight = height;
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-float(width) / 2, float(width)/2, -float(height)/2, float(height)/2, -1.0f, 1.0f);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthMask(GL_TRUE);
-
 	//SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
-
-	// Initialize game
-	m_engine = new GameEngine();
-	if(!m_engine->onInit()) {
-		std::cout << "Could not initialize game engine!" << std::endl;
-		return false;
-	}
 
 	return true;
 }
 
-void Application::onCleanup() {
-	if (m_engine) {
-		m_engine->onCleanup();
-		delete m_engine;
-		m_engine = 0;
-	}
+void Application::destroy() {
 	SDL_FreeSurface(m_display);
 	m_display = 0;
 }

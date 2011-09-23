@@ -15,17 +15,18 @@ public:
 	void quit();
 	bool execute();
 
-	bool onInit();
-	void onCleanup();
-
 	int time() const;
 
 	bool windowed() const;
 	int displayWidth() const;
 	int displayHeight() const;
 
-	GameEngine * engine() const;
+	GameEngine *engine() const;
 	ResourceManager * manager() const;
+
+private:
+	bool init();
+	void destroy();
 
 private:
 	bool m_running;
@@ -35,9 +36,9 @@ private:
 	int m_displayWidth;
 	int m_displayHeight;
 
-	GameEngine * m_engine;
-	ResourceManager * m_manager;
-	SDL_Surface * m_display;
+	GameEngine *m_engine;
+	ResourceManager *m_manager;
+	SDL_Surface *m_display;
 };
 
 static Application * App = 0;

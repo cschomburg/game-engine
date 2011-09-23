@@ -7,8 +7,10 @@
 #include "components/Positionable.h"
 #include "components/Renderable.h"
 #include "components/Shape.h"
+#include "Object.h"
 #include "Rect.h"
 #include "Texture.h"
+#include "subsystems/GraphicsSubsystem.h"
 
 const ComponentType Renderable::componentType = "Renderable";
 
@@ -16,11 +18,13 @@ Renderable::Renderable(Object *object)
 	: Component(componentType, object) {
 	m_color = Color(1, 1, 1, 1);
 	m_texture = 0;
+	object->engine()->graphics()->registerComponent(this);
 }
 
 Renderable::~Renderable() {
 	if (m_texture)
 		m_texture->free();
+	object()->engine()->graphics()->unregisterComponent(this);
 }
 
 void Renderable::setColor(const Color &color) {
@@ -37,7 +41,7 @@ void Renderable::setTexture(const std::string &texturePath) {
 	m_texture->init();
 }
 
-void Renderable::onRender() {
+void Renderable::render() {
 	Positionable *positionable = object()->component<Positionable>();
 	Shape *shape = object()->component<Shape>();
 	if (!positionable || !shape)

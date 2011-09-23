@@ -1,28 +1,23 @@
-#include <SDL/SDL_opengl.h>
+#include "Application.h"
+#include "Object.h"
+#include "components/Walkable.h"
+#include "subsystems/InputSubsystem.h"
 
-#include "BaseEngine.h"
-
-BaseEngine::BaseEngine() {
-	m_running = false;
-	m_fps = 0;
+InputSubsystem::InputSubsystem(GameEngine *engine)
+	: Subsystem(engine) {
+	m_player = 0;
 }
 
-BaseEngine::~BaseEngine() {}
+InputSubsystem::~InputSubsystem() {}
 
-bool BaseEngine::onInit() {
-	return true;
+void InputSubsystem::update() {
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		onEvent(&event);
+	}
 }
 
-void BaseEngine::onUpdate() {}
-
-void BaseEngine::onRender() {
-	glLoadIdentity();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void BaseEngine::onCleanup() {}
-
-void BaseEngine::onEvent(SDL_Event * event) {
+void InputSubsystem::onEvent(SDL_Event *event) {
 	switch(event->type) {
 	case SDL_ACTIVEEVENT: {
 		switch(event->active.state) {
@@ -149,34 +144,66 @@ void BaseEngine::onEvent(SDL_Event * event) {
 	}
 }
 
-void BaseEngine::onInputFocus() {}
-void BaseEngine::onInputBlur() {}
+void InputSubsystem::setPlayer(Object *object) {
+	m_player = object;
+}
 
-void BaseEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {}
-void BaseEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {}
+void InputSubsystem::updatePlayerDirection() {
+	if (!m_player)
+		return;
 
-void BaseEngine::onMouseFocus() {}
-void BaseEngine::onMouseBlur() {}
-void BaseEngine::onMouseMove(int mX, int mY, int relX, int relY, bool left, bool right, bool middle) {}
-void BaseEngine::onMouseWheel(bool up, bool down) {}
+	Uint8 * keystate = SDL_GetKeyState(0);
+	float x = keystate[SDLK_RIGHT] - keystate[SDLK_LEFT];
+	m_player->component<Walkable>()->setDirection(Vector2(x, 0));
+}
 
-void BaseEngine::onLButtonDown(int mX, int mY) {}
-void BaseEngine::onLButtonUp(int mX, int mY) {}
-void BaseEngine::onRButtonDown(int mX, int mY) {}
-void BaseEngine::onRButtonUp(int mX, int mY) {}
-void BaseEngine::onMButtonDown(int mX, int mY) {}
-void BaseEngine::onMButtonUp(int mX, int mY) {}
+void InputSubsystem::onInputFocus() {}
+void InputSubsystem::onInputBlur() {}
 
-void BaseEngine::onJoyAxis(Uint8 which, Uint8 axis, Sint16 value) {}
-void BaseEngine::onJoyButtonDown(Uint8 which, Uint8 button) {}
-void BaseEngine::onJoyButtonUp(Uint8 which, Uint8 button) {}
-void BaseEngine::onJoyHat(Uint8 which, Uint8 hat, Uint8 value) {}
-void BaseEngine::onJoyBall(Uint8 which, Uint8 ball, Sint16 xrel, Sint16 yrel) {}
+void InputSubsystem::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
+	if (sym == SDLK_UP && m_player) {
+		Walkable *walkable = m_player->component<Walkable>();
+		if (walkable)
+			walkable->jump(Vector2(0, 1500));
+	}
 
-void BaseEngine::onMinimize() {}
-void BaseEngine::onRestore() {}
-void BaseEngine::onResize(int w, int h) {}
-void BaseEngine::onExpose() {}
+	if (sym == SDLK_LEFT || sym == SDLK_RIGHT) {
+		updatePlayerDirection();
+	}
+}
+void InputSubsystem::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
 
-void BaseEngine::onExit() {}
-void BaseEngine::onUser(Uint8 type, int code, void * data1, void * data2) {}
+	if (sym == SDLK_LEFT || sym == SDLK_RIGHT) {
+		updatePlayerDirection();
+	}
+}
+
+void InputSubsystem::onMouseFocus() {}
+void InputSubsystem::onMouseBlur() {}
+void InputSubsystem::onMouseMove(int mX, int mY, int relX, int relY, bool left, bool right, bool middle) {}
+void InputSubsystem::onMouseWheel(bool up, bool down) {}
+
+void InputSubsystem::onLButtonDown(int mX, int mY) {}
+void InputSubsystem::onLButtonUp(int mX, int mY) {}
+void InputSubsystem::onRButtonDown(int mX, int mY) {}
+void InputSubsystem::onRButtonUp(int mX, int mY) {}
+void InputSubsystem::onMButtonDown(int mX, int mY) {}
+void InputSubsystem::onMButtonUp(int mX, int mY) {}
+
+void InputSubsystem::onJoyAxis(Uint8 which, Uint8 axis, Sint16 value) {}
+void InputSubsystem::onJoyButtonDown(Uint8 which, Uint8 button) {}
+void InputSubsystem::onJoyButtonUp(Uint8 which, Uint8 button) {}
+void InputSubsystem::onJoyHat(Uint8 which, Uint8 hat, Uint8 value) {}
+void InputSubsystem::onJoyBall(Uint8 which, Uint8 ball, Sint16 xrel, Sint16 yrel) {}
+
+void InputSubsystem::onMinimize() {}
+void InputSubsystem::onRestore() {}
+void InputSubsystem::onResize(int w, int h) {}
+void InputSubsystem::onExpose() {}
+
+void InputSubsystem::onExit() {
+	Application::instance()->quit();
+}
+
+void InputSubsystem::onUser(Uint8 type, int code, void * data1, void * data2) {}
+

@@ -7,12 +7,15 @@
 #include "Component.h"
 #include "Vector2.h"
 
+class GameEngine;
+
 class Object {
 public:
-	Object();
-	Object(const std::string &name);
+	Object(GameEngine *engine);
+	Object(GameEngine *engine, const std::string &name);
 	virtual ~Object();
 
+	GameEngine * engine() const;
 	std::string name() const;
 	void setName(const std::string &name);
 
@@ -35,6 +38,7 @@ public:
 
 private:
 	ComponentMap m_components;
+	GameEngine *m_engine;
 	std::string m_name;
 };
 

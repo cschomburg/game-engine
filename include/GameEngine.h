@@ -1,39 +1,44 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+#include <string>
 #include <vector>
 
-#include "BaseEngine.h"
-#include "Object.h"
-#include "lua/LuaWrapper.h"
+#include "Subsystem.h"
 
-class Vector2;
+class Object;
+class PhysicsSubsystem;
+class GraphicsSubsystem;
+class LuaSubsystem;
+class InputSubsystem;
+class LogicSubsystem;
 
-class GameEngine : public BaseEngine {
+class GameEngine {
 public:
 	GameEngine();
 	virtual ~GameEngine();
 
-	bool loadLevel(const char * file);
+	bool init();
+	void update();
+	void destroy();
 
-	bool onInit();
-	void onUpdate();
-	void onRender();
-	void onExit();
-	void onCleanup();
+	bool loadLevel(std::string file);
+	Object * level() const;
 
-	bool checkCollision(Object *object, Vector2 *collVectorTotal);
-
-protected:
-
-	void onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
-	void onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
+	PhysicsSubsystem * physics() const;
+	GraphicsSubsystem * graphics() const;
+	LuaSubsystem * lua() const;
+	InputSubsystem * input() const;
+	LogicSubsystem * logic() const;
 
 private:
-	LuaWrapper * m_lua;
-	Object * m_level;
-	Object * m_player;
-	Object * m_camera;
+	PhysicsSubsystem *m_physics;
+	GraphicsSubsystem *m_graphics;
+	LuaSubsystem *m_lua;
+	InputSubsystem *m_input;
+	LogicSubsystem *m_logic;
+
+	Object *m_level;
 	std::vector<Object *> m_objects;
 };
 

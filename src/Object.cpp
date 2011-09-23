@@ -1,9 +1,13 @@
 #include "Application.h"
+#include "GameEngine.h"
 #include "Object.h"
 
-Object::Object() {}
+Object::Object(GameEngine *engine) {
+	m_engine = engine;
+}
 
-Object::Object(const std::string &name) {
+Object::Object(GameEngine *engine, const std::string &name) {
+	m_engine = engine;
 	m_name = name;
 }
 
@@ -12,6 +16,10 @@ Object::~Object() {
 		delete i->second;
 	}
 	m_components.clear();
+}
+
+GameEngine * Object::engine() const {
+	return m_engine;
 }
 
 std::string Object::name() const {
@@ -46,10 +54,4 @@ Component * Object::removeComponent(ComponentType type) {
 		return 0;
 	m_components.erase(i);
 	return i->second;
-}
-
-void Object::onUpdate() {
-	for (ComponentMap::iterator i = m_components.begin(); i != m_components.end(); ++i) {
-		i->second->onUpdate();
-	}
 }

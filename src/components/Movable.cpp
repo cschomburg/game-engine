@@ -1,15 +1,45 @@
+#include <iostream>
+#include "Application.h"
 #include "components/Collidable.h"
 #include "components/Movable.h"
 #include "components/Positionable.h"
+#include "Object.h"
+#include "subsystems/PhysicsSubsystem.h"
 
 const ComponentType Movable::componentType = "Movable";
 
 Movable::Movable(Object *object)
 	: Component(componentType, object) {
 	m_lastTime = Application::instance()->time();
+	object->engine()->physics()->registerComponent(this);
 }
 
-Movable::~Movable() {}
+Movable::~Movable() {
+	object()->engine()->physics()->unregisterComponent(this);
+}
+
+bool Movable::update() {
+	int time = Application::instance()->time();
+	float elapsed = float(time - m_lastTime) / 1000.0f;
+	m_lastTime = time;
+
+	Positionable *positionable = object()->component<Positionable>();
+	if (!positionable)
+		return false;
+
+	Vector2 accel = m_acceleration;
+	accel -= m_velocity * 2;
+	accel += m_controlAcceleration;
+	accel += Vector2(0, -1500); // Gravity, TODO: To Physics engine
+	m_velocity += accel * elapsed;
+
+	Vector2 relPos = m_velocity * elapsed;
+	if (relPos.magnitude() < 0.001) // Ignore very small movements
+		return false;
+
+	positionable->modifyPos(relPos);
+	return true;
+}
 
 Vector2 Movable::velocity() const {
 	return m_velocity;
@@ -41,41 +71,4 @@ Vector2 Movable::controlAcceleration() const {
 
 void Movable::setControlAcceleration(const Vector2 &acceleration) {
 	m_controlAcceleration = acceleration;
-}
-
-void Movable::onUpdate() {
-	Uint32 time = Application::instance()->time();
-	float elapsed = float(time - m_lastTime) / 1000;
-	m_lastTime = time;
-
-	Positionable *positionable = object()->component<Positionable>();
-	if (!positionable)
-		return;
-
-	Vector2 accel = m_acceleration;
-	accel -= m_velocity * 2;
-	accel += m_controlAcceleration;
-	accel += Vector2(0, -1500); // Gravity
-	m_velocity += accel * elapsed;
-
-	Vector2 relPos = m_velocity * elapsed;
-	if (relPos.magnitude() < 0.001)
-		return;
-
-	positionable->modifyPos(relPos);
-
-	Collidable *collidable = object()->component<Collidable>();
-	if (!collidable)
-		return;
-
-	Vector2 collVec;
-	if (Application::instance()->engine()->checkCollision(object(), &collVec)) {
-		collidable->setLastCollisionVector(collVec);
-		positionable->modifyPos(collVec);
-
-		collVec.normalize();
-		m_velocity -= collVec * m_velocity.dot(collVec);
-	} else {
-		collidable->setLastCollisionVector(Vector2());
-	}
 }

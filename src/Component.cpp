@@ -16,8 +16,6 @@ Object * Component::object() const {
 	return m_object;
 }
 
-void Component::onUpdate() {}
-
 std::ostream& operator<<(std::ostream &o, const Component *a) {
 	return o << a->type();
 }

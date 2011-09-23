@@ -1,10 +1,10 @@
 #ifndef WALKABLE_H
 #define WALKABLE_H
 
-#include "Component.h"
+#include "components/Updatable.h"
 #include "Vector2.h"
 
-class Walkable : public Component {
+class Walkable : public Updatable {
 public:
 	Walkable(Object *object);
 	virtual ~Walkable();
@@ -13,7 +13,7 @@ public:
 	void setAcceleration(const Vector2 &acceleration);
 	void jump(const Vector2 &velocity);
 
-	void onUpdate();
+	void update();
 
 	static const ComponentType componentType;
 

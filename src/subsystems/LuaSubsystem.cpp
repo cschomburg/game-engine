@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -9,22 +8,21 @@ extern "C" {
 }
 
 #include "Application.h"
-#include "lua/LuaWrapper.h"
+#include "subsystems/LuaSubsystem.h"
 #include "lua/LuaClass.h"
 #include "lua/LuaComponent.h"
 #include "lua/LuaObject.h"
 #include "lua/LuaPositionable.h"
 
-LuaWrapper::LuaWrapper() {
+LuaSubsystem::LuaSubsystem(GameEngine *engine)
+	: Subsystem(engine) {
 	L = 0;
 	m_lastTime = 0;
 }
 
-LuaWrapper::~LuaWrapper() {
-	destroy();
-}
+LuaSubsystem::~LuaSubsystem() {}
 
-bool LuaWrapper::init() {
+bool LuaSubsystem::init() {
 	if (L)
 		return true;
 
@@ -39,18 +37,31 @@ bool LuaWrapper::init() {
 	return true;
 }
 
-void LuaWrapper::destroy() {
+void LuaSubsystem::destroy() {
 	if (L) {
 		lua_close(L);
 		L = 0;
 	}
 }
 
-lua_State *LuaWrapper::state() const {
+void LuaSubsystem::update() {
+	int time = Application::instance()->time();
+	float elapsed = float(time - m_lastTime) / 1000;
+	m_lastTime = time;
+
+	lua_getfield(L, LUA_GLOBALSINDEX, "OnUpdate");
+	lua_pushnumber(L, elapsed);
+	int status = lua_pcall(L, 1, 0, 0);
+	if (status != 0) {
+		printError(status);
+	}
+}
+
+lua_State *LuaSubsystem::state() const {
 	return L;
 }
 
-bool LuaWrapper::loadFile(const std::string &file) {
+bool LuaSubsystem::loadFile(const std::string &file) {
 	int status = luaL_loadfile(L, file.c_str());
 	if (status != 0) {
 		printError(status);
@@ -66,30 +77,14 @@ bool LuaWrapper::loadFile(const std::string &file) {
 	return true;
 }
 
-bool LuaWrapper::update() {
-	Uint32 time = Application::instance()->time();
-	float elapsed = float(time - m_lastTime) / 1000;
-	m_lastTime = time;
-
-	lua_getfield(L, LUA_GLOBALSINDEX, "OnUpdate");
-	lua_pushnumber(L, elapsed);
-	int status = lua_pcall(L, 1, 0, 0);
-	if (status != 0) {
-		printError(status);
-		return false;
-	}
-
-	return true;
-}
-
-void LuaWrapper::printError(int status) const {
+void LuaSubsystem::printError(int status) const {
 	if (status != 0) {
 		std::cout << "Lua err: " << lua_tostring(L, -1) << std::endl;
 		lua_pop(L, 1);
 	}
 }
 
-void LuaWrapper::push(const std::string &className, void *instance, const char *field) {
+void LuaSubsystem::push(const std::string &className, void *instance, const char *field) {
 	LuaClass *luaClass = LuaClass::get(className);
 	if (!luaClass)
 		return;

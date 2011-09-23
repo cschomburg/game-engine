@@ -2,21 +2,26 @@
 #include "components/Tracker.h"
 #include "components/Walkable.h"
 #include "Object.h"
+#include "GameEngine.h"
+#include "subsystems/LogicSubsystem.h"
 
 const ComponentType Tracker::componentType = "Tracker";
 
 Tracker::Tracker(Object *object)
-	: Component(componentType, object) {
+	: Updatable(componentType, object) {
 	m_tracked = 0;
+	object->engine()->logic()->registerComponent(this);
 }
 
-Tracker::~Tracker() {}
+Tracker::~Tracker() {
+	object()->engine()->logic()->unregisterComponent(this);
+}
 
 void Tracker::setTracked(Object *object) {
 	m_tracked = object;
 }
 
-void Tracker::onUpdate() {
+void Tracker::update() {
 	if (!m_tracked)
 		return;
 

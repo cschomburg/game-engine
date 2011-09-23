@@ -1,33 +1,87 @@
 #include <SDL/SDL_opengl.h>
 
 #include "Application.h"
-#include "components/all.h"
-#include "GameEngine.h"
 #include "Convex.h"
+#include "GameEngine.h"
+#include "Object.h"
 #include "Vector2.h"
+
+#include "components/all.h"
+
+#include "subsystems/PhysicsSubsystem.h"
+#include "subsystems/GraphicsSubsystem.h"
+#include "subsystems/LuaSubsystem.h"
+#include "subsystems/InputSubsystem.h"
+#include "subsystems/LogicSubsystem.h"
 
 GameEngine::GameEngine() {
 	m_level = 0;
-	m_player = 0;
-	m_camera = 0;
 
-	m_lua = new LuaWrapper();
+	m_physics = new PhysicsSubsystem(this);
+	m_graphics = new GraphicsSubsystem(this);
+	m_lua = new LuaSubsystem(this);
+	m_input = new InputSubsystem(this);
+	m_logic = new LogicSubsystem(this);
 }
 
-GameEngine::~GameEngine() {}
+GameEngine::~GameEngine() {
+	delete m_physics;
+	delete m_graphics;
+	delete m_lua;
+	delete m_input;
+	delete m_logic;
+}
 
-bool GameEngine::loadLevel(const char * file) {
+bool GameEngine::init() {
+	m_physics->init();
+	m_graphics->init();
+	m_lua->init();
+	m_input->init();
+	m_logic->init();
+
+	if (!loadLevel("res/levels/level01.yaml"))
+		return false;
+
+	if (!m_lua->loadFile("res/lua/init.lua"))
+		return false;
+
+	return true;
+}
+
+void GameEngine::update() {
+	m_input->update();
+	m_logic->update();
+	m_lua->update();
+	m_physics->update();
+	m_graphics->update();
+}
+
+void GameEngine::destroy() {
+	m_physics->destroy();
+	m_graphics->destroy();
+	m_lua->destroy();
+	m_input->destroy();
+	m_logic->destroy();
+
+	for (Object *object : m_objects) {
+		delete object;
+	}
+	m_objects.clear();
+	m_level = 0;
+}
+
+bool GameEngine::loadLevel(std::string file) {
 
 	// Level
-	m_level = new Object("Level");
-	m_level->createComponent<Positionable>()->setPos(Vector2(1000, 750));
-	m_level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(2000, 1500)));
+	Object *m_level = new Object(this, "Level");
+	m_level->createComponent<Positionable>()->setPos(Vector2(0, 0));
+	m_level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(20000, 15000)));
 	m_level->createComponent<Renderable>()->setGradient(Color::fromInt(255, 89, 0),
 														Color::fromInt(180, 20, 0));
 	m_objects.push_back(m_level);
 
 	// Sun
-	Object *sun = new Object("Sun");
+	Object *sun = new Object(this, "Sun");
 	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
 	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
@@ -37,7 +91,7 @@ bool GameEngine::loadLevel(const char * file) {
 	conv.points.push_back(Vector2(-100, 64));
 	conv.points.push_back(Vector2(200, 32));
 	conv.points.push_back(Vector2(50, -64));
-	Object *test = new Object("Conv");
+	Object *test = new Object(this, "Conv");
 	test->createComponent<Positionable>()->setPos(Vector2(722, 327));
 	test->createComponent<Shape>()->setShape(conv);
 	test->createComponent<Collidable>();
@@ -49,7 +103,7 @@ bool GameEngine::loadLevel(const char * file) {
 	conv2.points.push_back(Vector2(-40, -40));
 	conv2.points.push_back(Vector2(0, 60));
 	conv2.points.push_back(Vector2(100, -128));
-	Object *test2 = new Object("Conv2");
+	Object *test2 = new Object(this, "Conv2");
 	test2->createComponent<Positionable>()->setPos(Vector2(722, 507));
 	test2->createComponent<Shape>()->setShape(conv2);
 	test2->createComponent<Collidable>();
@@ -62,7 +116,7 @@ bool GameEngine::loadLevel(const char * file) {
 	triangle.points.push_back(Vector2(0, -64));
 
 	// Main Island
-	Object *island = new Object("Island");
+	Object *island = new Object(this, "Island");
 	island->createComponent<Positionable>()->setPos(Vector2(512, 327));
 	island->createComponent<Shape>()->setShape(triangle);
 	island->createComponent<Renderable>()->setTexture("res/images/island.png");
@@ -70,14 +124,14 @@ bool GameEngine::loadLevel(const char * file) {
 	m_objects.push_back(island);
 
 	// Tree
-	Object *tree = new Object("Tree");
+	Object *tree = new Object(this, "Tree");
 	tree->createComponent<Positionable>()->setPos(Vector2(512, 445));
 	tree->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(100, 110)));
 	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
 	m_objects.push_back(tree);
 
 	// Block
-	Object *block = new Object("Block");
+	Object *block = new Object(this, "Block");
 	block->createComponent<Positionable>()->setPos(Vector2(300, 500));
 	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(300, 300)));
 	block->createComponent<Renderable>()->setGradient(Color::fromInt(0, 0, 0),
@@ -85,124 +139,58 @@ bool GameEngine::loadLevel(const char * file) {
 	block->createComponent<Collidable>();
 	m_objects.push_back(block);
 
+	Object *player = new Object(this, "Player");
+	player->createComponent<Positionable>()->setPos(Vector2(572, 456));
+	player->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
+	player->createComponent<Renderable>()->setTexture("res/images/foo.png");
+	player->createComponent<Movable>();
+	player->createComponent<Walkable>()->setAcceleration(Vector2(1000, 1000));
+	player->createComponent<Collidable>();
+	m_objects.push_back(player);
+
 	// Enemy
-	Object *enemy = new Object("Enemy");
-	enemy->createComponent<Positionable>()->setPos(Vector2(422, 400));
+	Object *enemy = new Object(this, "Enemy");
+	enemy->createComponent<Positionable>()->setPos(Vector2(422, 500));
 	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
 	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
 	enemy->createComponent<Movable>();
 	enemy->createComponent<Walkable>()->setAcceleration(Vector2(200, 0));
-	enemy->createComponent<Tracker>();
+	enemy->createComponent<Tracker>()->setTracked(player);
 	enemy->createComponent<Collidable>();
 	m_objects.push_back(enemy);
-
-	return true;
-}
-
-bool GameEngine::onInit() {
-	if (!loadLevel("res/levels/level01.yaml"))
-		return false;
-
-	m_player = new Object("Player");
-
-	Object *enemy = m_objects.back();
-	enemy->component<Tracker>()->setTracked(m_player);
-
-	m_player->createComponent<Positionable>()->setPos(Vector2(572, 456));
-	m_player->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
-	m_player->createComponent<Renderable>()->setTexture("res/images/foo.png");
-	m_player->createComponent<Movable>();
-	m_player->createComponent<Walkable>()->setAcceleration(Vector2(1000, 1000));
-	m_player->createComponent<Collidable>();
-	m_objects.push_back(m_player);
 	
-	m_camera = new Object("Camera");
-	m_camera->createComponent<Positionable>();
-	m_camera->createComponent<Tracker>()->setTracked(m_player);
-	m_objects.push_back(m_camera);
+	Object *camera = new Object(this, "Camera");
+	camera->createComponent<Positionable>();
+	camera->createComponent<Tracker>()->setTracked(player);
+	m_objects.push_back(camera);
 
-	if (!m_lua->init())
-		return false;
-	m_lua->push("Object", m_player, "player");
-	if (!m_lua->loadFile("res/lua/init.lua"))
-		return false;
+	m_graphics->setCamera(camera);
+	m_input->setPlayer(player);
+	m_lua->push("Object", player, "player");
 
 	return true;
 }
 
-void GameEngine::onUpdate() {
-	Uint8 * keystate = SDL_GetKeyState(0);
-	float x = keystate[SDLK_RIGHT] - keystate[SDLK_LEFT];
-	float y = 0; //keystate[SDLK_UP] - keystate[SDLK_DOWN];
-
-	m_player->component<Walkable>()->setDirection(Vector2(x, y));
-
-	for (std::vector<Object *>::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {
-		(*i)->onUpdate();
-	}
-
-	m_lua->update();
+Object * GameEngine::level() const {
+	return m_level;
 }
 
-void GameEngine::onRender() {
-	BaseEngine::onRender();
-
-	Vector2 pos = m_camera->component<Positionable>()->pos();
-	glTranslatef(-pos.x, -pos.y, 0);
-
-	for (std::vector<Object *>::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {
-		Renderable *renderable = (*i)->component<Renderable>();
-		if (renderable)
-			renderable->onRender();
-	}
+PhysicsSubsystem * GameEngine::physics() const {
+	return m_physics;
 }
 
-void GameEngine::onExit() {
-	Application::instance()->quit();
+GraphicsSubsystem * GameEngine::graphics() const {
+	return m_graphics;
 }
 
-void GameEngine::onCleanup() {
-	BaseEngine::onCleanup();
-
-	delete m_lua;
-	m_lua = 0;
-
-	for (std::vector<Object *>::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {
-		delete (*i);
-	}
-	m_objects.clear();
-	m_level = 0;
-	m_player = 0;
-	m_camera = 0;
+LuaSubsystem * GameEngine::lua() const {
+	return m_lua;
 }
 
-bool GameEngine::checkCollision(Object *object, Vector2 *collVectorTotal) {
-	Collidable *collidable = object->component<Collidable>();
-	Shape *shape = object->component<Shape>();
-	if (!collidable || !shape)
-		return false;
-
-	bool collides = false;
-	Vector2 collVector;
-	for (std::vector<Object *>::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {
-		if (collidable->collides(*i, &collVector)) {
-			collides = true;
-			if (collVectorTotal) {
-				(*collVectorTotal) += collVector;
-			}
-		}
-	}
-
-	return collides;
+InputSubsystem * GameEngine::input() const {
+	return m_input;
 }
 
-void GameEngine::onKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode) {
-	if (sym == SDLK_UP) {
-		Walkable *walkable = m_player->component<Walkable>();
-		if (walkable)
-			walkable->jump(Vector2(0, 800));
-	}
-}
-
-void GameEngine::onKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode) {
+LogicSubsystem * GameEngine::logic() const {
+	return m_logic;
 }

@@ -1,15 +1,21 @@
 #include "components/Collidable.h"
 #include "components/Positionable.h"
 #include "components/Shape.h"
+#include "GameEngine.h"
 #include "Object.h"
+#include "subsystems/PhysicsSubsystem.h"
 #include "Rect.h"
 
 const ComponentType Collidable::componentType = "Collidable";
 
 Collidable::Collidable(Object *object)
-	: Component(componentType, object) {}
+	: Component(componentType, object) {
+	object->engine()->physics()->registerComponent(this);
+}
 
-Collidable::~Collidable() {}
+Collidable::~Collidable() {
+	object()->engine()->physics()->unregisterComponent(this);
+}
 
 bool Collidable::collides(Object *other, Vector2 *collVector) {
 	if (other == object() || !other->component<Collidable>())
@@ -30,12 +36,11 @@ bool Collidable::collides(Object *other, Vector2 *collVector) {
 	rect.translate(pos->pos());
 	otherRect.translate(otherPos->pos());
 
-
 	// Test bounding box collision
 	if (!rect.intersects(otherRect))
 		return false;
 
-	// At last, convex convexgon collision
+	// At last, convex polygon collision
 	Convex convex = shape->shape();
 	Convex otherConvex = otherShape->shape();
 	convex.translate(pos->pos());

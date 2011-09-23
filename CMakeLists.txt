@@ -4,27 +4,33 @@ project(game)
 set(
 	SOURCES
 	src/Application.cpp
-	src/BaseEngine.cpp
 	src/Color.cpp
-	src/Component.cpp
+	src/Convex.cpp
 	src/GameEngine.cpp
 	src/Object.cpp
-	src/Convex.cpp
 	src/Rect.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp
 	src/Texture.cpp
 	src/Vector2.cpp
 
-	src/components/Collidable.cpp
-	src/components/Movable.cpp
-	src/components/Positionable.cpp
-	src/components/Renderable.cpp
-	src/components/Shape.cpp
-	src/components/Tracker.cpp
-	src/components/Walkable.cpp
+	src/Subsystem.cpp
+		src/subsystems/PhysicsSubsystem.cpp
+		src/subsystems/GraphicsSubsystem.cpp
+		src/subsystems/InputSubsystem.cpp
+		src/subsystems/LuaSubsystem.cpp
+		src/subsystems/LogicSubsystem.cpp
 
-	src/lua/LuaWrapper.cpp
+	src/Component.cpp
+		src/components/Collidable.cpp
+		src/components/Movable.cpp
+		src/components/Positionable.cpp
+		src/components/Renderable.cpp
+		src/components/Shape.cpp
+		src/components/Tracker.cpp
+		src/components/Updatable.cpp
+		src/components/Walkable.cpp
+
 	src/lua/LuaClass.cpp
 	src/lua/LuaComponent.cpp
 	src/lua/LuaObject.cpp
@@ -45,7 +51,7 @@ Find_Package(SDL_image REQUIRED)
 Find_Package(OpenGL REQUIRED)
 find_package(Boost 1.36.0 REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories( "include")

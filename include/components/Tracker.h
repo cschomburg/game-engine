@@ -1,16 +1,16 @@
 #ifndef TRACKER_H
 #define TRACKER_H
 
-#include "Component.h"
+#include "components/Updatable.h"
 
-class Tracker : public Component {
+class Tracker : public Updatable {
 public:
 	Tracker(Object *object);
 	virtual ~Tracker();
 
 	void setTracked(Object *object);
 
-	void onUpdate();
+	void update();
 
 	static const ComponentType componentType;
 
