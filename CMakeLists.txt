@@ -15,6 +15,7 @@ set(
 	src/Vector2.cpp
 
 	src/Subsystem.cpp
+	src/SubsystemThread.cpp
 		src/subsystems/PhysicsSubsystem.cpp
 		src/subsystems/GraphicsSubsystem.cpp
 		src/subsystems/InputSubsystem.cpp

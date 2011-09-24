@@ -13,6 +13,8 @@ class LuaSubsystem;
 class InputSubsystem;
 class LogicSubsystem;
 
+class SubsystemThread;
+
 class GameEngine {
 public:
 	GameEngine();
@@ -37,6 +39,7 @@ private:
 	LuaSubsystem *m_lua;
 	InputSubsystem *m_input;
 	LogicSubsystem *m_logic;
+	std::vector<SubsystemThread *> m_threads;
 
 	Object *m_level;
 	std::vector<Object *> m_objects;

@@ -8,6 +8,7 @@
 
 #include "components/all.h"
 
+#include "SubsystemThread.h"
 #include "subsystems/PhysicsSubsystem.h"
 #include "subsystems/GraphicsSubsystem.h"
 #include "subsystems/LuaSubsystem.h"
@@ -45,18 +46,35 @@ bool GameEngine::init() {
 	if (!m_lua->loadFile("res/lua/init.lua"))
 		return false;
 
+	SubsystemThread *thread = new SubsystemThread();
+	thread->addSubsystem(m_physics);
+	thread->start();
+	m_threads.push_back(thread);
+
+	thread = new SubsystemThread();
+	thread->addSubsystem(m_lua);
+	thread->addSubsystem(m_logic);
+	thread->start();
+	m_threads.push_back(thread);
+
+	thread = new SubsystemThread();
+	thread->addSubsystem(m_input);
+	thread->start();
+	m_threads.push_back(thread);
+
 	return true;
 }
 
 void GameEngine::update() {
-	m_input->update();
-	m_logic->update();
-	m_lua->update();
-	m_physics->update();
 	m_graphics->update();
 }
 
 void GameEngine::destroy() {
+	for (SubsystemThread *thread : m_threads) {
+		thread->stop();
+	}
+	m_threads.clear();
+
 	m_physics->destroy();
 	m_graphics->destroy();
 	m_lua->destroy();

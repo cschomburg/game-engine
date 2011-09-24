@@ -45,7 +45,6 @@ void PhysicsSubsystem::handleMovements() {
 }
 
 void PhysicsSubsystem::handleCollisions() {
-
 	while (!m_collisionUpdates.empty()) {
 		Collidable *collidable = m_collisionUpdates.front();
 		m_collisionUpdates.pop_front();
