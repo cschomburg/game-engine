@@ -31,9 +31,6 @@ bool GraphicsSubsystem::init() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_BLEND);
-
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthMask(GL_TRUE);
 }
 
 void GraphicsSubsystem::update() {

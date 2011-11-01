@@ -37,6 +37,7 @@ set(
 	src/lua/LuaObject.cpp
 	src/lua/LuaPositionable.cpp
 
+	src/TestLevel.cpp
 	src/main.cpp
 )
 

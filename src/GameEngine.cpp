@@ -1,12 +1,8 @@
 #include <SDL/SDL_opengl.h>
 
 #include "Application.h"
-#include "Convex.h"
 #include "GameEngine.h"
 #include "Object.h"
-#include "Vector2.h"
-
-#include "components/all.h"
 
 #include "SubsystemThread.h"
 #include "subsystems/PhysicsSubsystem.h"
@@ -14,6 +10,8 @@
 #include "subsystems/LuaSubsystem.h"
 #include "subsystems/InputSubsystem.h"
 #include "subsystems/LogicSubsystem.h"
+
+#include "TestLevel.h"
 
 GameEngine::GameEngine() {
 	m_level = 0;
@@ -90,124 +88,17 @@ void GameEngine::destroy() {
 
 bool GameEngine::loadLevel(std::string file) {
 
-	// Level
-	Object *m_level = new Object(this, "Level");
-	m_level->createComponent<Positionable>()->setPos(Vector2(0, 0));
-	m_level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(20000, 15000)));
-	m_level->createComponent<Renderable>()->setGradient(Gradient(Color::fromInt(255, 89, 0),
-														         Color::fromInt(180, 20, 0)));
-	m_level->component<Renderable>()->setZIndex(-1.0f);
-	m_objects.push_back(m_level);
+	std::map<std::string, Object *> objects = TestLevel::create(this);
+	for (auto &it : objects) {
+		m_objects.push_back(it.second);
+	}
 
-	// Sun
-	Object *sun = new Object(this, "Sun");
-	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
-	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
-	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
-	sun->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
-	sun->component<Renderable>()->setBlendMode(BlendMode::Add);
-	m_objects.push_back(sun);
+	m_level = objects["Level"];
+	m_graphics->setCamera(objects["Camera"]);
+	m_input->setPlayer(objects["Player"]);
+	m_lua->push("Object", objects["Player"], "player");
 
-	Convex conv;
-	conv.points.push_back(Vector2(-100, 64));
-	conv.points.push_back(Vector2(200, 32));
-	conv.points.push_back(Vector2(50, -64));
-	Object *test = new Object(this, "Conv");
-	test->createComponent<Positionable>()->setPos(Vector2(722, 327));
-	test->createComponent<Shape>()->setShape(conv);
-	test->createComponent<Collidable>();
-	test->createComponent<Renderable>()->setColor(Color(0, 0, 0));
-	m_objects.push_back(test);
-
-	// Conv2
-	Convex conv2;
-	conv2.points.push_back(Vector2(-40, -40));
-	conv2.points.push_back(Vector2(0, 60));
-	conv2.points.push_back(Vector2(100, -128));
-	Object *test2 = new Object(this, "Conv2");
-	test2->createComponent<Positionable>()->setPos(Vector2(722, 507));
-	test2->createComponent<Shape>()->setShape(conv2);
-	test2->createComponent<Collidable>();
-	test2->createComponent<Renderable>()->setColor(Color(0, 0, 0));
-	m_objects.push_back(test2);
-
-	Convex triangle;
-	triangle.points.push_back(Vector2(-100, 64));
-	triangle.points.push_back(Vector2(100, 64));
-	triangle.points.push_back(Vector2(0, -64));
-
-	// Main Island
-	Object *island = new Object(this, "Island");
-	island->createComponent<Positionable>()->setPos(Vector2(512, 327));
-	island->createComponent<Shape>()->setShape(triangle);
-	island->createComponent<Renderable>()->setTexture("res/images/island.png");
-	island->createComponent<Collidable>();
-	m_objects.push_back(island);
-
-	// Tree
-	Object *tree = new Object(this, "Tree");
-	tree->createComponent<Positionable>()->setPos(Vector2(512, 445));
-	tree->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(100, 110)));
-	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
-	m_objects.push_back(tree);
-
-	// Island background
-	Object *island2 = new Object(this, "Island");
-	island2->createComponent<Positionable>()->setPos(Vector2(512, 427));
-	island2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(150, 96)));
-	island2->createComponent<Renderable>()->setTexture("res/images/island.png");
-	island2->component<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
-	island2->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
-	m_objects.push_back(island2);
-
-	// Tree background
-	Object *tree2 = new Object(this, "Tree");
-	tree2->createComponent<Positionable>()->setPos(Vector2(512, 545));
-	tree2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(75, 80)));
-	tree2->createComponent<Renderable>()->setTexture("res/images/tree.png");
-	tree2->component<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
-	tree2->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
-	m_objects.push_back(tree2);
-
-	// Block
-	Object *block = new Object(this, "Block");
-	block->createComponent<Positionable>()->setPos(Vector2(300, 500));
-	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(300, 300)));
-	block->createComponent<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
-	block->component<Renderable>()->setParallax(Vector2(0.3, 0));
-	//block->createComponent<Collidable>();
-	m_objects.push_back(block);
-
-	Object *player = new Object(this, "Player");
-	player->createComponent<Positionable>()->setPos(Vector2(572, 456));
-	player->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
-	player->createComponent<Renderable>()->setTexture("res/images/foo.png");
-	player->createComponent<Movable>();
-	player->createComponent<Walkable>()->setAcceleration(Vector2(1000, 1000));
-	player->createComponent<Collidable>();
-	m_objects.push_back(player);
-
-	// Enemy
-	Object *enemy = new Object(this, "Enemy");
-	enemy->createComponent<Positionable>()->setPos(Vector2(422, 500));
-	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
-	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
-	enemy->createComponent<Movable>();
-	enemy->createComponent<Walkable>()->setAcceleration(Vector2(200, 0));
-	enemy->createComponent<Tracker>()->setTracked(player);
-	enemy->createComponent<Collidable>();
-	m_objects.push_back(enemy);
-	
-	Object *camera = new Object(this, "Camera");
-	camera->createComponent<Positionable>();
-	camera->createComponent<Tracker>()->setTracked(player);
-	m_objects.push_back(camera);
-
-	m_graphics->setCamera(camera);
-	m_input->setPlayer(player);
-	m_lua->push("Object", player, "player");
-
-	return true;
+	return m_level != nullptr;
 }
 
 Object * GameEngine::level() const {
