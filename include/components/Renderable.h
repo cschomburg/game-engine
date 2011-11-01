@@ -13,6 +13,12 @@ class Texture;
 
 typedef std::pair<Color, Color> Gradient;
 
+enum class BlendMode {
+	Add,
+	Blend,
+	Screen,
+};
+
 class Renderable : public Component {
 public:
 	Renderable(Object *object);
@@ -33,6 +39,9 @@ public:
 	const Vector2 &parallax() const;
 	void setParallax(const Vector2 &parallax);
 
+	BlendMode blendMode() const;
+	void setBlendMode(BlendMode blendMode);
+
 	static const ComponentType componentType;
 
 private:
@@ -41,6 +50,7 @@ private:
 	Texture *m_texture;
 	float m_zIndex;
 	Vector2 m_parallax;
+	BlendMode m_blendMode;
 };
 
 #endif /* end of include guard: RENDERABLE_H */

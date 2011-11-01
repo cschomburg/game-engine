@@ -105,6 +105,7 @@ bool GameEngine::loadLevel(std::string file) {
 	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
 	sun->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
+	sun->component<Renderable>()->setBlendMode(BlendMode::Add);
 	m_objects.push_back(sun);
 
 	Convex conv;

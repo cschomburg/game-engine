@@ -30,7 +30,6 @@ bool GraphicsSubsystem::init() {
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
 	//glEnable(GL_DEPTH_TEST);
@@ -89,6 +88,17 @@ void GraphicsSubsystem::render(const Renderable &renderable) {
 	Vector2 pos = positionable->pos();
 	pos -= (pos - m_camera->component<Positionable>()->pos()) * renderable.parallax();
 	glTranslatef(pos.x, pos.y, 0);
+
+	// Blend mode
+	switch (renderable.blendMode()) {
+	default:
+	case BlendMode::Blend:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); break;
+	case BlendMode::Add:
+		glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA); break;
+	case BlendMode::Screen:
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); break;
+	}
 
 	Rect rect = shape->boundingBox();
 	float zIndex = renderable.zIndex();

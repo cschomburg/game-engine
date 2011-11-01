@@ -16,6 +16,7 @@ Renderable::Renderable(Object *object)
 	m_gradient = Gradient();
 	m_texture = 0;
 	m_zIndex = 1.0f;
+	m_blendMode = BlendMode::Blend;
 	object->engine()->graphics()->registerComponent(this);
 }
 
@@ -64,4 +65,12 @@ const Vector2 &Renderable::parallax() const {
 
 void Renderable::setParallax(const Vector2 &parallax) {
 	m_parallax = parallax;
+}
+
+BlendMode Renderable::blendMode() const {
+	return m_blendMode;
+}
+
+void Renderable::setBlendMode(BlendMode blendMode) {
+	m_blendMode = blendMode;
 }
