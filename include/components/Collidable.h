@@ -14,10 +14,14 @@ public:
 	Vector2 lastCollisionVector() const;
 	void setLastCollisionVector(const Vector2 &collVector);
 
+	float weight() const;
+	void setWeight(float weight);
+
 	static const ComponentType componentType;
 
 private:
 	Vector2 m_lastCollVector;
+	float m_weight;
 };
 
 #endif /* end of include guard: COLLIDABLE_H */

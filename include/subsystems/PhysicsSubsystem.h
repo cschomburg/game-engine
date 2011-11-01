@@ -6,6 +6,12 @@
 class Movable;
 class Collidable;
 
+struct Collision {
+	Collidable *a;
+	Collidable *b;
+	Vector2 vector;
+};
+
 class PhysicsSubsystem : public Subsystem {
 public:
 	PhysicsSubsystem(GameEngine *engine);

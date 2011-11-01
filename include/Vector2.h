@@ -30,6 +30,7 @@ public:
 	void normalize();
 	Vector2 normalized() const;
 	Vector2 perpendicular() const;
+	Vector2 projected(const Vector2 &vec) const;
 
 public:
 	float x;

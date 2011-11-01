@@ -92,6 +92,11 @@ Vector2 Vector2::perpendicular() const {
 	return Vector2(-y, x);
 }
 
+Vector2 Vector2::projected(const Vector2 &vec) const {
+	Vector2 vecN = vec.normalized();
+	return vecN * dot(vecN);
+}
+
 std::ostream& operator<<(std::ostream &o, const Vector2 &a) {
 	return o << "[" << std::setprecision(2) << a.x << ", " << a.y << "]";
 }

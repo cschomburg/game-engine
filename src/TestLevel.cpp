@@ -22,10 +22,10 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
 	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
+	sun->component<Renderable>()->setZIndex(-0.8f);
 	sun->component<Renderable>()->setParallax(Vector2(0.8f, 0.8f));
 	sun->component<Renderable>()->setBlendMode(BlendMode::Add);
 	objects["Sun"] = sun;
-
 
 	// Ground level
 	Convex conv;
@@ -134,6 +134,31 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	enemy->createComponent<Tracker>()->setTracked(player);
 	enemy->createComponent<Collidable>();
 	objects["Enemy"] = enemy;
+
+	// Test blocks
+	Object *block = new Object(engine, "Testblock1");
+	block->createComponent<Positionable>()->setPos(Vector2(800, 200));
+	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
+	block->createComponent<Renderable>()->setTexture("res/images/foo.png");
+	block->createComponent<Movable>();
+	block->createComponent<Collidable>();
+	objects["Testblock1"] = block;
+
+	block = new Object(engine, "Testblock2");
+	block->createComponent<Positionable>()->setPos(Vector2(835, 200));
+	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
+	block->createComponent<Renderable>()->setTexture("res/images/foo.png");
+	block->createComponent<Movable>();
+	block->createComponent<Collidable>();
+	objects["Testblock2"] = block;
+
+	block = new Object(engine, "Testblock3");
+	block->createComponent<Positionable>()->setPos(Vector2(900, 200));
+	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(64, 64)));
+	block->createComponent<Renderable>()->setTexture("res/images/foo.png");
+	block->createComponent<Movable>();
+	block->createComponent<Collidable>()->setWeight(4);
+	objects["Testblock3"] = block;
 	
 	Object *camera = new Object(engine, "Camera");
 	camera->createComponent<Positionable>();

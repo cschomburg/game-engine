@@ -11,6 +11,7 @@ const ComponentType Collidable::componentType = "Collidable";
 Collidable::Collidable(Object *object)
 	: Component(componentType, object) {
 	object->engine()->physics()->registerComponent(this);
+	m_weight = 1;
 }
 
 Collidable::~Collidable() {
@@ -55,4 +56,12 @@ Vector2 Collidable::lastCollisionVector() const {
 
 void Collidable::setLastCollisionVector(const Vector2 &collVector) {
 	m_lastCollVector = collVector;
+}
+
+float Collidable::weight() const {
+	return m_weight;
+}
+
+void Collidable::setWeight(float weight) {
+	m_weight = weight;
 }
