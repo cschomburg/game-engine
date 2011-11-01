@@ -15,6 +15,7 @@ void InputSubsystem::update() {
 	while (SDL_PollEvent(&event)) {
 		onEvent(&event);
 	}
+	SDL_Delay(1);
 }
 
 void InputSubsystem::onEvent(SDL_Event *event) {

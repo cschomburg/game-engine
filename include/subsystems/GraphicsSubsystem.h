@@ -2,6 +2,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
+#include "Color.h"
 #include "Subsystem.h"
 
 class Object;
@@ -19,7 +20,10 @@ public:
 	void unregisterComponent(Renderable *component);
 	void setCamera(Object *object);
 
+	void setColor(const Color &color);
+	void render(const Renderable &renderable);
+
 private:
-	std::set<Renderable *> m_renderables;
+	std::vector<Renderable *> m_renderables;
 	Object *m_camera;
 };

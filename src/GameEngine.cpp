@@ -94,8 +94,9 @@ bool GameEngine::loadLevel(std::string file) {
 	Object *m_level = new Object(this, "Level");
 	m_level->createComponent<Positionable>()->setPos(Vector2(0, 0));
 	m_level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(20000, 15000)));
-	m_level->createComponent<Renderable>()->setGradient(Color::fromInt(255, 89, 0),
-														Color::fromInt(180, 20, 0));
+	m_level->createComponent<Renderable>()->setGradient(Gradient(Color::fromInt(255, 89, 0),
+														         Color::fromInt(180, 20, 0)));
+	m_level->component<Renderable>()->setZIndex(-1.0f);
 	m_objects.push_back(m_level);
 
 	// Sun
@@ -103,6 +104,7 @@ bool GameEngine::loadLevel(std::string file) {
 	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
 	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
 	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
+	sun->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
 	m_objects.push_back(sun);
 
 	Convex conv;
@@ -148,13 +150,31 @@ bool GameEngine::loadLevel(std::string file) {
 	tree->createComponent<Renderable>()->setTexture("res/images/tree.png");
 	m_objects.push_back(tree);
 
+	// Island background
+	Object *island2 = new Object(this, "Island");
+	island2->createComponent<Positionable>()->setPos(Vector2(512, 427));
+	island2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(150, 96)));
+	island2->createComponent<Renderable>()->setTexture("res/images/island.png");
+	island2->component<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
+	island2->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
+	m_objects.push_back(island2);
+
+	// Tree background
+	Object *tree2 = new Object(this, "Tree");
+	tree2->createComponent<Positionable>()->setPos(Vector2(512, 545));
+	tree2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(75, 80)));
+	tree2->createComponent<Renderable>()->setTexture("res/images/tree.png");
+	tree2->component<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
+	tree2->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
+	m_objects.push_back(tree2);
+
 	// Block
 	Object *block = new Object(this, "Block");
 	block->createComponent<Positionable>()->setPos(Vector2(300, 500));
 	block->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(300, 300)));
-	block->createComponent<Renderable>()->setGradient(Color::fromInt(0, 0, 0),
-													  Color::fromInt(0, 0, 0));
-	block->createComponent<Collidable>();
+	block->createComponent<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
+	block->component<Renderable>()->setParallax(Vector2(0.3, 0));
+	//block->createComponent<Collidable>();
 	m_objects.push_back(block);
 
 	Object *player = new Object(this, "Player");
