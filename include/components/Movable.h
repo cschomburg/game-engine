@@ -9,7 +9,7 @@ public:
 	Movable(Object *object);
 	virtual ~Movable();
 
-	bool update();
+	bool update(double dt);
 
 	Vector2 velocity() const;
 	void setVelocity(const Vector2 &velocity);

@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Application.h"
 #include "components/Collidable.h"
 #include "components/Movable.h"
 #include "components/Positionable.h"
+#include "GameEngine.h"
 #include "Object.h"
 #include "subsystems/PhysicsSubsystem.h"
 
@@ -10,7 +10,6 @@ const ComponentType Movable::componentType = "Movable";
 
 Movable::Movable(Object *object)
 	: Component(componentType, object) {
-	m_lastTime = Application::instance()->time();
 	object->engine()->physics()->registerComponent(this);
 }
 
@@ -18,10 +17,7 @@ Movable::~Movable() {
 	object()->engine()->physics()->unregisterComponent(this);
 }
 
-bool Movable::update() {
-	int time = Application::instance()->time();
-	float elapsed = float(time - m_lastTime) / 1000.0f;
-	m_lastTime = time;
+bool Movable::update(double dt) {
 
 	Positionable *positionable = object()->component<Positionable>();
 	if (!positionable)
@@ -31,12 +27,9 @@ bool Movable::update() {
 	accel -= m_velocity * 2;
 	accel += m_controlAcceleration;
 	accel += Vector2(0, -1500); // Gravity, TODO: To Physics engine
-	m_velocity += accel * elapsed;
+	m_velocity += accel * dt;
 
-	Vector2 relPos = m_velocity * elapsed;
-	if (relPos.magnitude() < 0.001) // Ignore very small movements
-		return false;
-
+	Vector2 relPos = m_velocity * dt;
 	positionable->modifyPos(relPos);
 	return true;
 }

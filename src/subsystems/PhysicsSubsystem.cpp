@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <map>
 
+#include "Application.h"
 #include "Component.h"
 #include "components/Movable.h"
 #include "components/Collidable.h"
@@ -9,7 +10,8 @@
 #include "subsystems/PhysicsSubsystem.h"
 
 PhysicsSubsystem::PhysicsSubsystem(GameEngine *engine)
-	: Subsystem(engine) {}
+	: Subsystem(engine) {
+}
 
 PhysicsSubsystem::~PhysicsSubsystem() {}
 
@@ -29,15 +31,35 @@ void PhysicsSubsystem::unregisterComponent(Collidable *component) {
 	m_collidables.erase(component);
 }
 
-void PhysicsSubsystem::update() {
-	// TODO: position events
-	handleMovements();
-	handleCollisions();
+bool PhysicsSubsystem::init() {
+	m_currTime = Application::instance()->time() / 1000.0f;
+	m_timeAccumulator = 0;
+	m_dt = 0.0001;
+	m_t = 0;
+	m_timestep = 1.0;
+
+	return true;
 }
 
-void PhysicsSubsystem::handleMovements() {
+void PhysicsSubsystem::update() {
+	double time = Application::instance()->time() / 1000.0f;
+	double elapsed = time - m_currTime;
+	m_currTime = time;
+	m_timeAccumulator += elapsed;
+
+	// TODO: position events
+	while (m_timeAccumulator >= m_dt) {
+		m_timeAccumulator -= m_dt;
+		double dt = m_dt * m_timestep;
+		m_t += dt;
+		handleMovements(dt);
+		handleCollisions();
+	}
+}
+
+void PhysicsSubsystem::handleMovements(double dt) {
 	for (auto &movable : m_movables) {
-		if (!movable->update())
+		if (!movable->update(dt))
 			continue;
 
 		Collidable *collidable = movable->object()->component<Collidable>();

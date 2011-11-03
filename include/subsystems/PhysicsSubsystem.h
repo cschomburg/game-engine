@@ -17,7 +17,8 @@ public:
 	PhysicsSubsystem(GameEngine *engine);
 	virtual ~PhysicsSubsystem();
 
-	void update();
+	virtual bool init();
+	virtual void update();
 
 	void registerComponent(Movable *component);
 	void registerComponent(Collidable *component);
@@ -25,10 +26,16 @@ public:
 	void unregisterComponent(Collidable *component);
 
 private:
-	void handleMovements();
+	void handleMovements(double dt);
 	void handleCollisions();
 
 private:
+	double m_currTime;
+	double m_timeAccumulator;
+	double m_dt;
+	double m_t;
+	double m_timestep;
+
 	std::set<Movable *> m_movables;
 	std::set<Collidable *> m_collidables;
 	std::deque<Collidable *> m_collisionUpdates;
