@@ -1,3 +1,6 @@
+#include <cstdlib>
+#include <sstream>
+
 #include "Convex.h"
 #include "components/all.h"
 #include "GameEngine.h"
@@ -45,22 +48,28 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	gtree->createComponent<Positionable>()->setPos(Vector2(512, 228));
 	gtree->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(150, 165)));
 	gtree->createComponent<Renderable>()->setTexture("res/images/tree.png");
-	gtree->component<Renderable>()->setColor(Color(0, 0, 0, 0.9));
+	gtree->component<Renderable>()->setColor(Color(0, 0, 0));
 	gtree->component<Renderable>()->setParallax(Vector2(0.05, 0));
 	objects["GTree"] = gtree;
 
 	// Grass
-	Object *grass = new Object(engine, "Grass");
-	grass->createComponent<Positionable>()->setPos(Vector2(512, 166));
-	grass->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(77, 33)));
-	grass->createComponent<Renderable>()->setTexture("res/images/ground/grass3.png");
-	objects["Grass"] = grass;
+	for (int i = 0; i < 50; i++) {
+		std::stringstream name;
+		name << "Grass" << i;
+		std::stringstream file;
+		file << "res/images/ground/grass" << (rand() % 3)+1 << ".png";
+		Object *grass = new Object(engine, name.str());
+		grass->createComponent<Positionable>()->setPos(Vector2(-200+i*40, 166));
+		grass->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(77, 33)));
+		grass->createComponent<Renderable>()->setTexture(file.str());
+		objects[name.str()] = grass;
+	}
 
 	Object *grass2 = new Object(engine, "Grass2");
 	grass2->createComponent<Positionable>()->setPos(Vector2(400, 175));
 	grass2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(101, 53)));
 	grass2->createComponent<Renderable>()->setTexture("res/images/ground/grass1.png");
-	objects["Grass"] = grass;
+	objects["Grass"] = grass2;
 
 	// Test boxes
 	Object *box1 = new Object(engine, "Box1");

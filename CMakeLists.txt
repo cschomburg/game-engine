@@ -6,6 +6,7 @@ set(
 	src/Application.cpp
 	src/Color.cpp
 	src/Convex.cpp
+	src/Font.cpp
 	src/GameEngine.cpp
 	src/Object.cpp
 	src/Rect.cpp
@@ -48,20 +49,23 @@ if(DEFINE_DEBUG)
 	add_definitions(-DDEBUG_RENDERABLE)
 endif(DEFINE_DEBUG)
 
-Find_Package(SDL REQUIRED)
-Find_Package(SDL_image REQUIRED)
-Find_Package(OpenGL REQUIRED)
+find_package(SDL REQUIRED)
+find_package(SDL_image REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(Boost 1.36.0 REQUIRED)
+find_package(Freetype REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
 
 include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories( "include")
 
 link_libraries(
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
+	${FREETYPE_LIBRARIES}
 	SDLmain
 	lua
 )

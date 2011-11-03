@@ -1,9 +1,11 @@
 #include <iostream>
 #include <iterator>
+#include <sstream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
 #include "Application.h"
+#include "Font.h"
 #include "Object.h"
 #include "components/Movable.h"
 #include "components/Positionable.h"
@@ -22,6 +24,9 @@ bool GraphicsSubsystem::init() {
 	Application *app = Application::instance();
 	int width = app->displayWidth();
 	int height = app->displayHeight();
+	m_lastSecond = app->time();
+	m_frameCount = 0;
+	m_fps = 0;
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -31,9 +36,21 @@ bool GraphicsSubsystem::init() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_BLEND);
+
+	m_font16 = Application::instance()->manager()->font("res/font.ttf", 16);
+	m_font32 = Application::instance()->manager()->font("res/font.ttf", 32);
+	m_font48 = Application::instance()->manager()->font("res/font.ttf", 48);
 }
 
 void GraphicsSubsystem::update() {
+	m_frameCount++;
+	int time = Application::instance()->time();
+	if (time >= m_lastSecond+1000) {
+		m_lastSecond = time;
+		m_fps = m_frameCount;
+		m_frameCount = 0;
+	}
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -48,6 +65,16 @@ void GraphicsSubsystem::update() {
 	for (auto &renderable : m_renderables) {
 		render(*renderable);
 	}
+
+	glColor3f(0.0f, 0.0f, 0.0f);
+	m_font32->draw(1000, 150, "Test all the things!");
+
+	setColor(Color::fromInt(0xff, 0xee, 0x88));
+
+	m_font16->draw(400, 100, "Graphics FPS");
+	std::stringstream fpsString;
+	fpsString << m_fps;
+	m_font48->draw(400, 30, fpsString.str());
 
 	SDL_GL_SwapBuffers();
 }

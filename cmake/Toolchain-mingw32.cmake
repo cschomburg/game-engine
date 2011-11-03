@@ -16,6 +16,11 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -DBOOST_THREAD_USE_LIB")
+
+link_libraries(
+	boost_thread_win32-mt-s
+	pthread
+)
 
 SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a .dll.a ${CMAKE_FIND_LIBRARY_SUFFIXES})
