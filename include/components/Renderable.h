@@ -1,6 +1,7 @@
 #ifndef RENDERABLE_H
 #define RENDERABLE_H
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -30,7 +31,7 @@ public:
 	const Gradient &gradient() const;
 	void setGradient(const Gradient &gradient);
 
-	Texture *texture() const;
+	std::shared_ptr<Texture> texture() const;
 	void setTexture(const std::string &texturePath);
 
 	float zIndex() const;
@@ -47,7 +48,7 @@ public:
 private:
 	Color m_color;
 	Gradient m_gradient;
-	Texture *m_texture;
+	std::shared_ptr<Texture> m_texture;
 	float m_zIndex;
 	Vector2 m_parallax;
 	BlendMode m_blendMode;

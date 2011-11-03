@@ -10,11 +10,9 @@
 class Texture : public Resource {
 public:
 	Texture(const std::string &file);
+	virtual ~Texture();
 
 	void draw(float x, float y, float width = 0, float height = 0);
-
-	void load();
-	void destroy();
 
 private:
 	std::string m_filePath;

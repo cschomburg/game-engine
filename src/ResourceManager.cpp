@@ -2,13 +2,16 @@
 #include "Texture.h"
 
 ResourceManager::ResourceManager() {}
+ResourceManager::~ResourceManager() {}
 
-Texture * ResourceManager::getTexture(const std::string &name) {
-	Resource * res = m_resources[name];
-	if (res)
-		return static_cast<Texture *>(res);
+std::shared_ptr<Texture> ResourceManager::texture(const std::string &name) {
+	// Existing resource
+	auto it = m_textures.find(name);
+	if (it != m_textures.end() && !it->second.expired())
+		return it->second.lock();
 
-	Texture * tex = new Texture(name);
-	m_resources[name] = tex;
+	// New resource
+	std::shared_ptr<Texture> tex(new Texture(name));
+	m_textures[name] = tex;
 	return tex;
 }
