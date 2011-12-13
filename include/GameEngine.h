@@ -6,6 +6,7 @@
 
 #include "Subsystem.h"
 
+class GameState;
 class Object;
 class PhysicsSubsystem;
 class GraphicsSubsystem;
@@ -24,14 +25,20 @@ public:
 	void update();
 	void destroy();
 
-	bool loadLevel(std::string file);
-	Object * level() const;
+	GameState *state() const;
+	const std::vector<GameState *> states() const;
+	void pushState(GameState *state);
+	void popState();
 
-	PhysicsSubsystem * physics() const;
-	GraphicsSubsystem * graphics() const;
-	LuaSubsystem * lua() const;
-	InputSubsystem * input() const;
-	LogicSubsystem * logic() const;
+	bool loadLevel(std::string file);
+	Object *level() const;
+	Object *player() const;
+
+	PhysicsSubsystem *physics() const;
+	GraphicsSubsystem *graphics() const;
+	LuaSubsystem *lua() const;
+	InputSubsystem *input() const;
+	LogicSubsystem *logic() const;
 
 private:
 	PhysicsSubsystem *m_physics;
@@ -41,7 +48,10 @@ private:
 	LogicSubsystem *m_logic;
 	std::vector<SubsystemThread *> m_threads;
 
+	std::vector<GameState *> m_states;
+
 	Object *m_level;
+	Object *m_player;
 	std::vector<Object *> m_objects;
 };
 

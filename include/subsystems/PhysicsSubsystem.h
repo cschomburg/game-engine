@@ -31,10 +31,10 @@ private:
 
 private:
 	double m_currTime;
-	double m_timeAccumulator;
-	double m_dt;
-	double m_t;
+	double m_worldTimeAccumulator;
 	double m_timestep;
+	double m_worldTime;
+	double m_timeFactor;
 
 	std::set<Movable *> m_movables;
 	std::set<Collidable *> m_collidables;

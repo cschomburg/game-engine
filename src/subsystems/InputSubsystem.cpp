@@ -1,11 +1,9 @@
 #include "Application.h"
-#include "Object.h"
-#include "components/Walkable.h"
+#include "GameState.h"
 #include "subsystems/InputSubsystem.h"
 
 InputSubsystem::InputSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
-	m_player = 0;
 }
 
 InputSubsystem::~InputSubsystem() {}
@@ -13,11 +11,16 @@ InputSubsystem::~InputSubsystem() {}
 void InputSubsystem::update() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		onEvent(&event);
+		auto states = engine()->states();
+		for (auto rit = states.rbegin(); rit != states.rend(); rit++) {
+			if ((*rit)->handle(event))
+				break;
+		}
 	}
 	SDL_Delay(1);
 }
 
+/*
 void InputSubsystem::onEvent(SDL_Event *event) {
 	switch(event->type) {
 	case SDL_ACTIVEEVENT: {
@@ -207,4 +210,4 @@ void InputSubsystem::onExit() {
 }
 
 void InputSubsystem::onUser(Uint8 type, int code, void * data1, void * data2) {}
-
+*/

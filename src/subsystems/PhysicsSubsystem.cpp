@@ -32,27 +32,26 @@ void PhysicsSubsystem::unregisterComponent(Collidable *component) {
 }
 
 bool PhysicsSubsystem::init() {
-	m_currTime = Application::instance()->time() / 1000.0f;
-	m_timeAccumulator = 0;
-	m_dt = 0.0001;
-	m_t = 0;
-	m_timestep = 1.0;
+	m_currTime = Application::instance()->time() / 1000.0;
+	m_worldTimeAccumulator = 0;
+	m_timestep = 1.0/60;
+	m_worldTime = 0;
+	m_timeFactor = 1.0;
 
 	return true;
 }
 
 void PhysicsSubsystem::update() {
-	double time = Application::instance()->time() / 1000.0f;
+	double time = Application::instance()->time() / 1000.0;
 	double elapsed = time - m_currTime;
 	m_currTime = time;
-	m_timeAccumulator += elapsed;
+	m_worldTimeAccumulator += elapsed * m_timeFactor;
 
 	// TODO: position events
-	while (m_timeAccumulator >= m_dt) {
-		m_timeAccumulator -= m_dt;
-		double dt = m_dt * m_timestep;
-		m_t += dt;
-		handleMovements(dt);
+	while (m_worldTimeAccumulator >= m_timestep) {
+		m_worldTimeAccumulator -= m_timestep;
+		m_worldTime += m_timestep;
+		handleMovements(m_timestep);
 		handleCollisions();
 	}
 }

@@ -8,6 +8,8 @@ set(
 	src/Convex.cpp
 	src/Font.cpp
 	src/GameEngine.cpp
+	src/GameState.cpp
+		src/states/LevelState.cpp
 	src/Object.cpp
 	src/Rect.cpp
 	src/Resource.cpp

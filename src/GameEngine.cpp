@@ -2,6 +2,8 @@
 
 #include "Application.h"
 #include "GameEngine.h"
+#include "GameState.h"
+#include "states/LevelState.h"
 #include "Object.h"
 
 #include "SubsystemThread.h"
@@ -15,6 +17,7 @@
 
 GameEngine::GameEngine() {
 	m_level = 0;
+	m_player = 0;
 
 	m_physics = new PhysicsSubsystem(this);
 	m_graphics = new GraphicsSubsystem(this);
@@ -41,12 +44,14 @@ bool GameEngine::init() {
 	if (!loadLevel("res/levels/level01.yaml"))
 		return false;
 
+	pushState(LevelState::instance());
+
 	if (!m_lua->loadFile("res/lua/init.lua"))
 		return false;
 
 	SubsystemThread *thread = new SubsystemThread();
-	thread->addSubsystem(m_physics);
-	thread->start();
+	//thread->addSubsystem(m_physics);
+	//thread->start();
 	m_threads.push_back(thread);
 
 	thread = new SubsystemThread();
@@ -64,6 +69,7 @@ bool GameEngine::init() {
 }
 
 void GameEngine::update() {
+	m_physics->update();
 	m_graphics->update();
 }
 
@@ -86,6 +92,26 @@ void GameEngine::destroy() {
 	m_level = 0;
 }
 
+GameState *GameEngine::state() const {
+	return m_states.back();
+}
+
+const std::vector<GameState *> GameEngine::states() const {
+	return m_states;
+}
+
+void GameEngine::pushState(GameState *state) {
+	m_states.push_back(state);
+	state->enter(this);
+}
+
+void GameEngine::popState() {
+	GameState *state = m_states.back();
+	m_states.pop_back();
+	if (state)
+		state->leave(this);
+}
+
 bool GameEngine::loadLevel(std::string file) {
 
 	std::map<std::string, Object *> objects = TestLevel::create(this);
@@ -95,32 +121,36 @@ bool GameEngine::loadLevel(std::string file) {
 
 	m_level = objects["Level"];
 	m_graphics->setCamera(objects["Camera"]);
-	m_input->setPlayer(objects["Player"]);
-	m_lua->push("Object", objects["Player"], "player");
+	m_player = objects["Player"];
+	m_lua->push("Object", m_player, "player");
 
 	return m_level != nullptr;
 }
 
-Object * GameEngine::level() const {
+Object *GameEngine::level() const {
 	return m_level;
 }
 
-PhysicsSubsystem * GameEngine::physics() const {
+Object *GameEngine::player() const {
+	return m_player;
+}
+
+PhysicsSubsystem *GameEngine::physics() const {
 	return m_physics;
 }
 
-GraphicsSubsystem * GameEngine::graphics() const {
+GraphicsSubsystem *GameEngine::graphics() const {
 	return m_graphics;
 }
 
-LuaSubsystem * GameEngine::lua() const {
+LuaSubsystem *GameEngine::lua() const {
 	return m_lua;
 }
 
-InputSubsystem * GameEngine::input() const {
+InputSubsystem *GameEngine::input() const {
 	return m_input;
 }
 
-LogicSubsystem * GameEngine::logic() const {
+LogicSubsystem *GameEngine::logic() const {
 	return m_logic;
 }
