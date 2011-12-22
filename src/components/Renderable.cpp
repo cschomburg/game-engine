@@ -15,13 +15,14 @@ Renderable::Renderable(Object *object)
 	m_color = Color(1, 1, 1, 1);
 	m_gradient = Gradient();
 	m_texture = nullptr;
-	m_zIndex = 1.0f;
+	m_zIndex = 0.0f;
 	m_blendMode = BlendMode::Blend;
-	object->engine()->graphics()->registerComponent(this);
 }
 
-Renderable::~Renderable() {
-	object()->engine()->graphics()->unregisterComponent(this);
+Renderable::~Renderable() {}
+
+bool Renderable::isValid() const {
+	return !m_shape.points.empty();
 }
 
 const Color &Renderable::color() const {
@@ -70,4 +71,12 @@ BlendMode Renderable::blendMode() const {
 
 void Renderable::setBlendMode(BlendMode blendMode) {
 	m_blendMode = blendMode;
+}
+
+Convex Renderable::shape() const {
+	return m_shape;
+}
+
+void Renderable::setShape(const Convex &convex) {
+	m_shape = convex;
 }

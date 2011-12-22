@@ -59,33 +59,6 @@ Texture::~Texture() {
 	m_texture = 0;
 }
 
-void Texture::draw(float x, float y, float width, float height) {
-	if (!m_texture)
-		return;
-
-	if (width == 0) {
-		width = m_width;
-	}
-	if (height == 0) {
-		height = m_height;
-	}
-
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-
-	glBegin(GL_QUADS);
-		glTexCoord2i(0, 1);
-		glVertex3f(x, y, 0.0f);
-
-		glTexCoord2i(1, 1);
-		glVertex3f(x + width, y, 0.0f);
-
-		glTexCoord2i(1, 0);
-		glVertex3f(x + width, y + height, 0.0f);
-
-		glTexCoord2i(0, 0);
-		glVertex3f(x, y + height, 0.0f);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
+GLuint Texture::texture() const {
+	return m_texture;
 }
-

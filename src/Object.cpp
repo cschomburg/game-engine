@@ -4,6 +4,7 @@
 
 Object::Object(GameEngine *engine) {
 	m_engine = engine;
+	m_type = ObjectType::Dynamic;
 }
 
 Object::Object(GameEngine *engine, const std::string &name) {
@@ -24,6 +25,14 @@ GameEngine * Object::engine() const {
 
 std::string Object::name() const {
 	return m_name;
+}
+
+ObjectType Object::type() const {
+	return m_type;
+}
+
+void Object::setType(ObjectType type) {
+	m_type = type;
 }
 
 void Object::setName(const std::string &name) {

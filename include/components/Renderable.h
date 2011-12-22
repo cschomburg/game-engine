@@ -7,7 +7,7 @@
 
 #include "Color.h"
 #include "Component.h"
-#include "Vector2.h"
+#include "Convex.h"
 
 class Object;
 class Texture;
@@ -24,6 +24,8 @@ class Renderable : public Component {
 public:
 	Renderable(Object *object);
 	virtual ~Renderable();
+
+	bool isValid() const;
 
 	const Color &color() const;
 	void setColor(const Color &color);
@@ -43,6 +45,9 @@ public:
 	BlendMode blendMode() const;
 	void setBlendMode(BlendMode blendMode);
 
+	Convex shape() const;
+	void setShape(const Convex &convex);
+
 	static const ComponentType componentType;
 
 private:
@@ -52,6 +57,7 @@ private:
 	float m_zIndex;
 	Vector2 m_parallax;
 	BlendMode m_blendMode;
+	Convex m_shape;
 };
 
 #endif /* end of include guard: RENDERABLE_H */

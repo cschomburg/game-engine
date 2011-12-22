@@ -71,7 +71,7 @@ bool Application::init() {
 		printf("SDL: Unable to initialize: %s\n", SDL_GetError());
 		return false;
 	}
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+	//SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	if ((m_display = SDL_SetVideoMode(width, height, 32, flags)) == 0) {
 		printf("SDL: SetVideoMode failed: %s\n", SDL_GetError());

@@ -1,16 +1,10 @@
-#include <deque>
-#include <set>
+#include <memory>
+#include <Box2D/Box2D.h>
 
 #include "Subsystem.h"
 
-class Movable;
-class Collidable;
-
-struct Collision {
-	Collidable *a;
-	Collidable *b;
-	Vector2 vector;
-};
+class Body;
+class Object;
 
 class PhysicsSubsystem : public Subsystem {
 public:
@@ -20,23 +14,18 @@ public:
 	virtual bool init();
 	virtual void update();
 
-	void registerComponent(Movable *component);
-	void registerComponent(Collidable *component);
-	void unregisterComponent(Movable *component);
-	void unregisterComponent(Collidable *component);
+	void registerObject(Object *object);
+	void unregisterObject(Object *object);
 
 private:
-	void handleMovements(double dt);
-	void handleCollisions();
+	std::vector<Body *> m_bodies;
+	std::unique_ptr<b2World> m_world;
 
-private:
-	double m_currTime;
-	double m_worldTimeAccumulator;
-	double m_timestep;
-	double m_worldTime;
-	double m_timeFactor;
-
-	std::set<Movable *> m_movables;
-	std::set<Collidable *> m_collidables;
-	std::deque<Collidable *> m_collisionUpdates;
+	int m_velocityIterations;
+	int m_positionIterations;
+	float m_currTime;
+	float m_timeFactor;
+	float m_worldTimeAccumulator;
+	float m_timestep;
+	float m_worldTime;
 };

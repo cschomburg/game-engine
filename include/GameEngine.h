@@ -1,8 +1,10 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+#include <memory>
 #include <string>
 #include <vector>
+#include <boost/signals2.hpp>
 
 #include "Subsystem.h"
 
@@ -10,11 +12,13 @@ class GameState;
 class Object;
 class PhysicsSubsystem;
 class GraphicsSubsystem;
-class LuaSubsystem;
+//class LuaSubsystem;
 class InputSubsystem;
-class LogicSubsystem;
+//class LogicSubsystem;
 
 class SubsystemThread;
+
+typedef boost::signals2::signal<void (Object *)> ObjectSignal;
 
 class GameEngine {
 public:
@@ -31,21 +35,28 @@ public:
 	void popState();
 
 	bool loadLevel(std::string file);
+	void registerObject(Object *object);
+	void unregisterObject(Object *object);
 	Object *level() const;
 	Object *player() const;
 
 	PhysicsSubsystem *physics() const;
 	GraphicsSubsystem *graphics() const;
-	LuaSubsystem *lua() const;
+	//LuaSubsystem *lua() const;
 	InputSubsystem *input() const;
-	LogicSubsystem *logic() const;
+	//LogicSubsystem *logic() const;
+
+public:
+	ObjectSignal objectRegistered;
+	ObjectSignal objectUnregistered;
+
 
 private:
-	PhysicsSubsystem *m_physics;
-	GraphicsSubsystem *m_graphics;
-	LuaSubsystem *m_lua;
-	InputSubsystem *m_input;
-	LogicSubsystem *m_logic;
+	std::unique_ptr<PhysicsSubsystem> m_physics;
+	std::unique_ptr<GraphicsSubsystem> m_graphics;
+	//LuaSubsystem *m_lua;
+	std::unique_ptr<InputSubsystem> m_input;
+	//LogicSubsystem *m_logic;
 	std::vector<SubsystemThread *> m_threads;
 
 	std::vector<GameState *> m_states;

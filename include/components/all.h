@@ -1,7 +1,2 @@
-#include "components/Collidable.h"
-#include "components/Movable.h"
-#include "components/Positionable.h"
+#include "components/Body.h"
 #include "components/Renderable.h"
-#include "components/Shape.h"
-#include "components/Tracker.h"
-#include "components/Walkable.h"

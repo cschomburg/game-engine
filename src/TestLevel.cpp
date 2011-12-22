@@ -11,46 +11,59 @@
 std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	std::map<std::string, Object *> objects;
 
+	Object *object;
+	Body *body;
+	Renderable *renderable;
+
 	// Level
-	Object *level = new Object(engine, "Level");
-	level->createComponent<Positionable>()->setPos(Vector2(0, 0));
-	level->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(20000, 15000)));
-	level->createComponent<Renderable>()->setGradient(Gradient(Color::fromInt(255, 89, 0),
-														         Color::fromInt(180, 20, 0)));
-	level->component<Renderable>()->setZIndex(-1.0f);
-	objects["Level"] = level;
+	object = new Object(engine, "Level");
+	object->setType(ObjectType::Background);
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(0, 0));
+	renderable = object->createComponent<Renderable>();
+	renderable->setGradient(Gradient(Color::fromInt(255, 89, 0),
+	                                 Color::fromInt(180, 20, 0)));
+	renderable->setZIndex(-1.0f);
+	renderable->setShape(Convex::fromSize(Vector2(200, 150)));
+	objects["Level"] = object;
 
 	// Sun
-	Object *sun = new Object(engine, "Sun");
-	sun->createComponent<Positionable>()->setPos(Vector2(1000, 750));
-	sun->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(512, 512)));
-	sun->createComponent<Renderable>()->setTexture("res/images/sun.png");
-	sun->component<Renderable>()->setZIndex(-0.8f);
-	sun->component<Renderable>()->setParallax(Vector2(0.8f, 0.8f));
-	sun->component<Renderable>()->setBlendMode(BlendMode::Add);
-	objects["Sun"] = sun;
+	object = new Object(engine, "Sun");
+	object->setType(ObjectType::Background);
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(10, 7.5));
+	renderable = object->createComponent<Renderable>();
+	renderable->setShape(Convex::fromSize(Vector2(5.12, 5.12)));
+	renderable->setTexture("res/images/sun.png");
+	renderable->setZIndex(-0.8f);
+	renderable->setParallax(Vector2(0.8f, 0.8f));
+	renderable->setBlendMode(BlendMode::Add);
+	objects["Sun"] = object;
 
-	// Ground level
-	Convex conv;
-	conv.points.push_back(Vector2(0, 300));
-	conv.points.push_back(Vector2(20000, 300));
-	conv.points.push_back(Vector2(20000, 0));
-	conv.points.push_back(Vector2(0, 0));
-	Object *ground= new Object(engine, "Conv");
-	ground->createComponent<Positionable>()->setPos(Vector2(-10000, -150));
-	ground->createComponent<Shape>()->setShape(conv);
-	ground->createComponent<Collidable>();
-	ground->createComponent<Renderable>()->setColor(Color(0, 0, 0));
-	objects["Ground"] = ground;
+	// Ground
+	b2PolygonShape *poly = new b2PolygonShape();
+	poly->SetAsBox(100, 1.5);
+	object = new Object(engine, "Ground");
+	object->setType(ObjectType::Static);
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(0, 0));
+	body->setShape(poly);
+	renderable = object->createComponent<Renderable>();
+	renderable->setShape(Convex::fromSize(Vector2(200, 3)));
+	renderable->setColor(Color(0, 0, 0));
+	objects["Ground"] = object;
 
 	// Ground Tree
-	Object *gtree = new Object(engine, "GTree");
-	gtree->createComponent<Positionable>()->setPos(Vector2(512, 228));
-	gtree->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(150, 165)));
-	gtree->createComponent<Renderable>()->setTexture("res/images/tree.png");
-	gtree->component<Renderable>()->setColor(Color(0, 0, 0));
-	gtree->component<Renderable>()->setParallax(Vector2(0.05, 0));
-	objects["GTree"] = gtree;
+	object = new Object(engine, "GTree");
+	object->setType(ObjectType::Background);
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(5.12, 2.28));
+	renderable = object->createComponent<Renderable>();
+	renderable->setShape(Convex::fromSize(Vector2(1.5, 1.65)));
+	renderable->setTexture("res/images/tree.png");
+	renderable->setColor(Color(0, 0, 0));
+	renderable->setParallax(Vector2(0.05, 0));
+	objects["GTree"] = object;
 
 	// Grass
 	for (int i = 0; i < 50; i++) {
@@ -58,34 +71,17 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 		name << "Grass" << i;
 		std::stringstream file;
 		file << "res/images/ground/grass" << (rand() % 3)+1 << ".png";
-		Object *grass = new Object(engine, name.str());
-		grass->createComponent<Positionable>()->setPos(Vector2(-200+i*40, 166));
-		grass->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(77, 33)));
-		grass->createComponent<Renderable>()->setTexture(file.str());
-		objects[name.str()] = grass;
+		object = new Object(engine, name.str());
+		object->setType(ObjectType::Background);
+		body = object->createComponent<Body>();
+		body->setPos(Vector2(-2.0f+i*0.4f, 1.66));
+		renderable = object->createComponent<Renderable>();
+		renderable->setShape(Convex::fromSize(Vector2(0.77, 0.33)));
+		renderable->setTexture(file.str());
+		objects[name.str()] = object;
 	}
 
-	Object *grass2 = new Object(engine, "Grass2");
-	grass2->createComponent<Positionable>()->setPos(Vector2(400, 175));
-	grass2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(101, 53)));
-	grass2->createComponent<Renderable>()->setTexture("res/images/ground/grass1.png");
-	objects["Grass"] = grass2;
-
-	// Test boxes
-	Object *box1 = new Object(engine, "Box1");
-	box1->createComponent<Positionable>()->setPos(Vector2(12, 166));
-	box1->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(100, 100)));
-	box1->createComponent<Renderable>()->setColor(Color(0, 0, 0, 0.3f));
-	box1->component<Renderable>()->setParallax(Vector2(0.6f, 0.6f));
-	objects["Box1"] = box1;
-
-	Object *box2 = new Object(engine, "Box2");
-	box2->createComponent<Positionable>()->setPos(Vector2(12, 166));
-	box2->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(75, 75)));
-	box2->createComponent<Renderable>()->setColor(Color(0, 0, 0, 0.6f));
-	box2->component<Renderable>()->setParallax(Vector2(0.4f, 0.4f));
-	objects["Box2"] = box2;
-
+	/*
 	Convex triangle;
 	triangle.points.push_back(Vector2(-100, 64));
 	triangle.points.push_back(Vector2(100, 64));
@@ -123,27 +119,33 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	tree2->component<Renderable>()->setColor(Color::fromInt(0, 0, 0, 128));
 	tree2->component<Renderable>()->setParallax(Vector2(0.5f, 0.5f));
 	objects["Tree2"] = tree2;
+	*/
 
-	Object *player = new Object(engine, "Player");
-	player->createComponent<Positionable>()->setPos(Vector2(572, 656));
-	player->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
-	player->createComponent<Renderable>()->setTexture("res/images/foo.png");
-	player->createComponent<Movable>();
-	player->createComponent<Walkable>()->setAcceleration(Vector2(1000, 1000));
-	player->createComponent<Collidable>();
-	objects["Player"] = player;
+	// Player
+	poly = new b2PolygonShape();
+	poly->SetAsBox(0.16, 0.16);
+	object = new Object(engine, "Player");
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(5.72, 6.56));
+	body->setShape(poly);
+	renderable = object->createComponent<Renderable>();
+	renderable->setShape(Convex::fromSize(Vector2(0.32, 0.32)));
+	renderable->setTexture("res/images/foo.png");
+	objects["Player"] = object;
 
 	// Enemy
-	Object *enemy = new Object(engine, "Enemy");
-	enemy->createComponent<Positionable>()->setPos(Vector2(422, 700));
-	enemy->createComponent<Shape>()->setShape(Convex::fromSize(Vector2(32, 32)));
-	enemy->createComponent<Renderable>()->setTexture("res/images/foo.png");
-	enemy->createComponent<Movable>();
-	enemy->createComponent<Walkable>()->setAcceleration(Vector2(200, 0));
-	enemy->createComponent<Tracker>()->setTracked(player);
-	enemy->createComponent<Collidable>();
-	objects["Enemy"] = enemy;
+	poly = new b2PolygonShape();
+	poly->SetAsBox(0.16, 0.16);
+	object = new Object(engine, "Player");
+	body = object->createComponent<Body>();
+	body->setPos(Vector2(4.22, 7));
+	body->setShape(poly);
+	renderable = object->createComponent<Renderable>();
+	renderable->setShape(Convex::fromSize(Vector2(0.32, 0.32)));
+	renderable->setTexture("res/images/foo.png");
+	objects["Player"] = object;
 
+	/*
 	// Test blocks
 	Object *block = new Object(engine, "Testblock1");
 	block->createComponent<Positionable>()->setPos(Vector2(800, 200));
@@ -168,11 +170,7 @@ std::map<std::string, Object *> TestLevel::create(GameEngine *engine) {
 	block->createComponent<Movable>();
 	block->createComponent<Collidable>()->setWeight(4);
 	objects["Testblock3"] = block;
+	*/
 	
-	Object *camera = new Object(engine, "Camera");
-	camera->createComponent<Positionable>();
-	camera->createComponent<Tracker>()->setTracked(player);
-	objects["Camera"] = camera;
-
 	return objects;
 }

@@ -3,125 +3,77 @@
 
 #include "Application.h"
 #include "Component.h"
-#include "components/Movable.h"
-#include "components/Collidable.h"
-#include "components/Positionable.h"
+#include "components/Body.h"
 #include "Object.h"
 #include "subsystems/PhysicsSubsystem.h"
 
 PhysicsSubsystem::PhysicsSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
+	m_currTime = 0;
+	m_timestep = 1.0f/60.0f;
+	m_timeFactor = 1.0f;
+	m_velocityIterations = 6;
+	m_positionIterations = 2;
+
+	engine->objectRegistered.connect(boost::bind(&PhysicsSubsystem::registerObject, this, _1));
+	engine->objectUnregistered.connect(boost::bind(&PhysicsSubsystem::unregisterObject, this, _1));
 }
 
 PhysicsSubsystem::~PhysicsSubsystem() {}
 
-void PhysicsSubsystem::registerComponent(Movable *component) {
-	m_movables.insert(component);
+void PhysicsSubsystem::registerObject(Object *object) {
+	Body *component = object->component<Body>();
+	if (!component)
+		return;
+
+	m_bodies.push_back(component);
+
+	if (m_world && !component->body()) {
+		component->initBody(m_world.get());
+	}
 }
 
-void PhysicsSubsystem::registerComponent(Collidable *component) {
-	m_collidables.insert(component);
-}
+void PhysicsSubsystem::unregisterObject(Object *object) {
+	Body *component = object->component<Body>();
+	if (!component)
+		return;
 
-void PhysicsSubsystem::unregisterComponent(Movable *component) {
-	m_movables.erase(component);
-}
+	auto it = std::find(m_bodies.begin(), m_bodies.end(), component);
+	if (it == m_bodies.end())
+		return;
+	m_bodies.erase(it);
 
-void PhysicsSubsystem::unregisterComponent(Collidable *component) {
-	m_collidables.erase(component);
+	if (m_world && component->body()) {
+		component->destroyBody(m_world.get());
+	}
 }
 
 bool PhysicsSubsystem::init() {
 	m_currTime = Application::instance()->time() / 1000.0;
 	m_worldTimeAccumulator = 0;
-	m_timestep = 1.0/60;
 	m_worldTime = 0;
-	m_timeFactor = 1.0;
+
+	b2Vec2 gravity(0.0f, -15.0f);
+	m_world = std::unique_ptr<b2World>(new b2World(gravity));
+
+	for (auto &component : m_bodies) {
+		if (!component->body() && component->object()->type() != ObjectType::Background) {
+			component->initBody(m_world.get());
+		}
+	}
 
 	return true;
 }
 
 void PhysicsSubsystem::update() {
-	double time = Application::instance()->time() / 1000.0;
-	double elapsed = time - m_currTime;
+	float time = Application::instance()->time() / 1000.0;
+	float elapsed = time - m_currTime;
 	m_currTime = time;
 	m_worldTimeAccumulator += elapsed * m_timeFactor;
 
-	// TODO: position events
 	while (m_worldTimeAccumulator >= m_timestep) {
 		m_worldTimeAccumulator -= m_timestep;
 		m_worldTime += m_timestep;
-		handleMovements(m_timestep);
-		handleCollisions();
-	}
-}
-
-void PhysicsSubsystem::handleMovements(double dt) {
-	for (auto &movable : m_movables) {
-		if (!movable->update(dt))
-			continue;
-
-		Collidable *collidable = movable->object()->component<Collidable>();
-		if (collidable) {
-			m_collisionUpdates.push_back(collidable);
-		}
-	}
-}
-
-void PhysicsSubsystem::handleCollisions() {
-	std::vector<Collision> collisions;
-
-	// Check collisions between every collidable object
-	while (!m_collisionUpdates.empty()) {
-		Collidable *collidable = m_collisionUpdates.front();
-		m_collisionUpdates.pop_front();
-		Vector2 collVectorTotal;
-		Vector2 collVector;
-
-		for (auto &other: m_collidables) {
-			if (collidable->collides(other->object(), &collVector)) {
-				collVectorTotal += collVector;
-
-				// Already a collision detected between these objects?
-				auto it = std::find_if(collisions.begin(), collisions.end(), [=](Collision &collision) {
-					return (collision.b == collidable && collision.a == other);
-				});
-				if (it == collisions.end()) {
-					collisions.push_back(Collision{collidable, other, collVector});
-				}
-			}
-		}
-
-		// Reset position
-		collidable->setLastCollisionVector(collVectorTotal);
-		collidable->object()->component<Positionable>()->modifyPos(collVectorTotal);
-	}
-
-	// Handle detected collisions
-	while (!collisions.empty()) {
-		Collision collision = collisions.back();
-		collisions.pop_back();
-
-		Movable *movableA = collision.a->object()->component<Movable>();
-		Movable *movableB = collision.b->object()->component<Movable>();
-
-		// Elastic collision
-		if (movableA && movableB) {
-			collision.vector.normalize();
-			float massA = collision.a->weight();
-			float massB = collision.b->weight();
-			float velA = movableA->velocity().dot(collision.vector);
-			float velB = movableB->velocity().dot(collision.vector);
-
-			float velAnew = (velA*(massA-massB) + 2*massB*velB) / (massA+massB);
-			float velBnew = (velB*(massB-massA) + 2*massA*velA) / (massB+massA);
-			Vector2 velADiff = collision.vector * (velAnew-velA);
-			Vector2 velBDiff = collision.vector * (velBnew-velB);
-
-			movableA->modifyVelocity(velADiff);
-			movableB->modifyVelocity(velBDiff);
-		}
-
-		// TODO:: Spawn collision events
+		m_world->Step(m_timestep, m_velocityIterations, m_positionIterations);
 	}
 }

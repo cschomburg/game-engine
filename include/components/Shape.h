@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include <vector>
+#include <Box2D/Box2D.h>
 
 #include "Component.h"
 #include "Rect.h"
@@ -16,16 +17,16 @@ public:
 	Shape(Object *object);
 	virtual ~Shape();
 
-	Convex shape() const;
-	void setShape(const Convex &shape);
+	b2PolygonShape shape() const;
+	void setShape(const b2PolygonShape &shape);
 
-	Rect boundingBox() const;
+	b2AABB boundingBox() const;
 
 	static const ComponentType componentType;
 
 private:
-	Convex m_shape;
-	Rect m_boundingBox;
+	b2PolygonShape m_shape;
+	b2AABB m_boundingBox;
 };
 
 #endif /* end of include guard: SHAPE_H */

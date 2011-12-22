@@ -12,7 +12,7 @@ public:
 	Texture(const std::string &file);
 	virtual ~Texture();
 
-	void draw(float x, float y, float width = 0, float height = 0);
+	GLuint texture() const;
 
 private:
 	std::string m_filePath;

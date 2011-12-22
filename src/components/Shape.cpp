@@ -7,15 +7,17 @@ Shape::Shape(Object *object)
 
 Shape::~Shape() {}
 
-Convex Shape::shape() const {
+b2PolygonShape Shape::shape() const {
 	return m_shape;
 }
 
-void Shape::setShape(const Convex &shape) {
+void Shape::setShape(const b2PolygonShape &shape) {
 	m_shape = shape;
-	m_boundingBox = shape.boundingBox();
+
+	b2AABB box;
+	m_boundingBox = shape.ComputeAABB(&box, b2Transform(), 0);
 }
 
-Rect Shape::boundingBox() const {
+b2AABB Shape::boundingBox() const {
 	return m_boundingBox;
 }

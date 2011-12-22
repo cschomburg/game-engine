@@ -9,9 +9,9 @@
 #include "SubsystemThread.h"
 #include "subsystems/PhysicsSubsystem.h"
 #include "subsystems/GraphicsSubsystem.h"
-#include "subsystems/LuaSubsystem.h"
+//#include "subsystems/LuaSubsystem.h"
 #include "subsystems/InputSubsystem.h"
-#include "subsystems/LogicSubsystem.h"
+//#include "subsystems/LogicSubsystem.h"
 
 #include "TestLevel.h"
 
@@ -19,33 +19,29 @@ GameEngine::GameEngine() {
 	m_level = 0;
 	m_player = 0;
 
-	m_physics = new PhysicsSubsystem(this);
-	m_graphics = new GraphicsSubsystem(this);
-	m_lua = new LuaSubsystem(this);
-	m_input = new InputSubsystem(this);
-	m_logic = new LogicSubsystem(this);
+	m_physics = std::unique_ptr<PhysicsSubsystem>(new PhysicsSubsystem(this));
+	m_graphics = std::unique_ptr<GraphicsSubsystem>(new GraphicsSubsystem(this));
+	//m_lua = new LuaSubsystem(this);
+	m_input = std::unique_ptr<InputSubsystem>(new InputSubsystem(this));
+	//m_logic = new LogicSubsystem(this);
 }
 
 GameEngine::~GameEngine() {
-	delete m_physics;
-	delete m_graphics;
-	delete m_lua;
-	delete m_input;
-	delete m_logic;
 }
 
 bool GameEngine::init() {
 	m_physics->init();
 	m_graphics->init();
-	m_lua->init();
+	//m_lua->init();
 	m_input->init();
-	m_logic->init();
+	//m_logic->init();
 
 	if (!loadLevel("res/levels/level01.yaml"))
 		return false;
 
 	pushState(LevelState::instance());
 
+	/*
 	if (!m_lua->loadFile("res/lua/init.lua"))
 		return false;
 
@@ -64,12 +60,14 @@ bool GameEngine::init() {
 	thread->addSubsystem(m_input);
 	thread->start();
 	m_threads.push_back(thread);
+	*/
 
 	return true;
 }
 
 void GameEngine::update() {
 	m_physics->update();
+	m_input->update();
 	m_graphics->update();
 }
 
@@ -81,9 +79,9 @@ void GameEngine::destroy() {
 
 	m_physics->destroy();
 	m_graphics->destroy();
-	m_lua->destroy();
+	//m_lua->destroy();
 	m_input->destroy();
-	m_logic->destroy();
+	//m_logic->destroy();
 
 	for (Object *object : m_objects) {
 		delete object;
@@ -115,16 +113,29 @@ void GameEngine::popState() {
 bool GameEngine::loadLevel(std::string file) {
 
 	std::map<std::string, Object *> objects = TestLevel::create(this);
-	for (auto &it : objects) {
-		m_objects.push_back(it.second);
+	for (auto &it: objects) {
+		registerObject(it.second);
 	}
 
 	m_level = objects["Level"];
-	m_graphics->setCamera(objects["Camera"]);
+	m_graphics->setCamera(objects["Player"]);
 	m_player = objects["Player"];
-	m_lua->push("Object", m_player, "player");
+	//m_lua->push("Object", m_player, "player");
 
-	return m_level != nullptr;
+	return true;
+}
+
+void GameEngine::registerObject(Object *object) {
+	m_objects.push_back(object);
+	objectRegistered(object);
+}
+
+void GameEngine::unregisterObject(Object *object) {
+	auto it = std::find(m_objects.begin(), m_objects.end(), object);
+	if (it == m_objects.end())
+		return;
+	m_objects.erase(it);
+	objectUnregistered(object);
 }
 
 Object *GameEngine::level() const {
@@ -136,21 +147,23 @@ Object *GameEngine::player() const {
 }
 
 PhysicsSubsystem *GameEngine::physics() const {
-	return m_physics;
+	return m_physics.get();
 }
 
 GraphicsSubsystem *GameEngine::graphics() const {
-	return m_graphics;
+	return m_graphics.get();
 }
 
+/*
 LuaSubsystem *GameEngine::lua() const {
 	return m_lua;
-}
+}*/
 
 InputSubsystem *GameEngine::input() const {
-	return m_input;
+	return m_input.get();
 }
 
+/*
 LogicSubsystem *GameEngine::logic() const {
 	return m_logic;
-}
+}*/

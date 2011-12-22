@@ -18,8 +18,8 @@ public:
 	bool init();
 	void update();
 
-	void registerComponent(Renderable *component);
-	void unregisterComponent(Renderable *component);
+	void registerObject(Object *object);
+	void unregisterObject(Object *object);
 	void setCamera(Object *object);
 
 	void setColor(const Color &color);
