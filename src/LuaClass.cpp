@@ -1,5 +1,5 @@
 #include <iostream>
-#include "lua/LuaClass.h"
+#include "LuaClass.h"
 
 std::map<std::string, LuaClass *> LuaClass::m_classes;
 
@@ -18,6 +18,9 @@ LuaClass *LuaClass::parent() const {
 	return m_parent;
 }
 
+/**
+ * Checks if the variable on the stack is a subclass of this class.
+ */
 bool LuaClass::isDescendant(lua_State *L, int index) {
 	if (!lua_istable(L, index))
 		return false;
@@ -39,6 +42,14 @@ bool LuaClass::isDescendant(lua_State *L, int index) {
 	return false;
 }
 
+/**
+ * Registers a LuaClass in the current Lua environment.
+ * The table containing all methods is globally available under the class name,
+ * the metatable for instances of this class is stored in the registry under
+ * the class name.
+ * The Superclasses' instance table will be set as the metatable for the
+ * methods table.
+ */
 void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]) {
 	const char *name = m_name.c_str();
 	luaL_register(L, name, methods); // Create methods table in globals

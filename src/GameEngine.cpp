@@ -10,19 +10,16 @@
 #include "SubsystemThread.h"
 #include "subsystems/PhysicsSubsystem.h"
 #include "subsystems/GraphicsSubsystem.h"
-//#include "subsystems/LuaSubsystem.h"
+#include "subsystems/LuaSubsystem.h"
 #include "subsystems/InputSubsystem.h"
 //#include "subsystems/LogicSubsystem.h"
 
-#include "TestLevel.h"
-
 GameEngine::GameEngine() {
-	m_level = 0;
 	m_player = 0;
 
 	m_physics = std::unique_ptr<PhysicsSubsystem>(new PhysicsSubsystem(this));
 	m_graphics = std::unique_ptr<GraphicsSubsystem>(new GraphicsSubsystem(this));
-	//m_lua = new LuaSubsystem(this);
+	m_lua = std::unique_ptr<LuaSubsystem>(new LuaSubsystem(this));
 	m_input = std::unique_ptr<InputSubsystem>(new InputSubsystem(this));
 	//m_logic = new LogicSubsystem(this);
 }
@@ -33,20 +30,21 @@ GameEngine::~GameEngine() {
 bool GameEngine::init() {
 	m_physics->init();
 	m_graphics->init();
-	//m_lua->init();
+	m_lua->init();
 	m_input->init();
 	//m_logic->init();
 
-	if (!loadLevel("res/levels/level01.yaml"))
+	m_lua->push("GameEngine", this, "GameEngine");
+	if (!m_lua->loadFile("res/lua/init.lua"))
+		return false;
+
+	if (!loadLevel("res/levels/level01.lua"))
 		return false;
 
 	pushState(LevelState::instance());
 	pushState(WorldManipulateState::instance());
 
 	/*
-	if (!m_lua->loadFile("res/lua/init.lua"))
-		return false;
-
 	SubsystemThread *thread = new SubsystemThread();
 	//thread->addSubsystem(m_physics);
 	//thread->start();
@@ -70,6 +68,7 @@ bool GameEngine::init() {
 void GameEngine::update() {
 	m_physics->update();
 	m_input->update();
+	m_lua->update();
 	m_graphics->update();
 }
 
@@ -81,7 +80,7 @@ void GameEngine::destroy() {
 
 	m_physics->destroy();
 	m_graphics->destroy();
-	//m_lua->destroy();
+	m_lua->destroy();
 	m_input->destroy();
 	//m_logic->destroy();
 
@@ -89,7 +88,6 @@ void GameEngine::destroy() {
 		delete object;
 	}
 	m_objects.clear();
-	m_level = 0;
 }
 
 GameState *GameEngine::state() const {
@@ -113,18 +111,7 @@ void GameEngine::popState() {
 }
 
 bool GameEngine::loadLevel(std::string file) {
-
-	std::map<std::string, Object *> objects = TestLevel::create(this);
-	for (auto &it: objects) {
-		registerObject(it.second);
-	}
-
-	m_level = objects["Level"];
-	m_graphics->setCamera(objects["Player"]);
-	m_player = objects["Player"];
-	//m_lua->push("Object", m_player, "player");
-
-	return true;
+	return m_lua->loadFile(file);
 }
 
 void GameEngine::registerObject(Object *object) {
@@ -140,12 +127,13 @@ void GameEngine::unregisterObject(Object *object) {
 	objectUnregistered(object);
 }
 
-Object *GameEngine::level() const {
-	return m_level;
-}
-
 Object *GameEngine::player() const {
 	return m_player;
+}
+
+void GameEngine::setPlayer(Object *player) {
+	m_player = player;
+	m_graphics->setCamera(player);
 }
 
 PhysicsSubsystem *GameEngine::physics() const {
@@ -156,10 +144,9 @@ GraphicsSubsystem *GameEngine::graphics() const {
 	return m_graphics.get();
 }
 
-/*
 LuaSubsystem *GameEngine::lua() const {
-	return m_lua;
-}*/
+	return m_lua.get();
+}
 
 InputSubsystem *GameEngine::input() const {
 	return m_input.get();

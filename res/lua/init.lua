@@ -1,3 +1,12 @@
+function make(name, components)
+	local object = Object.new(name)
+	for _, name in pairs(components) do
+		object[name:lower()] = _G[name].new(object)
+		object:addComponent(object[name:lower()])
+	end
+	return object
+end
+
 local frameCount, lastUpdate, fps = 0, 0, 0
 
 local total = 0
@@ -7,7 +16,7 @@ function OnUpdate(elapsed)
 	total = total + elapsed
 
 	if lastUpdate > 1 then
-		print(frameCount)
+		--print(frameCount)
 		lastUpdate = 0
 		frameCount = 0
 		--player:component("Positionable"):modifyPos(0, 100)
@@ -38,3 +47,4 @@ function dump(...)
 	print(str)
 end
 
+math.randomseed(os.time())

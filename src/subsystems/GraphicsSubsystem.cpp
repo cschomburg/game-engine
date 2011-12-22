@@ -15,6 +15,7 @@
 
 GraphicsSubsystem::GraphicsSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
+	m_camera = 0;
 	engine->objectRegistered.connect(boost::bind(&GraphicsSubsystem::registerObject, this, _1));
 	engine->objectUnregistered.connect(boost::bind(&GraphicsSubsystem::unregisterObject, this, _1));
 }
@@ -41,6 +42,8 @@ bool GraphicsSubsystem::init() {
 	m_font16 = Application::instance()->manager()->font("res/font.ttf", 16);
 	m_font32 = Application::instance()->manager()->font("res/font.ttf", 32);
 	m_font48 = Application::instance()->manager()->font("res/font.ttf", 48);
+
+	return true;
 }
 
 void GraphicsSubsystem::update() {
@@ -125,6 +128,7 @@ void GraphicsSubsystem::render(const Renderable &renderable) {
 	}
 	glTranslatef(pos.x, pos.y, 0);
 	glRotatef(-radToDeg(body->angle()), 0, 0, 1.0f);
+
 
 	// Blend mode
 	switch (renderable.blendMode()) {

@@ -12,7 +12,7 @@ class GameState;
 class Object;
 class PhysicsSubsystem;
 class GraphicsSubsystem;
-//class LuaSubsystem;
+class LuaSubsystem;
 class InputSubsystem;
 //class LogicSubsystem;
 
@@ -37,12 +37,12 @@ public:
 	bool loadLevel(std::string file);
 	void registerObject(Object *object);
 	void unregisterObject(Object *object);
-	Object *level() const;
 	Object *player() const;
+	void setPlayer(Object *object);
 
 	PhysicsSubsystem *physics() const;
 	GraphicsSubsystem *graphics() const;
-	//LuaSubsystem *lua() const;
+	LuaSubsystem *lua() const;
 	InputSubsystem *input() const;
 	//LogicSubsystem *logic() const;
 
@@ -54,14 +54,13 @@ public:
 private:
 	std::unique_ptr<PhysicsSubsystem> m_physics;
 	std::unique_ptr<GraphicsSubsystem> m_graphics;
-	//LuaSubsystem *m_lua;
+	std::unique_ptr<LuaSubsystem> m_lua;
 	std::unique_ptr<InputSubsystem> m_input;
 	//LogicSubsystem *m_logic;
 	std::vector<SubsystemThread *> m_threads;
 
 	std::vector<GameState *> m_states;
 
-	Object *m_level;
 	Object *m_player;
 	std::vector<Object *> m_objects;
 };

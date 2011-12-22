@@ -13,8 +13,8 @@ Object::Object(GameEngine *engine, const std::string &name) {
 }
 
 Object::~Object() {
-	for (ComponentMap::iterator i = m_components.begin(); i != m_components.end(); ++i) {
-		delete i->second;
+	for (auto &it : m_components) {
+		delete it.second;
 	}
 	m_components.clear();
 }
@@ -27,16 +27,16 @@ std::string Object::name() const {
 	return m_name;
 }
 
+void Object::setName(const std::string &name) {
+	m_name = name;
+}
+
 ObjectType Object::type() const {
 	return m_type;
 }
 
 void Object::setType(ObjectType type) {
 	m_type = type;
-}
-
-void Object::setName(const std::string &name) {
-	m_name = name;
 }
 
 Component * Object::component(ComponentType type) {
@@ -51,16 +51,4 @@ void Object::addComponent(Component * component) {
 		return;
 
 	m_components[component->type()] = component;
-}
-
-void Object::removeComponent(Component * component) {
-	removeComponent(component->type());
-}
-
-Component * Object::removeComponent(ComponentType type) {
-	ComponentMap::iterator i = m_components.find(type);
-	if (i == m_components.end())
-		return 0;
-	m_components.erase(i);
-	return i->second;
 }

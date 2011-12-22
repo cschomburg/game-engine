@@ -1,7 +1,6 @@
 #include <string>
-#include "lua/LuaComponent.h"
-#include "lua/LuaObject.h"
 #include "Component.h"
+#include "lua/LuaClasses.h"
 
 LuaClass luaComponent("Component");
 

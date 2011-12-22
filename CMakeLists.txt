@@ -22,28 +22,28 @@ set(
 
 	src/Box2DCompat.cpp
 
-	src/Subsystem.cpp
 	src/SubsystemThread.cpp
+	src/Subsystem.cpp
 		src/subsystems/PhysicsSubsystem.cpp
 		src/subsystems/GraphicsSubsystem.cpp
 		src/subsystems/InputSubsystem.cpp
-		#src/subsystems/LuaSubsystem.cpp
+		src/subsystems/LuaSubsystem.cpp
 		#src/subsystems/LogicSubsystem.cpp
 
 	src/Component.cpp
 		src/components/Body.cpp
 		src/components/Renderable.cpp
-		#src/components/Shape.cpp
 		#src/components/Tracker.cpp
 		#src/components/Updatable.cpp
 		#src/components/Walkable.cpp
 
-	#src/lua/LuaClass.cpp
-	#src/lua/LuaComponent.cpp
-	#src/lua/LuaObject.cpp
-	#src/lua/LuaPositionable.cpp
+	src/LuaClass.cpp
+	src/lua/LuaBody.cpp
+	src/lua/LuaComponent.cpp
+	src/lua/LuaGameEngine.cpp
+	src/lua/LuaObject.cpp
+	src/lua/LuaRenderable.cpp
 
-	src/TestLevel.cpp
 	src/main.cpp
 )
 
@@ -66,7 +66,7 @@ find_package(Box2D REQUIRED)
 #set(CMAKE_CXX_COMPILER ccache)
 #set(CMAKE_CXX_COMPILER_ARG1="g++")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Wall")
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${FREETYPE_INCLUDE_DIRS})

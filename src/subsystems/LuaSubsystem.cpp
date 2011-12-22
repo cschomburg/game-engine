@@ -9,10 +9,8 @@ extern "C" {
 
 #include "Application.h"
 #include "subsystems/LuaSubsystem.h"
-#include "lua/LuaClass.h"
-#include "lua/LuaComponent.h"
-#include "lua/LuaObject.h"
-#include "lua/LuaPositionable.h"
+#include "LuaClass.h"
+#include "lua/LuaClasses.h"
 
 LuaSubsystem::LuaSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
@@ -29,9 +27,11 @@ bool LuaSubsystem::init() {
 	L = lua_open();
 	luaL_openlibs(L);
 
+	LuaGameEngine_classSetup(L);
 	LuaComponent_classSetup(L);
+	LuaBody_classSetup(L);
+	LuaRenderable_classSetup(L);
 	LuaObject_classSetup(L);
-	LuaPositionable_classSetup(L);
 
 	m_lastTime = Application::instance()->time();
 	return true;

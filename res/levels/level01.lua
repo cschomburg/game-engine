@@ -1,33 +1,51 @@
-function properties()
-	return {
-		['size'] = { 2000, 1500 },
-		['spawn'] = { 572, 456 },
-		['gravitation'] = { 0, -800 },
-		['background'] = {
-			['colorA'] = { 255, 89, 0 },
-			['colorB'] = { 180, 20, 0 },
-		},
-	}
+local level = make("Level", { "Body", "Renderable" })
+level:setType("background")
+level.body:setPos(0, 0)
+level.renderable:setShape("box", 200, 150)
+level.renderable:setGradient(255/255, 89/255, 0/255, 1, 180/255, 20/255, 0, 1)
+level.renderable:setZIndex(-1)
+GameEngine:registerObject(level)
+
+local sun = make("Sun", { "Body", "Renderable" })
+sun:setType("background")
+sun.body:setPos(8, 0)
+sun.renderable:setShape("box", 5.12, 5.12)
+sun.renderable:setTexture("res/images/sun.png")
+sun.renderable:setZIndex(-0.8)
+sun.renderable:setParallax(0.8, 0.8)
+sun.renderable:setBlendMode("add")
+GameEngine:registerObject(sun)
+
+local ground = make("Ground", { "Body", "Renderable" })
+ground:setType("static")
+ground.body:setShape("box", 100, 1.5)
+ground.renderable:setShape("box", 200, 3)
+ground.renderable:setColor(0, 0, 0, 1)
+GameEngine:registerObject(ground)
+
+local tree = make("Tree", { "Body", "Renderable" })
+tree:setType("background")
+tree.body:setPos(5.12, 2.28)
+tree.renderable:setShape("box", 1.5, 1.65)
+tree.renderable:setTexture("res/images/tree.png")
+tree.renderable:setColor(0, 0, 0, 1)
+tree.renderable:setParallax(0.05, 0)
+GameEngine:registerObject(tree)
+
+for i = 0, 500 do
+	local name = "Grass"..i
+	local grass = make(name, { "Body", "Renderable" })
+	grass:setType("background")
+	grass.body:setPos(-2 + i*0.4, 1.66)
+	grass.renderable:setShape("box", 0.77, 0.33)
+	grass.renderable:setTexture("res/images/ground/grass"..math.random(1, 3)..".png")
+	GameEngine:registerObject(grass)
 end
 
-function objects()
-	return {
-		['player'] = {
-			['Positionable'] = properties()['spawn'],
-			['Shape'] = { 32, 32 },
-			['Movable'] = true,
-			['Walkable'] = 500,
-			['Renderable'] = "res/images/foo.png",
-		},
-		['camera'] = {
-			['Positionable'] = true,
-			['Tracker'] = true,
-		},
-
-		{
-			['Positionable'] = { 512, 587},
-			['Shape'] = { 512, 512 },
-			['Renderable'] = "res/images/sun.png",
-		},
-	}
-end
+local player = make("Player", { "Body", "Renderable" })
+player.body:setPos(5.72, 6.56)
+player.body:setShape("box", 0.16, 0.16)
+player.renderable:setShape("box", 1, 1)
+player.renderable:setTexture("res/images/foo.png")
+GameEngine:registerObject(player)
+GameEngine:setPlayer(player)

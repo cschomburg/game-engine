@@ -31,8 +31,6 @@ public:
 
 	Component * component(ComponentType type);
 	void addComponent(Component * component);
-	void removeComponent(Component * component);
-	Component * removeComponent(ComponentType type);
 
 	template<class T> T * component() {
 		return static_cast<T *>(component(T::componentType));
