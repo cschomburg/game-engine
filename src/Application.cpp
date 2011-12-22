@@ -5,6 +5,8 @@
 
 #include "Application.h"
 
+static Application * App = 0;
+
 Application::Application() {
 	m_running = false;
 	m_display = 0;

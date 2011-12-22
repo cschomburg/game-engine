@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#define PI 3.1459
+#define PI 3.14159265359f
 
 float degToRad(float degrees);
 float radToDeg(float radians);

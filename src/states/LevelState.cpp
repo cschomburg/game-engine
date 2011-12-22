@@ -5,8 +5,9 @@
 #include "Object.h"
 #include "components/Body.h"
 #include "states/LevelState.h"
+#include "subsystems/PhysicsSubsystem.h"
 
-LevelState sInstance;
+static LevelState sInstance;
 
 LevelState::LevelState()
 	: GameState("LevelState") {}
@@ -41,6 +42,7 @@ bool LevelState::handle(const SDL_Event &event) {
 				return true;
 			}
 		}
+
 	}
 
 	return false;

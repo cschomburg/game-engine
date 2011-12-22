@@ -4,6 +4,7 @@
 #include "GameEngine.h"
 #include "GameState.h"
 #include "states/LevelState.h"
+#include "states/WorldManipulateState.h"
 #include "Object.h"
 
 #include "SubsystemThread.h"
@@ -40,6 +41,7 @@ bool GameEngine::init() {
 		return false;
 
 	pushState(LevelState::instance());
+	pushState(WorldManipulateState::instance());
 
 	/*
 	if (!m_lua->loadFile("res/lua/init.lua"))

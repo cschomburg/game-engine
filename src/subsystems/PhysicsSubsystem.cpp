@@ -77,3 +77,11 @@ void PhysicsSubsystem::update() {
 		m_world->Step(m_timestep, m_velocityIterations, m_positionIterations);
 	}
 }
+
+float PhysicsSubsystem::timeFactor() const {
+	return m_timeFactor;
+}
+
+void PhysicsSubsystem::setTimeFactor(float timeFactor) {
+	m_timeFactor = timeFactor;
+}

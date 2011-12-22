@@ -41,6 +41,4 @@ private:
 	SDL_Surface *m_display;
 };
 
-static Application * App = 0;
-
 #endif /* end of include guard: APPLICATION_H */

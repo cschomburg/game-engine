@@ -11,6 +11,7 @@ set(
 	src/GameEngine.cpp
 	src/GameState.cpp
 		src/states/LevelState.cpp
+		src/states/WorldManipulateState.cpp
 	src/Math.cpp
 	src/Object.cpp
 	src/Rect.cpp
@@ -60,6 +61,10 @@ find_package(OpenGL REQUIRED)
 find_package(Boost 1.36.0 REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Box2D REQUIRED)
+
+#set(CMAKE_CXX_COMPILER clang++)
+#set(CMAKE_CXX_COMPILER ccache)
+#set(CMAKE_CXX_COMPILER_ARG1="g++")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x")
 

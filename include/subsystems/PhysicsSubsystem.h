@@ -17,6 +17,9 @@ public:
 	void registerObject(Object *object);
 	void unregisterObject(Object *object);
 
+	float timeFactor() const;
+	void setTimeFactor(float timeFactor);
+
 private:
 	std::vector<Body *> m_bodies;
 	std::unique_ptr<b2World> m_world;
