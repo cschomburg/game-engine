@@ -9,27 +9,29 @@ GameEngine:registerObject(level)
 local sun = make("Sun", { "Body", "Renderable" })
 sun:setType("background")
 sun.body:setPos(8, 0)
-sun.renderable:setShape("box", 5.12, 5.12)
-sun.renderable:setTexture("res/images/sun.png")
-sun.renderable:setZIndex(-0.8)
-sun.renderable:setParallax(0.8, 0.8)
-sun.renderable:setBlendMode("add")
+
+apply(sun.renderable, {
+	shape = { "box", 5.12, 5.12 },
+	texture = "res/images/sun.png",
+	zIndex = -0.8,
+	parallax = { 0.8, 0.8 },
+	blendMode = "add",
+})
 GameEngine:registerObject(sun)
 
-local ground = make("Ground", { "Body", "Renderable" })
+local ground = factory.box(0, 0, 200, 3)
+ground:setName("Ground")
 ground:setType("static")
-ground.body:setShape("box", 100, 1.5)
-ground.renderable:setShape("box", 200, 3)
-ground.renderable:setColor(0, 0, 0, 1)
 GameEngine:registerObject(ground)
 
 local tree = make("Tree", { "Body", "Renderable" })
 tree:setType("background")
 tree.body:setPos(5.12, 2.28)
-tree.renderable:setShape("box", 1.5, 1.65)
-tree.renderable:setTexture("res/images/tree.png")
-tree.renderable:setColor(0, 0, 0, 1)
-tree.renderable:setParallax(0.05, 0)
+do local r = tree.renderable
+	r:setShape("box", 1.5, 1.65)
+	r:setTexture("res/images/tree.png")
+	r:setColor(0, 0, 0, 1)
+end
 GameEngine:registerObject(tree)
 
 for i = 0, 500 do
@@ -42,10 +44,11 @@ for i = 0, 500 do
 	GameEngine:registerObject(grass)
 end
 
-local player = make("Player", { "Body", "Renderable" })
-player.body:setPos(5.72, 6.56)
-player.body:setShape("box", 0.16, 0.16)
-player.renderable:setShape("box", 1, 1)
+local player = factory.box(5.72, 6.56, 0.5)
 player.renderable:setTexture("res/images/foo.png")
 GameEngine:registerObject(player)
 GameEngine:setPlayer(player)
+
+local enemy = factory.box(4.72, 6.56, 0.32, 0.32)
+enemy.renderable:setTexture("res/images/foo.png")
+GameEngine:registerObject(enemy)

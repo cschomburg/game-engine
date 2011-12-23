@@ -1,11 +1,55 @@
+
 function make(name, components)
+	if not components then
+		components = { "Body", "Renderable" }
+	end
 	local object = Object.new(name)
+	object.components = {}
 	for _, name in pairs(components) do
-		object[name:lower()] = _G[name].new(object)
-		object:addComponent(object[name:lower()])
+		local component = _G[name].new(object)
+		object[name:lower()] = component
+		object.components[name] = component
+		object:addComponent(component)
 	end
 	return object
 end
+
+function apply(instance, params)
+	if not instance or not params then return end
+
+	for key, value in pairs(params) do
+		local methodName = "set"..key:sub(1,1):upper()..key:sub(2)
+		local method = instance[methodName]
+		if type(method) == "function" then
+			if type(value) == "table" then
+				method(instance, unpack(value))
+			else
+				method(instance, value)
+			end
+		end
+	end
+end
+
+--[[--------------
+	Factories
+-----------------]]
+
+factory = {}
+
+function factory.box(x, y, width, height)
+	local object = make("Box")
+	height = height or width
+	object.body:setPos(x, y)
+	object.body:setShape("box", width/2, height/2)
+	object.renderable:setShape("box", width+0.05, height+0.05)
+	object.renderable:setColor(0, 0, 0, 1)
+	return object
+end
+
+
+--[[--------------
+	Other stuff
+-----------------]]
 
 local frameCount, lastUpdate, fps = 0, 0, 0
 
@@ -19,7 +63,6 @@ function OnUpdate(elapsed)
 		--print(frameCount)
 		lastUpdate = 0
 		frameCount = 0
-		--player:component("Positionable"):modifyPos(0, 100)
 	end
 end
 

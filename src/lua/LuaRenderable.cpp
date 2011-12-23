@@ -109,8 +109,8 @@ int LuaRenderable_parallax(lua_State *L) {
 
 int LuaRenderable_setParallax(lua_State *L) {
 	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
-	int x = luaL_checknumber(L, 2);
-	int y = luaL_checknumber(L, 3);
+	float x = luaL_checknumber(L, 2);
+	float y = luaL_checknumber(L, 3);
 	lua_pop(L, 3);
 
 	renderable->setParallax(Vector2(x, y));
