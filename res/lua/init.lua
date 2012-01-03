@@ -1,13 +1,21 @@
+function string:capitalize()
+	return self:sub(1,1):upper()..self:sub(2)
+end
+
+function string:lowercap()
+	return self:sub(1,1):lower()..self:sub(2)
+end
 
 function make(name, components)
 	if not components then
 		components = { "Body", "Renderable" }
 	end
-	local object = {}
+	local object = setmetatable({}, objectMeta)
 	object.components = {}
 	for _, name in pairs(components) do
 		local component = _G[name].new(name)
-		object[name:lower()] = component
+		component.object = object
+		object[name:lowercap()] = component
 		object.components[name] = component
 	end
 	return object
@@ -15,7 +23,17 @@ end
 
 function register(object)
 	for _, component in pairs(object.components) do
-		component:register()
+		if component.register then
+			component:register()
+		end
+	end
+end
+
+function unregister(object)
+	for _, component in pairs(object.components) do
+		if component.unregister then
+			component:unregister()
+		end
 	end
 end
 
@@ -23,7 +41,7 @@ function apply(instance, params)
 	if not instance or not params then return end
 
 	for key, value in pairs(params) do
-		local methodName = "set"..key:sub(1,1):upper()..key:sub(2)
+		local methodName = "set"..key:capitalize()
 		local method = instance[methodName]
 		if type(method) == "function" then
 			if type(value) == "table" then

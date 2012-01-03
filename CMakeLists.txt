@@ -31,14 +31,16 @@ set(
 	src/Component.cpp
 		src/components/Body.cpp
 		src/components/Renderable.cpp
+		src/components/StaticPos.cpp
 
 		include/interfaces/IPositionable.h
 
 	src/LuaClass.cpp
-	src/lua/LuaBody.cpp
-	src/lua/LuaComponent.cpp
-	src/lua/LuaGameEngine.cpp
-	src/lua/LuaRenderable.cpp
+		src/lua/LuaBody.cpp
+		src/lua/LuaComponent.cpp
+		src/lua/LuaGameEngine.cpp
+		src/lua/LuaRenderable.cpp
+		src/lua/LuaStaticPos.cpp
 
 	src/main.cpp
 )

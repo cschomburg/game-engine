@@ -222,7 +222,7 @@ void LuaRenderable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "new", LuaRenderable_new },
 		{ "register", LuaRenderable_register },
-		{" unregister", LuaRenderable_unregister },
+		{ "unregister", LuaRenderable_unregister },
 		{ "positionable", LuaRenderable_positionable },
 		{ "setPositionable", LuaRenderable_setPositionable },
 		{ "color", LuaRenderable_color },
