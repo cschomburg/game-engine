@@ -1,10 +1,7 @@
 #include <algorithm>
 #include <map>
 
-#include "Application.h"
-#include "Component.h"
 #include "components/Body.h"
-#include "Object.h"
 #include "subsystems/PhysicsSubsystem.h"
 
 PhysicsSubsystem::PhysicsSubsystem(GameEngine *engine)
@@ -14,18 +11,11 @@ PhysicsSubsystem::PhysicsSubsystem(GameEngine *engine)
 	m_timeFactor = 1.0f;
 	m_velocityIterations = 6;
 	m_positionIterations = 2;
-
-	engine->objectRegistered.connect(boost::bind(&PhysicsSubsystem::registerObject, this, _1));
-	engine->objectUnregistered.connect(boost::bind(&PhysicsSubsystem::unregisterObject, this, _1));
 }
 
 PhysicsSubsystem::~PhysicsSubsystem() {}
 
-void PhysicsSubsystem::registerObject(Object *object) {
-	Body *component = object->component<Body>();
-	if (!component)
-		return;
-
+void PhysicsSubsystem::registerBody(Body::Ptr component) {
 	m_bodies.push_back(component);
 
 	if (m_world && !component->body()) {
@@ -33,11 +23,7 @@ void PhysicsSubsystem::registerObject(Object *object) {
 	}
 }
 
-void PhysicsSubsystem::unregisterObject(Object *object) {
-	Body *component = object->component<Body>();
-	if (!component)
-		return;
-
+void PhysicsSubsystem::unregisterBody(Body::Ptr component) {
 	auto it = std::find(m_bodies.begin(), m_bodies.end(), component);
 	if (it == m_bodies.end())
 		return;
@@ -49,7 +35,7 @@ void PhysicsSubsystem::unregisterObject(Object *object) {
 }
 
 bool PhysicsSubsystem::init() {
-	m_currTime = Application::instance()->time() / 1000.0;
+	m_currTime = engine()->time() / 1000.0;
 	m_worldTimeAccumulator = 0;
 	m_worldTime = 0;
 
@@ -57,7 +43,7 @@ bool PhysicsSubsystem::init() {
 	m_world = std::unique_ptr<b2World>(new b2World(gravity));
 
 	for (auto &component : m_bodies) {
-		if (!component->body() && component->object()->type() != ObjectType::Background) {
+		if (!component->body()) {
 			component->initBody(m_world.get());
 		}
 	}
@@ -66,7 +52,7 @@ bool PhysicsSubsystem::init() {
 }
 
 void PhysicsSubsystem::update() {
-	float time = Application::instance()->time() / 1000.0;
+	float time = engine()->time() / 1000.0;
 	float elapsed = time - m_currTime;
 	m_currTime = time;
 	m_worldTimeAccumulator += elapsed * m_timeFactor;

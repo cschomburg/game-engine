@@ -8,7 +8,7 @@ public:
 	LevelState();
 	virtual ~LevelState();
 
-	virtual bool handle(const SDL_Event &event);
+	virtual bool handle(GameEngine *engine, const SDL_Event &event);
 
 	static LevelState *instance();
 };

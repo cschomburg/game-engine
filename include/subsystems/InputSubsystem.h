@@ -5,8 +5,6 @@
 
 #include "Subsystem.h"
 
-class Object;
-
 class InputSubsystem : public Subsystem {
 public:
 	InputSubsystem(GameEngine *engine);

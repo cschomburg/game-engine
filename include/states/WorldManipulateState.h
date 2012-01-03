@@ -8,7 +8,7 @@ public:
 	WorldManipulateState();
 	virtual ~WorldManipulateState();
 
-	virtual bool handle(const SDL_Event &event);
+	virtual bool handle(GameEngine *engine, const SDL_Event &event);
 
 	static WorldManipulateState *instance();
 

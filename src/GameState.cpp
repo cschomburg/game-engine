@@ -1,4 +1,3 @@
-#include "GameEngine.h"
 #include "GameState.h"
 
 GameState::GameState(const std::string &name) {
@@ -24,6 +23,6 @@ void GameState::leave(GameEngine *engine) {
 	m_active = false;
 }
 
-bool GameState::handle(const SDL_Event &event) {
+bool GameState::handle(GameEngine *engine, const SDL_Event &event) {
 	return false;
 }

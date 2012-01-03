@@ -4,11 +4,11 @@
 #include <SDL/SDL_opengl.h>
 
 #include "Color.h"
+#include "Font.h"
+#include "GameEngine.h"
 #include "Subsystem.h"
-
-class Font;
-class Object;
-class Renderable;
+#include "components/Renderable.h"
+#include "interfaces/IPositionable.h"
 
 class GraphicsSubsystem : public Subsystem {
 public:
@@ -18,19 +18,21 @@ public:
 	bool init();
 	void update();
 
-	void registerObject(Object *object);
-	void unregisterObject(Object *object);
-	void setCamera(Object *object);
+	void registerRenderable(Renderable::Ptr renderable);
+	void unregisterRenderable(Renderable::Ptr renderable);
+	void setCamera(IPositionable::Ptr positionable);
 
 	void setColor(const Color &color);
-	void render(const Renderable &renderable);
 
 private:
-	std::vector<Renderable *> m_renderables;
-	Object *m_camera;
-	std::shared_ptr<Font> m_font16;
-	std::shared_ptr<Font> m_font32;
-	std::shared_ptr<Font> m_font48;
+	void render(Renderable::Ptr renderable);
+
+private:
+	std::vector<Renderable::Ptr> m_renderables;
+	IPositionable::Ptr m_camera;
+	Font::Ptr m_font16;
+	Font::Ptr m_font32;
+	Font::Ptr m_font48;
 
 	int m_frameCount;
 	int m_lastSecond;

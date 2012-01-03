@@ -2,6 +2,7 @@
 #include "LuaClass.h"
 
 std::map<std::string, LuaClass *> LuaClass::m_classes;
+std::map<void *, voidPtr> LuaClass::m_managedInstances;
 
 LuaClass::LuaClass(const std::string &name, LuaClass *parent) {
 	m_name = name;
@@ -19,26 +20,32 @@ LuaClass *LuaClass::parent() const {
 }
 
 /**
- * Checks if the variable on the stack is a subclass of this class.
+ * Checks if the variable on the stack is a subclass of this class by
+ * comparing its metatable tree with the class metatable.
  */
 bool LuaClass::isDescendant(lua_State *L, int index) {
 	if (!lua_istable(L, index))
 		return false;
 
-	luaL_getmetatable(L, m_name.c_str()); // Fetch class metatable
-	lua_pushvalue(L, index); // Dup instance table
+	lua_pushstring(L, m_name.c_str());
+	lua_rawget(L, LUA_REGISTRYINDEX); // hidden = registry[class]
+
+	lua_pushliteral(L, "meta");
+	lua_rawget(L, -2); // metatable = hidden[class]
+
+	lua_pushvalue(L, index); // table = instance
 	while (lua_getmetatable(L, -1)) { // getmetatable(table)
 		lua_remove(L, -2); // Remove table
 		if (lua_rawequal(L, -1, -2)) { // metatable == class metatable?
-			lua_pop(L, 2); // Pop metatable and class metatable 
+			lua_pop(L, 3); // Pop metatable and class metatable and hidden
 			return true;
 		}
 		lua_pushliteral(L, "__index");
-		lua_rawget(L, -2); // metatable['__index'] => table
+		lua_rawget(L, -2); // table = metatable['__index']
 		lua_remove(L, -2); // Remove metatable
 	}
 
-	lua_pop(L, 2); // Pop last table and metatable
+	lua_pop(L, 3); // Pop last table, metatable and hidden
 	return false;
 }
 
@@ -53,30 +60,65 @@ bool LuaClass::isDescendant(lua_State *L, int index) {
 void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]) {
 	const char *name = m_name.c_str();
 	luaL_register(L, name, methods); // Create methods table in globals
+	// [methods]
 
-	luaL_newmetatable(L, name); // Create metatable for class in registry
+	lua_newtable(L); // hidden class information
+	// [methods, hidden]
+
+	lua_pushliteral(L, "hidden");
+	lua_pushvalue(L, -2);
+	lua_rawset(L, -4);
+
+	lua_newtable(L); // Create new table for metamethods
 	luaL_register(L, 0, meta); // Populate metatable
+	// [methods, hidden, metatable]
 
 	lua_pushliteral(L, "class");
 	lua_pushstring(L, name);
-	lua_rawset(L, -3); // metatable['class'] = className
+	lua_rawset(L, -3); // metatable.class = className
+	// [methods, hidden, metatable]
 
 	lua_pushliteral(L, "__index");
-	lua_pushvalue(L, -3); // Dup methods table
+	lua_pushvalue(L, -4); // Dup methods table
 	lua_rawset(L, -3); // metatable.__index = methods
+	// [methods, hidden. metatable]
 
+	lua_pushliteral(L, "meta");
+	lua_pushvalue(L, -2); // Dup metatable
+	lua_rawset(L, -4); // hidden.meta = metatable
 	lua_pop(L, 1); // Drop metatable
+	// [methods, hidden]
+
+	lua_pushliteral(L, "instances");
+	lua_newtable(L);
+	lua_rawset(L, -3); // hidden.instances = {}
+	// [methods, hidden]
+
+	lua_pushstring(L, name);
+	lua_pushvalue(L, -2); // Dup hidden
+	lua_rawset(L, LUA_REGISTRYINDEX); // registry[class] = hidden
+	// [methods, hidden]
+
+	lua_pop(L, 1); // Drop hidden table
+	// [methods]
 
 	if (m_parent) { // Inherit methods from parent table
-		luaL_getmetatable(L, m_parent->name().c_str()); // Get parent metatable from registry
-		lua_setmetatable(L, -2); // setmetatable(methods, parents_metatable)
+		lua_pushstring(L, m_parent->name().c_str());
+		lua_rawget(L, LUA_REGISTRYINDEX); // hidden = registry[class]
+		// [methods, hidden]
+		lua_pushliteral(L, "meta");
+		lua_rawget(L, -2); // metatable = hidden.meta
+		// [methods, hidden, metatable]
+		lua_setmetatable(L, -3); // setmetatable(methods, parents_metatable)
+		lua_pop(L, 1); // Drop hidden table
+		// [methods]
 	}
 
 	lua_pop(L, 1); // Drop methods table
 	m_classes[m_name] = this;
 }
 
-void *LuaClass::check(lua_State *L, int index) {
+void *LuaClass::checkRaw(lua_State *L, int index) {
 	if (!isDescendant(L, index)) {
 		luaL_typerror(L, index, m_name.c_str());
 		return 0;
@@ -84,42 +126,83 @@ void *LuaClass::check(lua_State *L, int index) {
 
 	lua_pushnumber(L, 0);
 	lua_rawget(L, index); // Fetch userdata of object-table
-	void *instance = lua_touserdata(L, -1);
+	void **instance = static_cast<void **>(lua_touserdata(L, -1));
 	lua_pop(L, 1); // Pop userdata
 
-	return instance;
+	return *instance;
 }
 
-int LuaClass::push(lua_State *L, void *instance) {
+voidPtr LuaClass::check(lua_State *L, int index) {
+	void *instance = checkRaw(L, index);
+	if (!instance) {
+		luaL_typerror(L, index, m_name.c_str());
+	}
+
+	auto it = m_managedInstances.find(instance);
+	if (it == m_managedInstances.end()) {
+		luaL_argerror(L, index, "invalid instance");
+	}
+
+	return it->second;
+}
+
+int LuaClass::pushRaw(lua_State *L, void *instance) {
 	if (!instance) {
 		lua_pushnil(L);
 		return 1;
 	}
 
 	// Query registry for existing instance table
-	lua_pushlightuserdata(L, instance); // Push instance pointer
-	lua_rawget(L, LUA_REGISTRYINDEX); // Query registry for instance table
-	if (!lua_isnil(L, -1)) // Return existing table
-		return 1;
+	lua_pushstring(L, m_name.c_str());
+	lua_rawget(L, LUA_REGISTRYINDEX); // hidden = registry[class]
+	// [hidden]
+
+	lua_pushliteral(L, "instances");
+	lua_rawget(L, -2); // instances = hidden.instances
+	// [hidden, instances]
+
+	lua_pushlightuserdata(L, instance); // Push raw instance pointer
+	lua_rawget(L, -2); // instance = instances[raw]
+	if (!lua_isnil(L, -1)) { // instance != nil
+		lua_remove(L, -2); // Drop instances table
+		lua_remove(L, -2); // Drop hidden table
+		return 1; // [instance]
+	}
 	lua_pop(L, 1); // Pop nil
+	// [hidden, instances]
 
-	// Create new instance table ...
 	lua_newtable(L); // Push new table for instance
+	// [hidden, instances, instance]
 
-	luaL_getmetatable(L, m_name.c_str()); // Push class metatable from registry
-	lua_setmetatable(L, -2); // setmetatable(table, metatable)
+	lua_pushliteral(L, "meta");
+	lua_rawget(L, -4); // metatable = hidden.meta
+	lua_setmetatable(L, -2); // setmetatable(instance, metatable)
+	// [hidden, instances, instance]
 
 	lua_pushnumber(L, 0);
-	lua_pushlightuserdata(L, instance);
-	lua_rawset(L, -3); // table[0] = userdata
+	void **udata = static_cast<void **>(lua_newuserdata(L, sizeof(void*)));
+	*udata = instance;
+	lua_rawset(L, -3); // instance[0] = userdata
+	// [hidden, instances, instance]
 
 	// ... and store in registry
-	lua_pushlightuserdata(L, instance); // Push instance pointer
+	lua_pushlightuserdata(L, instance); // Push raw instance pointer
 	lua_pushvalue(L, -2); // Dup instance table
-	lua_rawset(L, LUA_REGISTRYINDEX);
+	lua_rawset(L, -4); // instances[raw] = instance
+	// [hidden, instances, instance]
 
-	// Return instance table
-	return 1;
+	lua_remove(L, -2); // Drop instances table
+	lua_remove(L, -2); // Drop hidden table
+
+	return 1; // [instance]
+}
+
+int LuaClass::push(lua_State *L, voidPtr instance) {
+	if (instance) {
+		m_managedInstances[instance.get()] = instance;
+	}
+
+	return pushRaw(L, instance.get());
 }
 
 LuaClass *LuaClass::get(const std::string &name) {

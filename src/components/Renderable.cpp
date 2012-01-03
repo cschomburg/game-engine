@@ -2,19 +2,17 @@
 #include <vector>
 #include <SDL/SDL_opengl.h>
 
-#include "Application.h"
-#include "components/Renderable.h"
-#include "Object.h"
+#include "GameEngine.h"
+#include "ResourceManager.h"
 #include "Texture.h"
+#include "components/Renderable.h"
 #include "subsystems/GraphicsSubsystem.h"
 
-const ComponentType Renderable::componentType = "Renderable";
-
-Renderable::Renderable(Object *object)
-	: Component(componentType, object) {
+Renderable::Renderable(std::string objectID)
+	: Component("Renderable", objectID) {
 	m_color = Color(1, 1, 1, 1);
 	m_gradient = Gradient();
-	m_texture = nullptr;
+	m_texture = 0;
 	m_zIndex = 0.0f;
 	m_blendMode = BlendMode::Blend;
 }
@@ -23,6 +21,14 @@ Renderable::~Renderable() {}
 
 bool Renderable::isValid() const {
 	return !m_shape.points.empty();
+}
+
+IPositionable::WeakPtr Renderable::positionable() const {
+	return m_positionable;
+}
+
+void Renderable::setPositionable(IPositionable::WeakPtr positionable) {
+	m_positionable = positionable;
 }
 
 const Color &Renderable::color() const {
@@ -46,7 +52,7 @@ std::shared_ptr<Texture> Renderable::texture() const {
 }
 
 void Renderable::setTexture(const std::string &texturePath) {
-	m_texture = Application::instance()->manager()->texture(texturePath);
+	m_texture = GameEngine::instance()->manager()->texture(texturePath);
 }
 
 float Renderable::zIndex() const {

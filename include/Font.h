@@ -1,6 +1,7 @@
 #ifndef FONT_H
 #define FONT_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <ft2build.h>
@@ -10,8 +11,12 @@
 
 #include "Resource.h"
 
+class Font;
+
 class Font : public Resource {
 public:
+	typedef std::shared_ptr<Font> Ptr;
+
 	Font(const std::string &file, int height);
 	virtual ~Font();
 

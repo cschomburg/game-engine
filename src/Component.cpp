@@ -1,21 +1,16 @@
 #include "Component.h"
-#include "Object.h"
 
-Component::Component(ComponentType type, Object *object) {
+Component::Component(const std::string &type, const std::string &objectID) {
 	m_type = type;
-	m_object = object;
+	m_objectID = objectID;
 }
 
 Component::~Component() {}
 
-ComponentType Component::type() const {
+std::string Component::type() const {
 	return m_type;
 }
 
-Object * Component::object() const {
-	return m_object;
-}
-
-std::ostream& operator<<(std::ostream &o, const Component *a) {
-	return o << a->type();
+std::string Component::objectID() const {
+	return m_objectID;
 }

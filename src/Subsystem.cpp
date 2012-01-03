@@ -1,4 +1,3 @@
-#include "GameEngine.h"
 #include "Subsystem.h"
 
 Subsystem::Subsystem(GameEngine *engine) {
@@ -7,7 +6,7 @@ Subsystem::Subsystem(GameEngine *engine) {
 
 Subsystem::~Subsystem() {}
 
-GameEngine * Subsystem::engine() const {
+GameEngine *Subsystem::engine() const {
 	return m_engine;
 }
 

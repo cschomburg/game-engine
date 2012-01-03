@@ -1,4 +1,3 @@
-#include "Application.h"
 #include "states/WorldManipulateState.h"
 #include "subsystems/PhysicsSubsystem.h"
 
@@ -9,9 +8,9 @@ WorldManipulateState::WorldManipulateState()
 
 WorldManipulateState::~WorldManipulateState() {}
 
-bool WorldManipulateState::handle(const SDL_Event &event) {
+bool WorldManipulateState::handle(GameEngine *engine, const SDL_Event &event) {
 
-	PhysicsSubsystem *physics = Application::instance()->engine()->physics();
+	PhysicsSubsystem *physics = engine->physics();
 
 	// Timefactor
 	if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_w) {

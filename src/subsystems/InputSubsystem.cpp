@@ -1,4 +1,3 @@
-#include "Application.h"
 #include "GameState.h"
 #include "subsystems/InputSubsystem.h"
 
@@ -13,7 +12,7 @@ void InputSubsystem::update() {
 	while (SDL_PollEvent(&event)) {
 		auto states = engine()->states();
 		for (auto rit = states.rbegin(); rit != states.rend(); rit++) {
-			if ((*rit)->handle(event))
+			if ((*rit)->handle(engine(), event))
 				break;
 		}
 	}

@@ -1,22 +1,76 @@
 #include <cstring>
+#include <string>
+
+#include "GameEngine.h"
 #include "components/Renderable.h"
+#include "interfaces/IPositionable.h"
+#include "subsystems/GraphicsSubsystem.h"
 #include "lua/LuaClasses.h"
 
 LuaClass luaRenderable("Renderable", &luaComponent);
 
 int LuaRenderable_new(lua_State *L) {
-	Object *object = static_cast<Object *>(luaObject.check(L, 1));
+	std::string name(luaL_checkstring(L, 1));
 	lua_pop(L, 1);
-	if (!object)
-		return 0;
 
-	Renderable *renderable = new Renderable(object);
-	luaRenderable.push(L, renderable);
+	luaRenderable.push(L, Renderable::Ptr(new Renderable(name)));
 	return 1;
 }
 
+int LuaRenderable_register(lua_State *L) {
+	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
+	lua_pop(L, 1);
+
+	GameEngine::instance()->graphics()->registerRenderable(renderable);
+	return 0;
+}
+
+int LuaRenderable_unregister(lua_State *L) {
+	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
+	lua_pop(L, 1);
+
+	GameEngine::instance()->graphics()->unregisterRenderable(renderable);
+	return 0;
+}
+
+int LuaRenderable_positionable(lua_State *L) {
+	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
+	lua_pop(L, 1);
+
+	IPositionable::Ptr positionable = renderable->positionable().lock();
+	if (!positionable) {
+		return 0;
+	}
+
+	Component::Ptr component = std::dynamic_pointer_cast<Component>(positionable);
+	if (!component) {
+		return 0;
+	}
+	LuaClass *luaClass = LuaClass::get(component->type());
+	if (!luaClass)
+		luaClass = LuaClass::get("Component");
+	if (!luaClass)
+		return 0;
+
+	luaClass->push(L, component);
+	return 1;
+}
+
+int LuaRenderable_setPositionable(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+	Component::Ptr component = std::static_pointer_cast<Component>(luaComponent.check(L, 2));
+	IPositionable::Ptr positionable = std::dynamic_pointer_cast<IPositionable>(component);
+	if (!positionable) {
+		luaL_typerror(L, 2, "IPositionable");
+	}
+	lua_pop(L, 2);
+
+	renderable->setPositionable(positionable);
+	return 0;
+}
+
 int LuaRenderable_color(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
 
 	Color color = renderable->color();
@@ -28,7 +82,7 @@ int LuaRenderable_color(lua_State *L) {
 }
 
 int LuaRenderable_setColor(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	float r = luaL_checknumber(L, 2);
 	float g = luaL_checknumber(L, 3);
 	float b = luaL_checknumber(L, 4);
@@ -41,7 +95,7 @@ int LuaRenderable_setColor(lua_State *L) {
 
 // TODO: Cleaner gradient API
 int LuaRenderable_gradient(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
 
 	Gradient gradient = renderable->gradient();
@@ -57,7 +111,7 @@ int LuaRenderable_gradient(lua_State *L) {
 }
 
 int LuaRenderable_setGradient(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	float aR = luaL_checknumber(L, 2);
 	float aG = luaL_checknumber(L, 3);
 	float aB = luaL_checknumber(L, 4);
@@ -73,7 +127,7 @@ int LuaRenderable_setGradient(lua_State *L) {
 }
 
 int LuaRenderable_setTexture(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	const char *texturePath = luaL_checkstring(L, 2);
 	lua_pop(L, 2);
 
@@ -82,7 +136,7 @@ int LuaRenderable_setTexture(lua_State *L) {
 }
 
 int LuaRenderable_zIndex(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
 
 	lua_pushnumber(L, renderable->zIndex());
@@ -90,7 +144,7 @@ int LuaRenderable_zIndex(lua_State *L) {
 }
 
 int LuaRenderable_setZIndex(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	float zIndex = luaL_checknumber(L, 2);
 	lua_pop(L, 2);
 
@@ -99,7 +153,7 @@ int LuaRenderable_setZIndex(lua_State *L) {
 }
 
 int LuaRenderable_parallax(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
 
 	lua_pushnumber(L, renderable->parallax().x);
@@ -108,7 +162,7 @@ int LuaRenderable_parallax(lua_State *L) {
 }
 
 int LuaRenderable_setParallax(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
 	lua_pop(L, 3);
@@ -118,7 +172,7 @@ int LuaRenderable_setParallax(lua_State *L) {
 }
 
 int LuaRenderable_blendMode(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
 
 	switch (renderable->blendMode()) {
@@ -132,7 +186,7 @@ int LuaRenderable_blendMode(lua_State *L) {
 }
 
 int LuaRenderable_setBlendMode(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	const char *modeName = luaL_checkstring(L, 2);
 	lua_pop(L, 2);
 
@@ -148,7 +202,7 @@ int LuaRenderable_setBlendMode(lua_State *L) {
 }
 
 int LuaRenderable_setShape(lua_State *L) {
-	Renderable *renderable = static_cast<Renderable *>(luaRenderable.check(L, 1));
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	const char *type = luaL_checkstring(L, 2);
 
 	if (strcmp(type, "box") == 0) {
@@ -167,6 +221,10 @@ int LuaRenderable_setShape(lua_State *L) {
 void LuaRenderable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "new", LuaRenderable_new },
+		{ "register", LuaRenderable_register },
+		{" unregister", LuaRenderable_unregister },
+		{ "positionable", LuaRenderable_positionable },
+		{ "setPositionable", LuaRenderable_setPositionable },
 		{ "color", LuaRenderable_color },
 		{ "setColor", LuaRenderable_setColor },
 		{ "gradient", LuaRenderable_gradient },

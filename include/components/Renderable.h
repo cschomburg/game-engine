@@ -8,8 +8,8 @@
 #include "Color.h"
 #include "Component.h"
 #include "Convex.h"
+#include "interfaces/IPositionable.h"
 
-class Object;
 class Texture;
 
 typedef std::pair<Color, Color> Gradient;
@@ -22,10 +22,15 @@ enum class BlendMode {
 
 class Renderable : public Component {
 public:
-	Renderable(Object *object);
+	typedef std::shared_ptr<Renderable> Ptr;
+
+	Renderable(std::string objectID);
 	virtual ~Renderable();
 
 	bool isValid() const;
+
+	IPositionable::WeakPtr positionable() const;
+	void setPositionable(IPositionable::WeakPtr positionable);
 
 	const Color &color() const;
 	void setColor(const Color &color);
@@ -48,9 +53,8 @@ public:
 	Convex shape() const;
 	void setShape(const Convex &convex);
 
-	static const ComponentType componentType;
-
 private:
+	IPositionable::WeakPtr m_positionable;
 	Color m_color;
 	Gradient m_gradient;
 	std::shared_ptr<Texture> m_texture;

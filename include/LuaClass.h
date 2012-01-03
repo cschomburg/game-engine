@@ -2,6 +2,7 @@
 #define LUACLASS_H
 
 #include <map>
+#include <memory>
 #include <string>
 
 extern "C" {
@@ -9,6 +10,8 @@ extern "C" {
 #include "lualib.h"
 #include "lauxlib.h"
 }
+
+typedef std::shared_ptr<void> voidPtr;
 
 class LuaClass {
 public:
@@ -20,14 +23,21 @@ public:
 
 	bool isDescendant(lua_State *L, int index);
 	void registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]);
-	void *check(lua_State *L, int index);
-	int push(lua_State *L, void *instance);
+	void *checkRaw(lua_State *L, int index);
+	voidPtr check(lua_State *L, int index);
+	int pushRaw(lua_State *L, void *instance);
+	int push(lua_State *L, voidPtr instance);
+
+	template<typename T> typename T::Ptr check(lua_State *L, int index) {
+		return std::static_pointer_cast<T>(check(L, index));
+	}
 
 	static LuaClass *get(const std::string &name);
 
 private:
 	std::string m_name;
 	LuaClass *m_parent;
+	static std::map<void *, voidPtr> m_managedInstances;
 	static std::map<std::string, LuaClass *> m_classes;
 };
 

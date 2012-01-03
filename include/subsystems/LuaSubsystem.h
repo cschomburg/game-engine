@@ -1,6 +1,8 @@
 #ifndef LUASUBSYSTEM_H
 #define LUASUBSYSTEM_H
 
+#include <memory>
+#include "GameEngine.h"
 #include "Subsystem.h"
 
 class lua_State;
@@ -19,7 +21,7 @@ public:
 	bool loadFile(const std::string &file);
 	void printError(int status) const;
 
-	void push(const std::string &className, void *instance, const char *field);
+	void push(const std::string &className, std::shared_ptr<void> instance, const char *field);
 
 private:
 	lua_State *L;

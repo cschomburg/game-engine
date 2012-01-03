@@ -1,11 +1,6 @@
 #include <Box2D/Box2D.h>
 
-#include "Application.h"
-#include "GameEngine.h"
-#include "Object.h"
-#include "components/Body.h"
 #include "states/LevelState.h"
-#include "subsystems/PhysicsSubsystem.h"
 
 static LevelState sInstance;
 
@@ -14,12 +9,13 @@ LevelState::LevelState()
 
 LevelState::~LevelState() {}
 
-bool LevelState::handle(const SDL_Event &event) {
+bool LevelState::handle(GameEngine *engine, const SDL_Event &event) {
 	if (event.type == SDL_QUIT) {
-		Application::instance()->quit();
+		engine->quit();
 		return false;
 	}
 
+	/*
 	GameEngine *engine = Application::instance()->engine();
 
 	Object *player = engine->player();
@@ -44,6 +40,7 @@ bool LevelState::handle(const SDL_Event &event) {
 		}
 
 	}
+	*/
 
 	return false;
 }

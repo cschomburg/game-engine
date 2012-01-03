@@ -3,15 +3,20 @@ function make(name, components)
 	if not components then
 		components = { "Body", "Renderable" }
 	end
-	local object = Object.new(name)
+	local object = {}
 	object.components = {}
 	for _, name in pairs(components) do
-		local component = _G[name].new(object)
+		local component = _G[name].new(name)
 		object[name:lower()] = component
 		object.components[name] = component
-		object:addComponent(component)
 	end
 	return object
+end
+
+function register(object)
+	for _, component in pairs(object.components) do
+		component:register()
+	end
 end
 
 function apply(instance, params)
@@ -29,23 +34,6 @@ function apply(instance, params)
 		end
 	end
 end
-
---[[--------------
-	Factories
------------------]]
-
-factory = {}
-
-function factory.box(x, y, width, height)
-	local object = make("Box")
-	height = height or width
-	object.body:setPos(x, y)
-	object.body:setShape("box", width/2, height/2)
-	object.renderable:setShape("box", width+0.05, height+0.05)
-	object.renderable:setColor(0, 0, 0, 1)
-	return object
-end
-
 
 --[[--------------
 	Other stuff

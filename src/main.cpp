@@ -1,8 +1,7 @@
-#include <SDL/SDL.h>
-
-#include "Application.h"
+#include "GameEngine.h"
 
 int main(int argc, char *argv[])
 {
-	return Application::instance()->execute();
+	GameEngine engine;
+	return engine.execute();
 }

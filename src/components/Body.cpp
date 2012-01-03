@@ -1,14 +1,12 @@
 #include "Box2DCompat.h"
 #include "components/Body.h"
-#include "Object.h"
 
-const ComponentType Body::componentType = "Body";
-
-Body::Body(Object *object)
-	: Component(componentType, object) {
+Body::Body(const std::string &objectID)
+	: Component("Body", objectID) {
 	m_angle = 0;
 	m_body = 0;
 	m_shape = 0;
+	m_type = "dynamic";
 }
 
 Body::~Body() {
@@ -20,12 +18,12 @@ Body::~Body() {
 
 b2BodyDef Body::def() const {
 	b2BodyDef def;
-	if (object()->type() == ObjectType::Dynamic) {
+	if (m_type == "dynamic") {
 		def.type = b2_dynamicBody;
 		def.allowSleep = false;
-	} else if (object()->type() == ObjectType::Static) {
+	} else if (m_type == "static") {
 		def.type = b2_staticBody;
-	} else if (object()->type() == ObjectType::Kinematic) {
+	} else if (m_type == "kinematic") {
 		def.type = b2_kinematicBody;
 	}
 	def.position = toBox2D(m_pos);
@@ -43,8 +41,6 @@ b2Body *Body::body() const {
 }
 
 void Body::initBody(b2World *world) {
-	if (m_body || object()->type() == ObjectType::Background)
-		return;
 	b2BodyDef d = def();
 	m_body = world->CreateBody(&d);
 	if (m_shape) {
@@ -64,6 +60,14 @@ void Body::setShape(b2Shape *shape) {
 	if (m_shape)
 		delete m_shape;
 	m_shape = shape;
+}
+
+std::string Body::type() const {
+	return m_type;
+}
+
+void Body::setType(const std::string &type) {
+	m_type = type;
 }
 
 Vector2 Body::pos() const {

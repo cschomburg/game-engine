@@ -4,16 +4,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 set(
 	SOURCES
-	src/Application.cpp
+	src/GameEngine.cpp
+
 	src/Color.cpp
 	src/Convex.cpp
 	src/Font.cpp
-	src/GameEngine.cpp
 	src/GameState.cpp
 		src/states/LevelState.cpp
 		src/states/WorldManipulateState.cpp
 	src/Math.cpp
-	src/Object.cpp
 	src/Rect.cpp
 	src/Resource.cpp
 	src/ResourceManager.cpp
@@ -22,7 +21,6 @@ set(
 
 	src/Box2DCompat.cpp
 
-	src/SubsystemThread.cpp
 	src/Subsystem.cpp
 		src/subsystems/PhysicsSubsystem.cpp
 		src/subsystems/GraphicsSubsystem.cpp
@@ -33,15 +31,13 @@ set(
 	src/Component.cpp
 		src/components/Body.cpp
 		src/components/Renderable.cpp
-		#src/components/Tracker.cpp
-		#src/components/Updatable.cpp
-		#src/components/Walkable.cpp
+
+		include/interfaces/IPositionable.h
 
 	src/LuaClass.cpp
 	src/lua/LuaBody.cpp
 	src/lua/LuaComponent.cpp
 	src/lua/LuaGameEngine.cpp
-	src/lua/LuaObject.cpp
 	src/lua/LuaRenderable.cpp
 
 	src/main.cpp

@@ -6,7 +6,6 @@
 extern LuaClass luaBody;
 extern LuaClass luaComponent;
 extern LuaClass luaGameEngine;
-extern LuaClass luaObject;
 extern LuaClass luaRenderable;
 
 void LuaBody_classSetup(lua_State *L);

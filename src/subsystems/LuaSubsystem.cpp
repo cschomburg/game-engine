@@ -7,7 +7,6 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "Application.h"
 #include "subsystems/LuaSubsystem.h"
 #include "LuaClass.h"
 #include "lua/LuaClasses.h"
@@ -31,9 +30,8 @@ bool LuaSubsystem::init() {
 	LuaComponent_classSetup(L);
 	LuaBody_classSetup(L);
 	LuaRenderable_classSetup(L);
-	LuaObject_classSetup(L);
 
-	m_lastTime = Application::instance()->time();
+	m_lastTime = engine()->time();
 	return true;
 }
 
@@ -45,7 +43,7 @@ void LuaSubsystem::destroy() {
 }
 
 void LuaSubsystem::update() {
-	int time = Application::instance()->time();
+	int time = engine()->time();
 	float elapsed = float(time - m_lastTime) / 1000;
 	m_lastTime = time;
 
@@ -84,7 +82,7 @@ void LuaSubsystem::printError(int status) const {
 	}
 }
 
-void LuaSubsystem::push(const std::string &className, void *instance, const char *field) {
+void LuaSubsystem::push(const std::string &className, std::shared_ptr<void> instance, const char *field) {
 	LuaClass *luaClass = LuaClass::get(className);
 	if (!luaClass)
 		return;

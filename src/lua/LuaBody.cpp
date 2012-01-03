@@ -1,23 +1,56 @@
 #include <cstring>
+#include <string>
 
+#include "GameEngine.h"
 #include "components/Body.h"
+#include "subsystems/PhysicsSubsystem.h"
 #include "lua/LuaClasses.h"
 
 LuaClass luaBody("Body", &luaComponent);
 
 int LuaBody_new(lua_State *L) {
-	Object *object = static_cast<Object *>(luaObject.check(L, 1));
+	std::string name(luaL_checkstring(L, 1));
 	lua_pop(L, 1);
-	if (!object)
-		return 0;
 
-	Body *body= new Body(object);
-	luaBody.push(L, body);
+	luaBody.push(L, Body::Ptr(new Body(name)));
 	return 1;
 }
 
+int LuaBody_register(lua_State *L) {
+	Body::Ptr body = luaBody.check<Body>(L, 1);
+	lua_pop(L, 1);
+
+	GameEngine::instance()->physics()->registerBody(body);
+	return 0;
+}
+
+int LuaBody_unregister(lua_State *L) {
+	Body::Ptr body = luaBody.check<Body>(L, 1);
+	lua_pop(L, 1);
+
+	GameEngine::instance()->physics()->unregisterBody(body);
+	return 0;
+}
+
+int LuaBody_type(lua_State *L) {
+	Body::Ptr body = luaBody.check<Body>(L, 1);
+	lua_pop(L, 1);
+
+	lua_pushstring(L, body->type().c_str());
+	return 1;
+}
+
+int LuaBody_setType(lua_State *L) {
+	Body::Ptr body = luaBody.check<Body>(L, 1);
+	std::string type(luaL_checkstring(L, 2));
+	lua_pop(L, 2);
+
+	body->setType(type);
+	return 0;
+}
+
 int LuaBody_setShape(lua_State *L) {
-	Body *body = static_cast<Body *>(luaBody.check(L, 1));
+	Body::Ptr body = luaBody.check<Body>(L, 1);
 	const char *type = luaL_checkstring(L, 2);
 
 	if (strcmp(type, "box") == 0) {
@@ -36,7 +69,7 @@ int LuaBody_setShape(lua_State *L) {
 }
 
 int LuaBody_pos(lua_State *L) {
-	Body *body = static_cast<Body *>(luaBody.check(L, 1));
+	Body::Ptr body = luaBody.check<Body>(L, 1);
 	lua_pop(L, 1);
 
 	lua_pushnumber(L, body->pos().x);
@@ -45,7 +78,7 @@ int LuaBody_pos(lua_State *L) {
 }
 
 int LuaBody_setPos(lua_State *L) {
-	Body *body = static_cast<Body *>(luaBody.check(L, 1));
+	Body::Ptr body = luaBody.check<Body>(L, 1);
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
 	lua_pop(L, 3);
@@ -55,7 +88,7 @@ int LuaBody_setPos(lua_State *L) {
 }
 
 int LuaBody_angle(lua_State *L) {
-	Body *body = static_cast<Body *>(luaBody.check(L, 1));
+	Body::Ptr body = luaBody.check<Body>(L, 1);
 	lua_pop(L, 1);
 
 	lua_pushnumber(L, body->angle());
@@ -63,7 +96,7 @@ int LuaBody_angle(lua_State *L) {
 }
 
 int LuaBody_setAngle(lua_State *L) {
-	Body *body = static_cast<Body *>(luaBody.check(L, 1));
+	Body::Ptr body = luaBody.check<Body>(L, 1);
 	float angle = luaL_checknumber(L, 2);
 	lua_pop(L, 2);
 
@@ -74,6 +107,10 @@ int LuaBody_setAngle(lua_State *L) {
 void LuaBody_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "new", LuaBody_new },
+		{ "register", LuaBody_register },
+		{ "unregister", LuaBody_unregister },
+		{ "type", LuaBody_type },
+		{ "setType", LuaBody_setType },
 		{ "setShape", LuaBody_setShape },
 		{ "pos", LuaBody_pos },
 		{ "setPos", LuaBody_setPos },

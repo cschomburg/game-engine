@@ -1,11 +1,11 @@
 #ifndef SUBSYSTEM_H
 #define SUBSYSTEM_H
 
-class GameEngine;
+#include "GameEngine.h"
 
 class Subsystem {
 public:
-	Subsystem(GameEngine *engine = 0);
+	Subsystem(GameEngine *engine);
 	virtual ~Subsystem();
 
 	GameEngine *engine() const;

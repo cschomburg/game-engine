@@ -3,8 +3,7 @@
 
 #include <string>
 #include <SDL/SDL.h>
-
-class GameEngine;
+#include "GameEngine.h"
 
 class GameState {
 public:
@@ -17,7 +16,7 @@ public:
 	virtual void enter(GameEngine *engine);
 	virtual void leave(GameEngine *engine);
 
-	virtual bool handle(const SDL_Event &event);
+	virtual bool handle(GameEngine *engine, const SDL_Event &event);
 
 private:
 	std::string m_name;

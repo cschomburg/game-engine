@@ -1,29 +1,22 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <map>
+#include <memory>
 #include <string>
-#include <iostream>
-
-typedef std::string ComponentType;
-
-class Object;
 
 class Component {
 public:
-	Component(ComponentType type, Object *object);
+	typedef std::shared_ptr<Component> Ptr;
+
+	Component(const std::string &type, const std::string &objectID);
 	virtual ~Component();
 
-	ComponentType type() const;
-	Object * object() const;
+	std::string type() const;
+	std::string objectID() const;
 
 private:
-	ComponentType m_type;
-	Object *m_object;
+	std::string m_type;
+	std::string m_objectID;
 };
-
-typedef std::map<ComponentType, Component *> ComponentMap;
-
-std::ostream& operator<<(std::ostream &o, const Component *a);
 
 #endif /* end of include guard: COMPONENT_H */
