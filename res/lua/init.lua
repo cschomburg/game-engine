@@ -60,13 +60,13 @@ end
 local frameCount, lastUpdate, fps = 0, 0, 0
 
 local total = 0
-function OnUpdate(elapsed)
+function onUpdate(elapsed)
 	lastUpdate = lastUpdate + elapsed
 	frameCount = frameCount + 1
 	total = total + elapsed
 
 	if lastUpdate > 1 then
-		--print(frameCount)
+		print(frameCount)
 		lastUpdate = 0
 		frameCount = 0
 	end
@@ -94,6 +94,14 @@ function dump(...)
 		str = str .. dump_r(select(i, ...))
 	end
 	print(str)
+end
+
+function onKeyUp(key)
+	print("Up:", key)
+end
+
+function onQuit()
+	print ("Bye!")
 end
 
 math.randomseed(os.time())

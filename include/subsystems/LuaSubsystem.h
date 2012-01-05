@@ -6,6 +6,9 @@
 #include "Subsystem.h"
 
 class lua_State;
+class LuaCall;
+
+typedef std::shared_ptr<void> voidPtr;
 
 class LuaSubsystem : public Subsystem {
 public:
@@ -16,16 +19,21 @@ public:
 	void update();
 	void destroy();
 
-	lua_State *state() const;
-
 	bool loadFile(const std::string &file);
 	void printError(int status) const;
 
-	void push(const std::string &className, std::shared_ptr<void> instance, const char *field);
+
+	std::shared_ptr<LuaCall> startCall(const std::string &ident);
+	std::shared_ptr<LuaCall> startGlobalCall(const std::string &funcName);
+	std::shared_ptr<LuaCall> startMethodCall(const std::string &className,
+			voidPtr instance, const std::string &methodName);
 
 private:
 	lua_State *L;
 	int m_lastTime;
+
+	int m_callArgs;
+	std::weak_ptr<LuaCall> m_lastCall;
 };
 
 #endif /* end of include guard: LUASUBSYSTEM_H*/

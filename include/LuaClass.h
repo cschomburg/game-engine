@@ -5,11 +5,7 @@
 #include <memory>
 #include <string>
 
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
+#include "Lua.h"
 
 typedef std::shared_ptr<void> voidPtr;
 
