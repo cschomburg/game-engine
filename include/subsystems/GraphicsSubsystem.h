@@ -1,3 +1,6 @@
+#ifndef GRAPHICSSUBSYSTEM_H
+#define GRAPHICSSUBSYSTEM_H
+
 #include <memory>
 #include <set>
 #include <SDL/SDL.h>
@@ -39,3 +42,5 @@ private:
 	int m_lastSecond;
 	int m_fps;
 };
+
+#endif /* end of include guard: GRAPHICSSUBSYSTEM_H */

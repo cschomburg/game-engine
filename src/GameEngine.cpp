@@ -6,6 +6,7 @@
 
 #include "states/LevelState.h"
 #include "states/WorldManipulateState.h"
+#include "subsystems/Profiler.h"
 #include "subsystems/PhysicsSubsystem.h"
 #include "subsystems/GraphicsSubsystem.h"
 #include "subsystems/LuaSubsystem.h"
@@ -20,11 +21,12 @@ GameEngine::GameEngine() {
 	m_display = 0;
 
 	m_manager = std::unique_ptr<ResourceManager>(new ResourceManager());
+	m_profiler = std::unique_ptr<Profiler>(new Profiler(this));
+
 	m_physics = std::unique_ptr<PhysicsSubsystem>(new PhysicsSubsystem(this));
 	m_graphics = std::unique_ptr<GraphicsSubsystem>(new GraphicsSubsystem(this));
 	m_lua = std::unique_ptr<LuaSubsystem>(new LuaSubsystem(this));
 	m_input = std::unique_ptr<InputSubsystem>(new InputSubsystem(this));
-	//m_logic = new LogicSubsystem(this);
 }
 
 GameEngine::~GameEngine() {
@@ -82,11 +84,11 @@ bool GameEngine::init() {
 	//SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 	
 	// Initialize subsystems	
+	m_profiler->init();
 	m_physics->init();
 	m_graphics->init();
 	m_lua->init();
 	m_input->init();
-	//m_logic->init();
 
 	// Load level
 	if (!m_lua->loadFile("res/lua/init.lua"))
@@ -102,18 +104,35 @@ bool GameEngine::init() {
 }
 
 void GameEngine::update() {
+	m_profiler->start("Update");
+
+	m_profiler->start("Physics");
 	m_physics->update();
+	m_profiler->stop("Physics");
+
+	m_profiler->start("Input");
 	m_input->update();
+	m_profiler->stop("Input");
+
+	m_profiler->start("Lua");
 	m_lua->update();
+	m_profiler->stop("Lua");
+
+	m_profiler->start("Graphics");
 	m_graphics->update();
+	m_profiler->stop("Graphics");
+
+	m_profiler->stop("Update");
 }
 
 void GameEngine::destroy() {
+	m_profiler->report(std::cout);
+
+	m_profiler->destroy();
 	m_physics->destroy();
 	m_graphics->destroy();
 	m_lua->destroy();
 	m_input->destroy();
-	//m_logic->destroy();
 
 	SDL_FreeSurface(m_display);
 	m_display = 0;
@@ -159,6 +178,11 @@ ResourceManager *GameEngine::manager() const {
 	return m_manager.get();
 }
 
+Profiler *GameEngine::profiler() const {
+	return m_profiler.get();
+}
+
+
 PhysicsSubsystem *GameEngine::physics() const {
 	return m_physics.get();
 }
@@ -174,8 +198,3 @@ LuaSubsystem *GameEngine::lua() const {
 InputSubsystem *GameEngine::input() const {
 	return m_input.get();
 }
-
-/*
-LogicSubsystem *GameEngine::logic() const {
-	return m_logic;
-}*/

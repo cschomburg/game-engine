@@ -1,3 +1,6 @@
+#ifndef PHYSICSSUBSYSTEM_H
+#define PHYSICSSUBSYSTEM_H
+
 #include <memory>
 #include <Box2D/Box2D.h>
 
@@ -31,3 +34,5 @@ private:
 	float m_timestep;
 	float m_worldTime;
 };
+
+#endif /* end of include guard: PHYSICSSUBSYSTEM_H */

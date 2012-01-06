@@ -13,6 +13,7 @@ class PhysicsSubsystem;
 class GraphicsSubsystem;
 class LuaSubsystem;
 class InputSubsystem;
+class Profiler;
 
 class GameEngine {
 public:
@@ -37,10 +38,13 @@ public:
 	void popState();
 
 	ResourceManager *manager() const;
+	Profiler *profiler() const;
+
 	PhysicsSubsystem *physics() const;
 	GraphicsSubsystem *graphics() const;
 	LuaSubsystem *lua() const;
 	InputSubsystem *input() const;
+
 
 private:
 	bool init();
@@ -58,6 +62,8 @@ private:
 	SDL_Surface *m_display;
 
 	std::unique_ptr<ResourceManager> m_manager;
+	std::unique_ptr<Profiler> m_profiler;
+
 	std::unique_ptr<PhysicsSubsystem> m_physics;
 	std::unique_ptr<GraphicsSubsystem> m_graphics;
 	std::unique_ptr<LuaSubsystem> m_lua;

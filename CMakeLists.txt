@@ -45,7 +45,7 @@ set(
 		src/subsystems/GraphicsSubsystem.cpp
 		src/subsystems/InputSubsystem.cpp
 		src/subsystems/LuaSubsystem.cpp
-		#src/subsystems/LogicSubsystem.cpp
+		src/subsystems/Profiler.cpp
 
 	src/Component.cpp
 		src/components/Body.cpp
