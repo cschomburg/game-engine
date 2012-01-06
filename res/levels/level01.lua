@@ -1,74 +1,56 @@
-local level = make("Level", { "StaticPos", "Renderable" })
-level.staticPos:setPos(0, 0)
-level.renderable:setPositionable(level.staticPos)
-level.renderable:setShape("box", 200, 150)
-level.renderable:setGradient(255/255, 89/255, 0/255, 1, 180/255, 20/255, 0, 1)
-level.renderable:setZIndex(-1)
-register(level)
+local sky = make:background("Sky")
+do local r = sky.renderable
+	r:setShape("box", 200, 150)
+	r:setGradient(255/255, 89/255, 0/255, 1, 180/255, 20/255, 0, 1)
+	r:setZIndex(-1)
+end
+sky:register()
 
-local sun = make("Sun", { "StaticPos", "Renderable" })
+local sun = make:background("Sun")
 sun.staticPos:setPos(8, 0)
-apply(sun.renderable, {
-	positionable = {sun.staticPos},
-	shape = { "box", 5.12, 5.12 },
-	texture = "res/images/sun.png",
-	zIndex = -0.8,
-	parallax = { 0.8, 0.8 },
-	blendMode = "add",
-})
-register(sun)
+do local r = sun.renderable
+	r:setShape("box", 5.12, 5.12)
+	r:setTexture("res/images/sun.png")
+	r:setZIndex(-0.8)
+	r:setParallax(0.8, 0.8)
+	r:setBlendMode("add")
+end
+sun:register()
 
-local ground = make("Ground", { "Body", "Renderable" })
-ground.body:setType("static")
+local ground = make:static("Ground")
 ground.body:setShape("box", 100, 1.5)
-ground.renderable:setPositionable(ground.body)
-ground.renderable:setShape("box", 200, 3)
-ground.renderable:setColor(0, 0, 0, 1)
-register(ground)
+do local r = ground.renderable
+	r:setShape("box", 200, 3)
+	r:setColor(0, 0, 0, 1)
+end
+ground:register()
 
-local tree = make("Tree", { "Renderable" })
+local tree = make:background("Tree")
+tree.staticPos:setPos(5.12, 2.28)
 do local r = tree.renderable
-	r:setPositionable(StaticPos.new("Tree"))
-	r:positionable():setPos(5.12, 2.28)
 	r:setShape("box", 1.5, 1.65)
 	r:setTexture("res/images/tree.png")
 	r:setColor(0, 0, 0, 1)
 end
-register(tree)
+tree:register()
 
-grasses = {}
 for i = 0, 500 do
-	local name = "Grass"..i
-	local grass = make(name, { "StaticPos", "Renderable" })
+	local grass = make:background()
 	grass.staticPos:setPos(-2 + i*0.4, 1.66)
-	grass.renderable:setPositionable(grass.staticPos)
 	grass.renderable:setShape("box", 0.77, 0.33)
 	grass.renderable:setTexture("res/images/ground/grass"..math.random(1, 3)..".png")
-	register(grass)
-	table.insert(grasses, grass)
+	grass:register()
 end
 
-local player = make("Player", { "Body", "Renderable" })
+local player = make:player()
 player.body:setPos(5.72, 6.56)
-player.body:setShape("box", 0.25, 0.25)
-player.renderable:setPositionable(player.body)
-player.renderable:setShape("box", 0.5, 0.5)
-player.renderable:setTexture("res/images/foo.png")
-register(player)
+player:register()
 Graphics.setCamera(player.body)
 
 function onKeyUp(key)
-	print(key)
-	if key == " " then
-		print(tree.renderable[0])
-		unregister(tree)
-		dump(Renderable.hidden.instances)
+	if key == " " and tree then
+		tree:unregister()
 		tree = nil
-		for _, grass in pairs(grasses) do
-			unregister(grass)
-		end
-		grasses = nil
 		print("This kills the tree!")
-		collectgarbage("collect")
 	end
 end
