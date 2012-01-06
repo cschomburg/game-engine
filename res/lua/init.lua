@@ -12,11 +12,11 @@ function make(name, components)
 	end
 	local object = setmetatable({}, objectMeta)
 	object.components = {}
-	for _, name in pairs(components) do
-		local component = _G[name].new(name)
+	for _, cType in pairs(components) do
+		local component = _G[cType].new(name)
 		component.object = object
-		object[name:lowercap()] = component
-		object.components[name] = component
+		object[cType:lowercap()] = component
+		object.components[cType] = component
 	end
 	return object
 end
@@ -77,10 +77,11 @@ function dump(...)
 	local function dump_r(o)
 		if type(o) == 'table' and not found[o] then
 			found[o] = true
-			local s = '{ '
+			local s = '{\n'
 			for k,v in pairs(o) do
 				if type(k) ~= 'number' then k = '"'..tostring(k)..'"' end
-				s = s .. '['..k..'] = ' .. dump_r(v) .. ','
+				s = s .. '\t['..k..'] = ' .. dump_r(v):gsub("\n", "\n\t") .. ','
+				s = s.."\n"
 			end
 			return s .. '} '
 		else

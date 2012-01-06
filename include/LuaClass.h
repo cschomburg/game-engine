@@ -29,12 +29,17 @@ public:
 	}
 
 	static LuaClass *get(const std::string &name);
+	static void remove(void *instance);
+
+private:
+	static int setupUserdataMeta(lua_State *L);
 
 private:
 	std::string m_name;
 	LuaClass *m_parent;
 	static std::map<void *, voidPtr> m_managedInstances;
 	static std::map<std::string, LuaClass *> m_classes;
+	static const luaL_reg userdataMeta[];
 };
 
 #endif /* end of include guard: LUACLASS_H */

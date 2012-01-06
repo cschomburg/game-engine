@@ -37,7 +37,7 @@ int LuaRenderable_positionable(lua_State *L) {
 	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
 	lua_pop(L, 1);
 
-	IPositionable::Ptr positionable = renderable->positionable().lock();
+	IPositionable::Ptr positionable = renderable->positionable();
 	if (!positionable) {
 		return 0;
 	}

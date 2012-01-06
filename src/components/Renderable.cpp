@@ -23,11 +23,11 @@ bool Renderable::isValid() const {
 	return !m_shape.points.empty();
 }
 
-IPositionable::WeakPtr Renderable::positionable() const {
+IPositionable::Ptr Renderable::positionable() const {
 	return m_positionable;
 }
 
-void Renderable::setPositionable(IPositionable::WeakPtr positionable) {
+void Renderable::setPositionable(IPositionable::Ptr positionable) {
 	m_positionable = positionable;
 }
 

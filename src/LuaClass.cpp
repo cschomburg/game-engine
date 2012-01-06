@@ -4,6 +4,17 @@
 std::map<std::string, LuaClass *> LuaClass::m_classes;
 std::map<void *, voidPtr> LuaClass::m_managedInstances;
 
+static int Userdata_gc(lua_State *L) {
+	void **instance = static_cast<void **>(lua_touserdata(L, -1));
+	LuaClass::remove(*instance);
+	return 0;
+}
+
+const luaL_reg LuaClass::userdataMeta[] = {
+	{ "__gc", Userdata_gc },
+	{ 0, 0 },
+};
+
 LuaClass::LuaClass(const std::string &name, LuaClass *parent) {
 	m_name = name;
 	m_parent = parent;
@@ -17,6 +28,11 @@ std::string LuaClass::name() const {
 
 LuaClass *LuaClass::parent() const {
 	return m_parent;
+}
+
+int LuaClass::setupUserdataMeta(lua_State *L) {
+	luaL_register(L, "LuaClassInstance", userdataMeta);
+	return 1;
 }
 
 /**
@@ -89,9 +105,18 @@ void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_
 	lua_pop(L, 1); // Drop metatable
 	// [methods, hidden]
 
+	lua_newtable(L); // instances
 	lua_pushliteral(L, "instances");
-	lua_newtable(L);
-	lua_rawset(L, -3); // hidden.instances = {}
+	lua_pushvalue(L, -2); // Dup instances
+	lua_rawset(L, -4); // hidden.instances = {}
+	// [methods, hidden, instances]
+
+	lua_newtable(L); // instances meta
+	lua_pushliteral(L, "__mode");
+	lua_pushliteral(L, "v");
+	lua_rawset(L, -3); // meta.__mode = "v"
+	lua_setmetatable(L, -2); // setmetatable(instances, meta)
+	lua_pop(L, 1); // Drop instances
 	// [methods, hidden]
 
 	lua_pushstring(L, name);
@@ -179,10 +204,20 @@ int LuaClass::pushRaw(lua_State *L, void *instance) {
 	lua_setmetatable(L, -2); // setmetatable(instance, metatable)
 	// [hidden, instances, instance]
 
-	lua_pushnumber(L, 0);
 	void **udata = static_cast<void **>(lua_newuserdata(L, sizeof(void*)));
 	*udata = instance;
-	lua_rawset(L, -3); // instance[0] = userdata
+	lua_pushnumber(L, 0);
+	lua_pushvalue(L, -2); // Dup userdata
+	lua_rawset(L, -4); // instance[0] = userdata
+	// [hidden, instances, instance, userdata]
+
+	luaL_getmetatable(L, "LuaClassInstance");
+	if (lua_isnil(L, -1)) {
+		lua_pop(L, 1); // Drop nil
+		setupUserdataMeta(L);
+	}
+	lua_setmetatable(L, -2); // setmetatable(userdata, instanceMeta)
+	lua_pop(L, 1); // Drop userdata
 	// [hidden, instances, instance]
 
 	// ... and store in registry
@@ -207,4 +242,11 @@ int LuaClass::push(lua_State *L, voidPtr instance) {
 
 LuaClass *LuaClass::get(const std::string &name) {
 	return m_classes.find(name)->second;
+}
+
+void LuaClass::remove(void *instance) {
+	auto it = m_managedInstances.find(instance);
+	if (it == m_managedInstances.end())
+		return;
+	m_managedInstances.erase(it);
 }

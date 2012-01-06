@@ -106,7 +106,7 @@ void GraphicsSubsystem::setColor(const Color &color) {
 }
 
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
-	IPositionable::Ptr positionable = renderable->positionable().lock();
+	IPositionable::Ptr positionable = renderable->positionable();
 	if (!positionable)
 		return;
 

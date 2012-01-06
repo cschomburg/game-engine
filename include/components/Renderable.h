@@ -29,8 +29,8 @@ public:
 
 	bool isValid() const;
 
-	IPositionable::WeakPtr positionable() const;
-	void setPositionable(IPositionable::WeakPtr positionable);
+	IPositionable::Ptr positionable() const;
+	void setPositionable(IPositionable::Ptr positionable);
 
 	const Color &color() const;
 	void setColor(const Color &color);
@@ -54,7 +54,7 @@ public:
 	void setShape(const Convex &convex);
 
 private:
-	IPositionable::WeakPtr m_positionable;
+	IPositionable::Ptr m_positionable;
 	Color m_color;
 	Gradient m_gradient;
 	std::shared_ptr<Texture> m_texture;

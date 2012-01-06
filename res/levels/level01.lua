@@ -26,17 +26,17 @@ ground.renderable:setShape("box", 200, 3)
 ground.renderable:setColor(0, 0, 0, 1)
 register(ground)
 
-local tree = make("Tree", { "Body", "Renderable" })
-tree.body:setType("static")
-tree.body:setPos(5.12, 2.28)
+local tree = make("Tree", { "Renderable" })
 do local r = tree.renderable
-	r:setPositionable(tree.body)
+	r:setPositionable(StaticPos.new("Tree"))
+	r:positionable():setPos(5.12, 2.28)
 	r:setShape("box", 1.5, 1.65)
 	r:setTexture("res/images/tree.png")
 	r:setColor(0, 0, 0, 1)
 end
 register(tree)
 
+grasses = {}
 for i = 0, 500 do
 	local name = "Grass"..i
 	local grass = make(name, { "StaticPos", "Renderable" })
@@ -45,6 +45,7 @@ for i = 0, 500 do
 	grass.renderable:setShape("box", 0.77, 0.33)
 	grass.renderable:setTexture("res/images/ground/grass"..math.random(1, 3)..".png")
 	register(grass)
+	table.insert(grasses, grass)
 end
 
 local player = make("Player", { "Body", "Renderable" })
@@ -59,12 +60,15 @@ Graphics.setCamera(player.body)
 function onKeyUp(key)
 	print(key)
 	if key == " " then
-		if tree.unregistered then
-			register(tree)
-		else
-			unregister(tree)
-			print("unregister")
+		print(tree.renderable[0])
+		unregister(tree)
+		dump(Renderable.hidden.instances)
+		tree = nil
+		for _, grass in pairs(grasses) do
+			unregister(grass)
 		end
-		tree.unregistered = not tree.unregistered
+		grasses = nil
+		print("This kills the tree!")
+		collectgarbage("collect")
 	end
 end
