@@ -43,6 +43,7 @@ b2Body *Body::body() const {
 void Body::initBody(b2World *world) {
 	b2BodyDef d = def();
 	m_body = world->CreateBody(&d);
+	m_body->SetUserData(this);
 	if (m_shape) {
 		m_body->CreateFixture(m_shape, 1.0f);
 	}

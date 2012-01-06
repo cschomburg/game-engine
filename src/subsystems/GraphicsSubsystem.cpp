@@ -93,6 +93,10 @@ void GraphicsSubsystem::unregisterRenderable(Renderable::Ptr renderable) {
 	m_renderables.erase(it);
 }
 
+IPositionable::Ptr GraphicsSubsystem::camera() {
+	return m_camera;
+}
+
 void GraphicsSubsystem::setCamera(IPositionable::Ptr positionable) {
 	m_camera = positionable;
 }

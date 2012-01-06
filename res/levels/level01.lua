@@ -47,13 +47,24 @@ for i = 0, 500 do
 	register(grass)
 end
 
---[[
-local player = factory.box(5.72, 6.56, 0.5)
+local player = make("Player", { "Body", "Renderable" })
+player.body:setPos(5.72, 6.56)
+player.body:setShape("box", 0.25, 0.25)
+player.renderable:setPositionable(player.body)
+player.renderable:setShape("box", 0.5, 0.5)
 player.renderable:setTexture("res/images/foo.png")
-GameEngine:registerObject(player)
-GameEngine:setPlayer(player)
+register(player)
+Graphics.setCamera(player.body)
 
-local enemy = factory.box(4.72, 6.56, 0.32, 0.32)
-enemy.renderable:setTexture("res/images/foo.png")
-GameEngine:registerObject(enemy)
-]]
+function onKeyUp(key)
+	print(key)
+	if key == " " then
+		if tree.unregistered then
+			register(tree)
+		else
+			unregister(tree)
+			print("unregister")
+		end
+		tree.unregistered = not tree.unregistered
+	end
+end

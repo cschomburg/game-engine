@@ -59,6 +59,7 @@ set(
 		src/lua/LuaBody.cpp
 		src/lua/LuaComponent.cpp
 		src/lua/LuaGameEngine.cpp
+		src/lua/LuaGraphics.cpp
 		src/lua/LuaRenderable.cpp
 		src/lua/LuaStaticPos.cpp
 

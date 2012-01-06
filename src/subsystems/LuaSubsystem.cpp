@@ -23,8 +23,9 @@ bool LuaSubsystem::init() {
 	luaL_openlibs(L);
 
 	LuaGameEngine_classSetup(L);
-	LuaComponent_classSetup(L);
+	LuaGraphics_classSetup(L);
 
+	LuaComponent_classSetup(L);
 	LuaBody_classSetup(L);
 	LuaRenderable_classSetup(L);
 	LuaStaticPos_classSetup(L);

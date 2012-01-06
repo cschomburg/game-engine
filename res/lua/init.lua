@@ -96,10 +96,6 @@ function dump(...)
 	print(str)
 end
 
-function onKeyUp(key)
-	print("Up:", key)
-end
-
 function onQuit()
 	print ("Bye!")
 end

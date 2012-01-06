@@ -20,6 +20,7 @@ public:
 
 	void registerRenderable(Renderable::Ptr renderable);
 	void unregisterRenderable(Renderable::Ptr renderable);
+	IPositionable::Ptr camera();
 	void setCamera(IPositionable::Ptr positionable);
 
 	void setColor(const Color &color);
