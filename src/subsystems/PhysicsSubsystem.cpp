@@ -1,13 +1,16 @@
 #include <algorithm>
 #include <map>
 
+#include "GameEngine.h"
+#include "LuaCall.h"
 #include "components/Body.h"
 #include "subsystems/PhysicsSubsystem.h"
+#include "subsystems/LuaSubsystem.h"
 
 PhysicsSubsystem::PhysicsSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
 	m_currTime = 0;
-	m_timestep = 1.0f/60.0f;
+	m_timestep = 1.0f/70.0f;
 	m_timeFactor = 1.0f;
 	m_velocityIterations = 6;
 	m_positionIterations = 2;
@@ -61,6 +64,11 @@ void PhysicsSubsystem::update() {
 		m_worldTimeAccumulator -= m_timestep;
 		m_worldTime += m_timestep;
 		m_world->Step(m_timestep, m_velocityIterations, m_positionIterations);
+		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onPhysicsUpdate");
+		if (call) {
+			call->push(m_timestep);
+			call->execute();
+		}
 	}
 }
 

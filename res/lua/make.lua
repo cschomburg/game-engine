@@ -10,16 +10,13 @@ function make:make(name, components)
 		name = guid
 		guid = guid + 1
 	end
-	if not components then
-		components = { "Body", "Renderable" }
-	end
+	components = components or {}
+
 	local object = setmetatable({}, Object)
+	object.name = name
 	object.components = {}
 	for _, cType in pairs(components) do
-		local component = _G[cType].new(name)
-		component.object = object
-		object[cType:lowercap()] = component
-		object.components[cType] = component
+		object:add(cType)
 	end
 	return object
 end
@@ -67,3 +64,12 @@ function Object:unregister()
 		end
 	end
 end
+
+function Object:add(cType)
+	local component = _G[cType].new(self.name)
+	component.parent = self
+	self[cType:lowercap()] = component
+	self.components[cType] = component
+
+end
+

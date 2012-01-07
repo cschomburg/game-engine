@@ -28,7 +28,6 @@ public:
 
 	Vector2 pos() const;
 	void setPos(const Vector2 &pos);
-
 	float angle() const;
 	void setAngle(float angle);
 

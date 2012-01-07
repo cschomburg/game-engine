@@ -4,9 +4,10 @@
 #include <memory>
 #include <Box2D/Box2D.h>
 
-#include "GameEngine.h"
 #include "Subsystem.h"
 #include "components/Body.h"
+
+class GameEngine;
 
 class PhysicsSubsystem : public Subsystem {
 public:
