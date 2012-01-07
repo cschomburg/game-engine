@@ -29,6 +29,8 @@ bool GraphicsSubsystem::init() {
 	glLoadIdentity();
 	glOrtho(-float(width) / 2, float(width)/2, -float(height)/2, float(height)/2, -1.1f, 1.1f);
 
+	m_viewport = Rect(Vector2(), Vector2(float(width)/100, float(height)/100), true);
+
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_BLEND);
@@ -107,15 +109,24 @@ void GraphicsSubsystem::setColor(const Color &color) {
 
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	IPositionable::Ptr positionable = renderable->positionable();
-	if (!positionable)
+	Convex shape = renderable->shape();
+	if (!positionable || shape.points.size() == 0)
+		return;
+
+	Vector2 camPos;
+	if (m_camera) {
+		camPos = m_camera->pos();
+	}
+	Vector2 pos = positionable->pos();
+	pos -= (pos - camPos) * renderable->parallax();
+
+	Rect rect = shape.boundingBox();
+	rect.translate(pos-camPos);
+	if (!m_viewport.intersects(rect))
 		return;
 
 	// Set position
 	glPushMatrix();
-	Vector2 pos = positionable->pos();
-	if (m_camera) {
-		pos -= (pos - m_camera->pos()) * renderable->parallax();
-	}
 	glTranslatef(pos.x, pos.y, 0);
 	glRotatef(-radToDeg(positionable->angle()), 0, 0, 1.0f);
 
@@ -134,7 +145,6 @@ void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	const Gradient &gradient = renderable->gradient();
 	setColor(renderable->color());
 
-	Convex shape = renderable->shape();
 	if (shape.points.size() == 4) {
 		if (renderable->texture()) {
 			glEnable(GL_TEXTURE_2D);

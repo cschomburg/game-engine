@@ -9,6 +9,7 @@
 #include "Color.h"
 #include "Font.h"
 #include "GameEngine.h"
+#include "Rect.h"
 #include "Subsystem.h"
 #include "components/Renderable.h"
 #include "interfaces/IPositionable.h"
@@ -41,6 +42,8 @@ private:
 	int m_frameCount;
 	int m_lastSecond;
 	int m_fps;
+
+	Rect m_viewport;
 };
 
 #endif /* end of include guard: GRAPHICSSUBSYSTEM_H */
