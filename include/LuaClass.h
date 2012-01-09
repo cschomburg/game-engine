@@ -21,8 +21,8 @@ public:
 	void registerClass(lua_State *L, const luaL_Reg methods[], const luaL_Reg meta[]);
 	void *checkRaw(lua_State *L, int index);
 	voidPtr check(lua_State *L, int index);
-	int pushRaw(lua_State *L, void *instance);
-	int push(lua_State *L, voidPtr instance);
+	bool pushRaw(lua_State *L, void *instance, bool noCreate = false);
+	bool push(lua_State *L, voidPtr instance, bool noCreate = false);
 
 	template<typename T> typename T::Ptr check(lua_State *L, int index) {
 		return std::static_pointer_cast<T>(check(L, index));

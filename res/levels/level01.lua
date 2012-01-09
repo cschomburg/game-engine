@@ -47,6 +47,14 @@ player.body:setPos(5.72, 6.56)
 player:register()
 Graphics.setCamera(player.body)
 
+function player.body:onContactBegin(body)
+	print("Contact with "..body:objectID())
+end
+
+function player.body:onContactEnd(body)
+	print("Contact End with "..body:objectID())
+end
+
 local xDir = 0
 function onPhysicsUpdate(timestep)
 	player.body:applyForceToCenter(xDir * 3, 0)

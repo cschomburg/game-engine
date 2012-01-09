@@ -44,6 +44,7 @@ bool PhysicsSubsystem::init() {
 
 	b2Vec2 gravity(0.0f, -15.0f);
 	m_world = std::unique_ptr<b2World>(new b2World(gravity));
+	m_world->SetContactListener(this);
 
 	for (auto &component : m_bodies) {
 		if (!component->body()) {
@@ -78,4 +79,44 @@ float PhysicsSubsystem::timeFactor() const {
 
 void PhysicsSubsystem::setTimeFactor(float timeFactor) {
 	m_timeFactor = timeFactor;
+}
+
+void PhysicsSubsystem::BeginContact(b2Contact *contact) {
+	Body *rawA = static_cast<Body *>(contact->GetFixtureA()->GetBody()->GetUserData());
+	Body *rawB = static_cast<Body *>(contact->GetFixtureB()->GetBody()->GetUserData());
+
+	Body::Ptr bodyA = rawA->shared_from_this();
+	Body::Ptr bodyB = rawB->shared_from_this();
+
+	LuaCall::Ptr call = engine()->lua()->startMethodCall("Body", bodyA, "onContactBegin");
+	if (call) {
+		call->push("Body", bodyB);
+		call->execute();
+	}
+
+	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactBegin");
+	if (call) {
+		call->push("Body", bodyA);
+		call->execute();
+	}
+}
+
+void PhysicsSubsystem::EndContact(b2Contact *contact) {
+	Body *rawA = static_cast<Body *>(contact->GetFixtureA()->GetBody()->GetUserData());
+	Body *rawB = static_cast<Body *>(contact->GetFixtureB()->GetBody()->GetUserData());
+
+	Body::Ptr bodyA = rawA->shared_from_this();
+	Body::Ptr bodyB = rawB->shared_from_this();
+
+	LuaCall::Ptr call = engine()->lua()->startMethodCall("Body", bodyA, "onContactEnd");
+	if (call) {
+		call->push("Body", bodyB);
+		call->execute();
+	}
+
+	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactEnd");
+	if (call) {
+		call->push("Body", bodyA);
+		call->execute();
+	}
 }

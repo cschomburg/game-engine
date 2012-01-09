@@ -9,7 +9,7 @@
 
 class GameEngine;
 
-class PhysicsSubsystem : public Subsystem {
+class PhysicsSubsystem : public Subsystem, public b2ContactListener {
 public:
 	PhysicsSubsystem(GameEngine *engine);
 	virtual ~PhysicsSubsystem();
@@ -22,6 +22,9 @@ public:
 
 	float timeFactor() const;
 	void setTimeFactor(float timeFactor);
+
+	virtual void BeginContact(b2Contact *contact);
+	virtual void EndContact(b2Contact *contact);
 
 private:
 	std::vector<Body::Ptr> m_bodies;

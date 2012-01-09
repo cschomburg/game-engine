@@ -171,10 +171,10 @@ voidPtr LuaClass::check(lua_State *L, int index) {
 	return it->second;
 }
 
-int LuaClass::pushRaw(lua_State *L, void *instance) {
+bool LuaClass::pushRaw(lua_State *L, void *instance, bool noCreate) {
 	if (!instance) {
 		lua_pushnil(L);
-		return 1;
+		return false;
 	}
 
 	// Query registry for existing instance table
@@ -188,10 +188,10 @@ int LuaClass::pushRaw(lua_State *L, void *instance) {
 
 	lua_pushlightuserdata(L, instance); // Push raw instance pointer
 	lua_rawget(L, -2); // instance = instances[raw]
-	if (!lua_isnil(L, -1)) { // instance != nil
+	if (noCreate || !lua_isnil(L, -1)) { // instance != nil
 		lua_remove(L, -2); // Drop instances table
 		lua_remove(L, -2); // Drop hidden table
-		return 1; // [instance]
+		return !lua_isnil(L, -1); // [instance]
 	}
 	lua_pop(L, 1); // Pop nil
 	// [hidden, instances]
@@ -229,15 +229,15 @@ int LuaClass::pushRaw(lua_State *L, void *instance) {
 	lua_remove(L, -2); // Drop instances table
 	lua_remove(L, -2); // Drop hidden table
 
-	return 1; // [instance]
+	return true; // [instance]
 }
 
-int LuaClass::push(lua_State *L, voidPtr instance) {
-	if (instance) {
-		m_managedInstances[instance.get()] = instance;
-	}
+bool LuaClass::push(lua_State *L, voidPtr instance, bool noCreate) {
+	if (!instance)
+		return false;
 
-	return pushRaw(L, instance.get());
+	m_managedInstances[instance.get()] = instance;
+	return pushRaw(L, instance.get(), noCreate);
 }
 
 LuaClass *LuaClass::get(const std::string &name) {

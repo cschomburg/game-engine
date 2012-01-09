@@ -7,7 +7,8 @@
 #include "interfaces/IPositionable.h"
 #include "Vector2.h"
 
-class Body : public Component, public IPositionable {
+class Body : public Component, public IPositionable,
+             public std::enable_shared_from_this<Body> {
 public:
 	typedef std::shared_ptr<Body> Ptr;
 
