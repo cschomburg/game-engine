@@ -50,7 +50,7 @@ public:
 	BlendMode blendMode() const;
 	void setBlendMode(BlendMode blendMode);
 
-	Convex shape() const;
+	const Convex &shape() const;
 	void setShape(const Convex &convex);
 
 private:

@@ -6,6 +6,7 @@ for _,file in pairs{
 	"events",
 	"util",
 	"game",
+	"ui",
 } do
 	assert(loadfile("res/lua/"..file..".lua"))()
 end

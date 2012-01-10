@@ -11,6 +11,7 @@
 #include "subsystems/GraphicsSubsystem.h"
 #include "subsystems/LuaSubsystem.h"
 #include "subsystems/InputSubsystem.h"
+#include "subsystems/UISubsystem.h"
 
 GameEngine *sInstance = 0;
 
@@ -27,6 +28,7 @@ GameEngine::GameEngine() {
 	m_graphics = std::unique_ptr<GraphicsSubsystem>(new GraphicsSubsystem(this));
 	m_lua = std::unique_ptr<LuaSubsystem>(new LuaSubsystem(this));
 	m_input = std::unique_ptr<InputSubsystem>(new InputSubsystem(this));
+	m_ui = std::unique_ptr<UISubsystem>(new UISubsystem(this));
 }
 
 GameEngine::~GameEngine() {
@@ -89,6 +91,7 @@ bool GameEngine::init() {
 	m_graphics->init();
 	m_lua->init();
 	m_input->init();
+	m_ui->init();
 
 	// Load level
 	if (!m_lua->loadFile("res/lua/init.lua"))
@@ -96,9 +99,6 @@ bool GameEngine::init() {
 
 	if (!m_lua->loadFile("res/levels/level01.lua"))
 		return false;
-
-	pushState(LevelState::instance());
-	pushState(WorldManipulateState::instance());
 
 	return true;
 }
@@ -133,6 +133,7 @@ void GameEngine::destroy() {
 	m_graphics->destroy();
 	m_lua->destroy();
 	m_input->destroy();
+	m_ui->destroy();
 
 	SDL_FreeSurface(m_display);
 	m_display = 0;
@@ -152,26 +153,6 @@ int GameEngine::displayWidth() const {
 
 int GameEngine::displayHeight() const {
 	return m_displayHeight;
-}
-
-GameState *GameEngine::state() const {
-	return m_states.back();
-}
-
-const std::vector<GameState *> GameEngine::states() const {
-	return m_states;
-}
-
-void GameEngine::pushState(GameState *state) {
-	m_states.push_back(state);
-	state->enter(this);
-}
-
-void GameEngine::popState() {
-	GameState *state = m_states.back();
-	m_states.pop_back();
-	if (state)
-		state->leave(this);
 }
 
 ResourceManager *GameEngine::manager() const {
@@ -197,4 +178,8 @@ LuaSubsystem *GameEngine::lua() const {
 
 InputSubsystem *GameEngine::input() const {
 	return m_input.get();
+}
+
+UISubsystem *GameEngine::ui() const {
+	return m_ui.get();
 }

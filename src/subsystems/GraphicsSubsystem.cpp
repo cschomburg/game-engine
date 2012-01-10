@@ -9,6 +9,7 @@
 #include "ResourceManager.h"
 #include "Texture.h"
 #include "subsystems/GraphicsSubsystem.h"
+#include "subsystems/UISubsystem.h"
 
 GraphicsSubsystem::GraphicsSubsystem(GameEngine *engine)
 	: Subsystem(engine) {
@@ -34,10 +35,6 @@ bool GraphicsSubsystem::init() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_BLEND);
-
-	m_font16 = engine()->manager()->font("res/font.ttf", 16);
-	m_font32 = engine()->manager()->font("res/font.ttf", 32);
-	m_font48 = engine()->manager()->font("res/font.ttf", 48);
 
 	return true;
 }
@@ -67,16 +64,9 @@ void GraphicsSubsystem::update() {
 		render(renderable);
 	}
 
+	// User Interface
 	glLoadIdentity();
-	glColor3f(0.0f, 0.0f, 0.0f);
-	m_font32->draw(1000, 150, "Test all the things!");
-
-	setColor(Color::fromInt(0xff, 0xee, 0x88));
-
-	m_font16->draw(400, 100, "Graphics FPS");
-	std::stringstream fpsString;
-	fpsString << m_fps;
-	m_font48->draw(400, 30, fpsString.str());
+	engine()->ui()->render();
 
 	SDL_GL_SwapBuffers();
 }

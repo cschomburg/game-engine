@@ -79,7 +79,7 @@ void Renderable::setBlendMode(BlendMode blendMode) {
 	m_blendMode = blendMode;
 }
 
-Convex Renderable::shape() const {
+const Convex &Renderable::shape() const {
 	return m_shape;
 }
 

@@ -24,11 +24,16 @@ bool LuaSubsystem::init() {
 
 	LuaGameEngine_classSetup(L);
 	LuaGraphics_classSetup(L);
+	LuaUI_classSetup(L);
 
 	LuaComponent_classSetup(L);
 	LuaBody_classSetup(L);
 	LuaRenderable_classSetup(L);
 	LuaStaticPos_classSetup(L);
+
+	LuaWidget_classSetup(L);
+	LuaSolidWidget_classSetup(L);
+	LuaTextWidget_classSetup(L);
 
 	m_lastTime = engine()->time();
 	return true;

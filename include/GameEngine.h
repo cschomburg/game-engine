@@ -7,12 +7,12 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-class GameState;
 class ResourceManager;
 class PhysicsSubsystem;
 class GraphicsSubsystem;
 class LuaSubsystem;
 class InputSubsystem;
+class UISubsystem;
 class Profiler;
 
 class GameEngine {
@@ -31,12 +31,6 @@ public:
 	int displayWidth() const;
 	int displayHeight() const;
 
-
-	GameState *state() const;
-	const std::vector<GameState *> states() const;
-	void pushState(GameState *state);
-	void popState();
-
 	ResourceManager *manager() const;
 	Profiler *profiler() const;
 
@@ -44,13 +38,13 @@ public:
 	GraphicsSubsystem *graphics() const;
 	LuaSubsystem *lua() const;
 	InputSubsystem *input() const;
+	UISubsystem *ui() const;
 
 
 private:
 	bool init();
 	void update();
 	void destroy();
-
 
 private:
 	static GameEngine * s_instance;
@@ -68,8 +62,7 @@ private:
 	std::unique_ptr<GraphicsSubsystem> m_graphics;
 	std::unique_ptr<LuaSubsystem> m_lua;
 	std::unique_ptr<InputSubsystem> m_input;
-
-	std::vector<GameState *> m_states;
+	std::unique_ptr<UISubsystem> m_ui;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */

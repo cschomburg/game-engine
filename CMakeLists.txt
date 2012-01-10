@@ -28,9 +28,6 @@ set(
 	src/Color.cpp
 	src/Convex.cpp
 	src/Font.cpp
-	src/GameState.cpp
-		src/states/LevelState.cpp
-		src/states/WorldManipulateState.cpp
 	src/Math.cpp
 	src/Rect.cpp
 	src/Resource.cpp
@@ -45,6 +42,7 @@ set(
 		src/subsystems/GraphicsSubsystem.cpp
 		src/subsystems/InputSubsystem.cpp
 		src/subsystems/LuaSubsystem.cpp
+		src/subsystems/UISubsystem.cpp
 		src/subsystems/Profiler.cpp
 
 	src/Component.cpp
@@ -54,14 +52,22 @@ set(
 
 		include/interfaces/IPositionable.h
 
+	src/Widget.cpp
+		src/widgets/SolidWidget.cpp
+		src/widgets/TextWidget.cpp
+
 	src/LuaCall.cpp
 	src/LuaClass.cpp
-		src/lua/LuaBody.cpp
-		src/lua/LuaComponent.cpp
 		src/lua/LuaGameEngine.cpp
-		src/lua/LuaGraphics.cpp
-		src/lua/LuaRenderable.cpp
-		src/lua/LuaStaticPos.cpp
+		src/lua/LuaUI.cpp
+		src/lua/LuaComponent.cpp
+			src/lua/LuaBody.cpp
+			src/lua/LuaGraphics.cpp
+			src/lua/LuaRenderable.cpp
+			src/lua/LuaStaticPos.cpp
+		src/lua/LuaWidget.cpp
+			src/lua/LuaSolidWidget.cpp
+			src/lua/LuaTextWidget.cpp
 
 	src/main.cpp
 )
@@ -113,6 +119,7 @@ link_libraries(
 	${FREETYPE_LIBRARIES}
 	${BOX2D_LIBRARY}
 	SDLmain
+	dl
 )
 if(LUAJIT)
 	link_libraries(${LUAJIT_LIBRARIES})
