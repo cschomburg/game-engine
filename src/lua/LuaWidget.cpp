@@ -57,7 +57,7 @@ int LuaWidget_isShown(lua_State *L) {
 
 int LuaWidget_setShown(lua_State *L) {
 	Widget::Ptr widget = luaWidget.check<Widget>(L, 1);
-	bool shown = lua_gettop(L) >= 2 && !lua_isnil(L, 2);
+	bool shown = lua_toboolean(L, 2) == 1;
 	lua_pop(L, lua_gettop(L));
 
 	widget->setShown(shown);
@@ -126,6 +126,7 @@ void LuaWidget_classSetup(lua_State *L) {
 		{ "parent", LuaWidget_parent },
 		{ "setParent", LuaWidget_setParent },
 		{ "isShown", LuaWidget_isShown },
+		{ "setShown", LuaWidget_setShown },
 		{ "rect", LuaWidget_rect },
 		{ "setRect", LuaWidget_setRect },
 		{ "pos", LuaWidget_pos },

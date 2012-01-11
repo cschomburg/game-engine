@@ -5,6 +5,10 @@ for _,file in pairs{
 	"make",
 	"events",
 	"util",
+	"states",
+
+	"LibFx-1.1",
+
 	"game",
 	"ui",
 } do

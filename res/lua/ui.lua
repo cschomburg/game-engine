@@ -1,3 +1,59 @@
+local mainMenu = {}
+UI.MainMenu = mainMenu
+
+function mainMenu:init()
+	local bg = SolidWidget.new("MainMenuBackground")
+	bg:setShown(false)
+	bg:setParent(UI.root())
+	bg:setColor(0, 0, 0, 0)
+	bg:setRect(-1024/2, -576/2, 1024, 576)
+	self.bg = bg
+
+	bg.fadeIn = LibFx.New{
+		frame = bg,
+		anim = "Alpha",
+		finish = 0.8,
+		duration = 0.2,
+		onStart = function() bg:setShown(true) end,
+	}
+	bg.fadeOut = LibFx.New{
+		frame = bg,
+		anim = "Alpha",
+		finish = 0,
+		onComplete = function() bg:setShown() end,
+		duration = 0.2,
+	}
+
+	local nav = Widget.new("MainMenuNav")
+	nav:setParent(bg)
+	nav.selected = 1;
+	self.nav = nav
+	for i, label in ipairs{ "Start", "Options", "Configuration", "Lulz" } do
+		local widget = TextWidget.new("MainMenu"..label)
+		widget:setParent(bg)
+		widget:setColor(1, 1, 1, 1)
+		widget:setFont("res/font.ttf", 18)
+		widget:setPos(-1024/2+50, 576/2 - 100 - i*26)
+		widget:setText(label)
+		self.nav[i] = widget
+	end
+end
+
+function mainMenu:onEnter()
+	self.bg.fadeIn()
+end
+
+function mainMenu:onLeave()
+	self.bg.fadeOut()
+end
+
+function mainMenu:onKeyUp(key)
+	if key == "Escape" or key == " " then
+		States.pop()
+	end
+end
+mainMenu:init()
+
 local text = TextWidget.new("Text")
 text:setParent(UI.root())
 text:setPos(-1024/2, -576/2 + 10)

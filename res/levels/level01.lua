@@ -62,7 +62,8 @@ function onPhysicsUpdate(timestep)
 	player.body:setLinearVelocity(math.clamp(x, -3, 3), y)
 end
 
-function onKeyDown(key)
+local LevelState = {}
+function LevelState:onKeyDown(key)
 	if key == "w" then
 		player.body:applyForceToCenter(0, 100)
 	end
@@ -74,7 +75,10 @@ function onKeyDown(key)
 	end
 end
 
-function onKeyUp(key)
+function LevelState:onKeyUp(key)
+	if key == "Escape" then
+		States.push(UI.MainMenu)
+	end
 	if key == "a" then
 		xDir = xDir + 1
 	end
@@ -82,3 +86,4 @@ function onKeyUp(key)
 		xDir = xDir - 1
 	end
 end
+States.push(LevelState)
