@@ -47,11 +47,27 @@ player.body:setPos(5.72, 6.56)
 player:register()
 Graphics.setCamera(player.body)
 
+player.grow = LibFx.New{
+	frame = player.renderable,
+	anim = "Scale",
+	finish = 2,
+	duration = 0.2,
+}
+
+player.shrink = LibFx.New{
+	frame = player.renderable,
+	anim = "Scale",
+	finish = 0.5,
+	duration = 0.2,
+}
+
 function player.body:onContactBegin(body)
+	self.parent.grow()
 	print("Contact with "..body:objectID())
 end
 
 function player.body:onContactEnd(body)
+	self.parent.shrink()
 	print("Contact End with "..body:objectID())
 end
 

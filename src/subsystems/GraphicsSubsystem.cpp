@@ -115,11 +115,11 @@ void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	if (!m_viewport.intersects(rect))
 		return;
 
-	// Set position
+	// Set position and scale
 	glPushMatrix();
 	glTranslatef(pos.x, pos.y, 0);
 	glRotatef(-radToDeg(positionable->angle()), 0, 0, 1.0f);
-
+	glScalef(renderable->scale(), renderable->scale(), 1.0f);
 
 	// Blend mode
 	switch (renderable->blendMode()) {

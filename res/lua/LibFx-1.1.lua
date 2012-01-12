@@ -156,6 +156,13 @@ end, function(fx)
 	fx.frame:setColor(fx.r,fx.g,fx.b, fx.start + fx.diff * fx.progress)
 end)
 
+LibFx.RegisterAnimation("Scale", function(fx)
+	fx.start = fx.frame:scale()
+	fx.diff = fx.finish - fx.start
+end, function(fx)
+	fx.frame:setScale(fx.start + fx.diff * fx.progress)
+end)
+
 LibFx.RegisterAnimation("Translate", function(fx)
 	fx.xStart, fx.yStart = fx.frame:pos()
 	fx.xDiff = fx.xFinish - fx.x

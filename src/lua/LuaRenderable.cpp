@@ -218,6 +218,23 @@ int LuaRenderable_setShape(lua_State *L) {
 	return 0;
 }
 
+int LuaRenderable_scale(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+	lua_pop(L, 1);
+
+	lua_pushnumber(L, renderable->scale());
+	return 1;
+}
+
+int LuaRenderable_setScale(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+	float scale = luaL_checknumber(L, 2);
+	lua_pop(L, 2);
+
+	renderable->setScale(scale);
+	return 0;
+}
+
 void LuaRenderable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "new", LuaRenderable_new },
@@ -237,6 +254,8 @@ void LuaRenderable_classSetup(lua_State *L) {
 		{ "blendMode", LuaRenderable_blendMode},
 		{ "setBlendMode", LuaRenderable_setBlendMode },
 		{ "setShape", LuaRenderable_setShape },
+		{ "scale", LuaRenderable_scale },
+		{ "setScale", LuaRenderable_setScale },
 		{ 0, 0 },
 	};
 

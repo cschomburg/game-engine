@@ -53,6 +53,9 @@ public:
 	const Convex &shape() const;
 	void setShape(const Convex &convex);
 
+	float scale() const;
+	void setScale(float scale);
+
 private:
 	IPositionable::Ptr m_positionable;
 	Color m_color;
@@ -62,6 +65,7 @@ private:
 	Vector2 m_parallax;
 	BlendMode m_blendMode;
 	Convex m_shape;
+	float m_scale;
 };
 
 #endif /* end of include guard: RENDERABLE_H */

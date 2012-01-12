@@ -15,6 +15,7 @@ Renderable::Renderable(std::string objectID)
 	m_texture = 0;
 	m_zIndex = 0.0f;
 	m_blendMode = BlendMode::Blend;
+	m_scale = 1.0f;
 }
 
 Renderable::~Renderable() {}
@@ -85,4 +86,12 @@ const Convex &Renderable::shape() const {
 
 void Renderable::setShape(const Convex &convex) {
 	m_shape = convex;
+}
+
+float Renderable::scale() const {
+	return m_scale;
+}
+
+void Renderable::setScale(float scale) {
+	m_scale = scale;
 }
