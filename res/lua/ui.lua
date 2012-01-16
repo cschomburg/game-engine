@@ -54,12 +54,14 @@ function mainMenu:onKeyUp(key)
 end
 mainMenu:init()
 
+--[[
 local text = TextWidget.new("Text")
 text:setParent(UI.root())
 text:setPos(-1024/2, -576/2 + 10)
 text:setColor(1, 0.8, 0.5, 1)
 text:setFont("res/font.ttf", 10)
 text:setText("Game 0.0.1 Pre-Alpha Unreleased Debug Test Version in Development")
+]]
 
 local fps = make("FPS", { "TextWidget", "EventListener" })
 fps.eventListener:registerEvent("onUpdate")

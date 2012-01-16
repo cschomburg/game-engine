@@ -29,6 +29,8 @@ public:
 
 	void setColor(const Color &color);
 
+	Rect viewport() const;
+
 private:
 	void render(Renderable::Ptr renderable);
 

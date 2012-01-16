@@ -40,10 +40,20 @@ int LuaGraphics_setCamera(lua_State *L) {
 	return 0;
 }
 
+int LuaGraphics_viewport(lua_State *L) {
+	const Rect &rect = GameEngine::instance()->graphics()->viewport();
+	lua_pushnumber(L, rect.bottomLeft().x);
+	lua_pushnumber(L, rect.bottomLeft().y);
+	lua_pushnumber(L, rect.w);
+	lua_pushnumber(L, rect.h);
+	return 4;
+}
+
 void LuaGraphics_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "camera", LuaGraphics_camera },
 		{ "setCamera", LuaGraphics_setCamera },
+		{ "viewport", LuaGraphics_viewport },
 		{ 0, 0 },
 	};
 

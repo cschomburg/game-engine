@@ -93,6 +93,7 @@ void PhysicsSubsystem::BeginContact(b2Contact *contact) {
 		call->push("Body", bodyB);
 		call->execute();
 	}
+	call = 0;
 
 	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactBegin");
 	if (call) {
@@ -113,6 +114,7 @@ void PhysicsSubsystem::EndContact(b2Contact *contact) {
 		call->push("Body", bodyB);
 		call->execute();
 	}
+	call = 0;
 
 	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactEnd");
 	if (call) {

@@ -97,6 +97,16 @@ void GraphicsSubsystem::setColor(const Color &color) {
 	glColor4f(color.r, color.g, color.b, color.a);
 }
 
+Rect GraphicsSubsystem::viewport() const {
+	if (!m_camera) {
+		return m_viewport;
+	}
+
+	Rect viewport = m_viewport;
+	viewport.translate(m_camera->pos());
+	return viewport;
+}
+
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	IPositionable::Ptr positionable = renderable->positionable();
 	Convex shape = renderable->shape();
@@ -118,7 +128,7 @@ void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	// Set position and scale
 	glPushMatrix();
 	glTranslatef(pos.x, pos.y, 0);
-	glRotatef(-radToDeg(positionable->angle()), 0, 0, 1.0f);
+	glRotatef(radToDeg(positionable->angle()), 0, 0, 1.0f);
 	glScalef(renderable->scale(), renderable->scale(), 1.0f);
 
 	// Blend mode

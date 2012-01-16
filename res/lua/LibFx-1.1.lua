@@ -171,3 +171,16 @@ end, function(fx)
 	fx.frame:setPos(fx.xStart + fx.xDiff * fx.progress,
 	                fx.yStart + fx.yDiff * fx.progress)
 end)
+
+LibFx.RegisterAnimation("Color", function(fx)
+	fx.sR, fx.sG, fx.sB, fx.sA = fx.frame:color()
+	fx.rDiff = fx.r - fx.sR
+	fx.gDiff = fx.g - fx.sG
+	fx.bDiff = fx.b - fx.sB
+	fx.aDiff = fx.a - fx.sA
+end, function(fx)
+	fx.frame:setColor(fx.sR + fx.rDiff * fx.progress,
+		fx.sG + fx.gDiff * fx.progress,
+		fx.sB + fx.bDiff * fx.progress,
+		fx.sA + fx.aDiff * fx.progress)
+end)
