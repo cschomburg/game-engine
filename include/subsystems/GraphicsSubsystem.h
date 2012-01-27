@@ -1,8 +1,8 @@
 #ifndef GRAPHICSSUBSYSTEM_H
 #define GRAPHICSSUBSYSTEM_H
 
+#include <deque>
 #include <memory>
-#include <set>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
@@ -29,13 +29,15 @@ public:
 
 	void setColor(const Color &color);
 
+	float scale() const;
+	void setScale(float scale);
 	Rect viewport() const;
 
 private:
 	void render(Renderable::Ptr renderable);
 
 private:
-	std::vector<Renderable::Ptr> m_renderables;
+	std::deque<Renderable::Ptr> m_renderables;
 	IPositionable::Ptr m_camera;
 	Font::Ptr m_font16;
 	Font::Ptr m_font32;
@@ -45,6 +47,7 @@ private:
 	int m_lastSecond;
 	int m_fps;
 
+	float m_scale;
 	Rect m_viewport;
 };
 

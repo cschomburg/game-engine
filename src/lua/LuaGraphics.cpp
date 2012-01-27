@@ -25,6 +25,17 @@ int LuaGraphics_camera(lua_State *L) {
 	return 1;
 }
 
+int LuaGraphics_scale(lua_State *L) {
+	lua_pushnumber(L, GameEngine::instance()->graphics()->scale());
+	return 1;
+}
+
+int LuaGraphics_setScale(lua_State *L) {
+	GameEngine::instance()->graphics()->setScale(luaL_checknumber(L, 1));
+	lua_pop(L, 1);
+	return 0;
+}
+
 int LuaGraphics_setCamera(lua_State *L) {
 	IPositionable::Ptr positionable;
 	if (lua_gettop(L) != 0 && !lua_isnil(L, 1)) {
@@ -53,6 +64,8 @@ void LuaGraphics_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "camera", LuaGraphics_camera },
 		{ "setCamera", LuaGraphics_setCamera },
+		{ "scale", LuaGraphics_scale },
+		{ "setScale", LuaGraphics_setScale },
 		{ "viewport", LuaGraphics_viewport },
 		{ 0, 0 },
 	};

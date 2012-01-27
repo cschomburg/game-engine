@@ -30,7 +30,7 @@ bool GraphicsSubsystem::init() {
 	glLoadIdentity();
 	glOrtho(-float(width) / 2, float(width)/2, -float(height)/2, float(height)/2, -1.1f, 1.1f);
 
-	m_viewport = Rect(Vector2(), Vector2(float(width)/100, float(height)/100), true);
+	setScale(100.f);
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -57,7 +57,7 @@ void GraphicsSubsystem::update() {
 	if (m_camera) {
 		pos = m_camera->pos();
 	}
-	glScalef(100.0f, 100.0f, 1.0f);
+	glScalef(m_scale, m_scale, 1.0f);
 	glTranslatef(-pos.x, -pos.y, 0.0f);
 
 	for (auto renderable : m_renderables) {
@@ -72,10 +72,12 @@ void GraphicsSubsystem::update() {
 }
 
 void GraphicsSubsystem::registerRenderable(Renderable::Ptr renderable) {
-	m_renderables.push_back(renderable);
-	std::sort(m_renderables.begin(), m_renderables.end(), [=](Renderable::Ptr a, Renderable::Ptr b) {
-		return a->zIndex() < b->zIndex();
+	float zIndex = renderable->zIndex();
+	auto itNext = std::find_if(m_renderables.begin(), m_renderables.end(), [&](Renderable::Ptr r) {
+		return zIndex < r->zIndex();
 	});
+	m_renderables.insert(itNext, renderable);
+
 }
 
 void GraphicsSubsystem::unregisterRenderable(Renderable::Ptr renderable) {
@@ -95,6 +97,17 @@ void GraphicsSubsystem::setCamera(IPositionable::Ptr positionable) {
 
 void GraphicsSubsystem::setColor(const Color &color) {
 	glColor4f(color.r, color.g, color.b, color.a);
+}
+
+float GraphicsSubsystem::scale() const {
+	return m_scale;
+}
+
+void GraphicsSubsystem::setScale(float scale) {
+	m_viewport = Rect(Vector2(), Vector2(
+		float(engine()->displayWidth())/scale,
+		float(engine()->displayHeight())/scale), true);
+	m_scale = scale;
 }
 
 Rect GraphicsSubsystem::viewport() const {
