@@ -77,7 +77,6 @@ function fps:onUpdate(elapsed)
 
 	if self.lastUpdate > 1 then
 		self.textWidget:setText("FPS: "..self.frameCount)
-		print(self.frameCount)
 		self.lastUpdate = 0
 		self.frameCount = 0
 	end

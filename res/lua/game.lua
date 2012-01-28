@@ -57,7 +57,7 @@ end
 function ControlState:onKeyUp(key)
 	local player = self.player
 	if not player then return end
-	if key == "Escape" then
+	if key == "escape" then
 		--States.push(UI.MainMenu)
 	end
 	if key == "a" then

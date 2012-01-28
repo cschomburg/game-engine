@@ -16,11 +16,11 @@ end
 function console:onKeyDown(key, char)
 	if key == "`" then
 		States.pop()
-	elseif key == "Escape" then
+	elseif key == "escape" then
 		console:clearInput()
-	elseif key == "Backspace" then
+	elseif key == "backspace" then
 		console:deleteChar()
-	elseif key == "Return" then
+	elseif key == "return" then
 		console:process()
 	else
 		console:addChar(char)
