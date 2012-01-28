@@ -8,6 +8,11 @@ InputSubsystem::InputSubsystem(GameEngine *engine)
 
 InputSubsystem::~InputSubsystem() {}
 
+bool InputSubsystem::init() {
+	SDL_EnableUNICODE(1);
+	return true;
+}
+
 void InputSubsystem::update() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -79,6 +84,13 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 		if (call) {
 			call->push(keyToString(event->key.keysym.sym));
 			//mods = modToString(event->key.keysym.mod);
+			char ch;
+			if ((event->key.keysym.unicode & 0xFF80) == 0) {
+				ch = event->key.keysym.unicode & 0x7F;
+				call->push(std::string(1, ch));
+			} else {
+				call->push(std::string("???"));
+			}
 			call->execute();
 		}
 		break;

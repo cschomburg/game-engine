@@ -11,6 +11,7 @@ for _,file in pairs{
 
 	"game",
 	"ui",
+	"console",
 } do
 	assert(loadfile("res/lua/"..file..".lua"))()
 end

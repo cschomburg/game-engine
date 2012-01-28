@@ -35,10 +35,14 @@ function CheckEvents:onUpdate(elapsed)
 end
 
 ControlState = {}
-function ControlState:onKeyDown(key)
+function ControlState:onKeyDown(key, char)
 	local player = self.player
 	if not player then return end
 
+
+	if key == "`" then
+		States.push(UI.Console)
+	end
 	if key == "w" and player.groundContacts > 0 then
 		player.body:applyForceToCenter(0, 50)
 	end
@@ -53,7 +57,6 @@ end
 function ControlState:onKeyUp(key)
 	local player = self.player
 	if not player then return end
-
 	if key == "Escape" then
 		--States.push(UI.MainMenu)
 	end

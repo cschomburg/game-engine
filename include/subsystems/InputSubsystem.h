@@ -12,6 +12,7 @@ public:
 	InputSubsystem(GameEngine *engine);
 	virtual ~InputSubsystem();
 
+	bool init();
 	void update();
 
 private:
