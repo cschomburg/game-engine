@@ -75,9 +75,23 @@ tree.renderable:setShape("box", 2.23*3/5, 2.26*3/5)
 tree.renderable:setTexture("res/images/background/tree2.png")
 tree:register()
 
+local bridge = make:static()
+bridge.body:setPos(8, 0.6)
+bridge.body:setShape("box", 8, 0.1)
+bridge.renderable:setShape("box", 16, 0.2)
+bridge.renderable:setColor(0, 0, 0, 1)
+bridge:register()
+
+local house = make:background("House-Outer")
+house.staticPos:setPos(8, 3.79)
+house.renderable:setShape("box", 5.63, 6.19)
+house.renderable:setTexture("res/images/house-out.png")
+house.renderable:setColor(159/255, 96/255, 65/255, 1)
+house:register()
+
 local player = make:dynamic("Player")
 player.body:setShape("box", 0.1, 0.25)
-player.renderable:setShape("box", 0.2, 0.5)
+player.renderable:setShape("box", 0.24, 0.54)
 player.renderable:setColor(0, 0, 0, 1)
 player.xDir = 0
 player.groundContacts = 0
