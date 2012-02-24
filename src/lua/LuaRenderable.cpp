@@ -2,20 +2,14 @@
 #include <string>
 
 #include "GameEngine.h"
+#include "Rect.h"
+
 #include "components/Renderable.h"
 #include "interfaces/IPositionable.h"
 #include "subsystems/GraphicsSubsystem.h"
 #include "lua/LuaClasses.h"
 
 LuaClass luaRenderable("Renderable", &luaComponent);
-
-int LuaRenderable_new(lua_State *L) {
-	std::string name(luaL_checkstring(L, 1));
-	lua_pop(L, 1);
-
-	luaRenderable.push(L, Renderable::Ptr(new Renderable(name)));
-	return 1;
-}
 
 int LuaRenderable_register(lua_State *L) {
 	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
@@ -93,48 +87,6 @@ int LuaRenderable_setColor(lua_State *L) {
 	return 0;
 }
 
-// TODO: Cleaner gradient API
-int LuaRenderable_gradient(lua_State *L) {
-	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
-	lua_pop(L, 1);
-
-	Gradient gradient = renderable->gradient();
-	lua_pushnumber(L, gradient.first.r);
-	lua_pushnumber(L, gradient.first.g);
-	lua_pushnumber(L, gradient.first.b);
-	lua_pushnumber(L, gradient.first.a);
-	lua_pushnumber(L, gradient.second.r);
-	lua_pushnumber(L, gradient.second.g);
-	lua_pushnumber(L, gradient.second.b);
-	lua_pushnumber(L, gradient.second.a);
-	return 8;
-}
-
-int LuaRenderable_setGradient(lua_State *L) {
-	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
-	float aR = luaL_checknumber(L, 2);
-	float aG = luaL_checknumber(L, 3);
-	float aB = luaL_checknumber(L, 4);
-	float aA = luaL_checknumber(L, 5);
-	float bR = luaL_checknumber(L, 6);
-	float bG = luaL_checknumber(L, 7);
-	float bB = luaL_checknumber(L, 8);
-	float bA = luaL_checknumber(L, 9);
-	lua_pop(L, 9);
-
-	renderable->setGradient(Gradient(Color(aR, aG, aB, aA), Color(bR, bG, bB, bA)));
-	return 0;
-}
-
-int LuaRenderable_setTexture(lua_State *L) {
-	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
-	const char *texturePath = luaL_checkstring(L, 2);
-	lua_pop(L, 2);
-
-	renderable->setTexture(texturePath);
-	return 0;
-}
-
 int LuaRenderable_zIndex(lua_State *L) {
 	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
@@ -171,6 +123,36 @@ int LuaRenderable_setParallax(lua_State *L) {
 	return 0;
 }
 
+int LuaRenderable_drawLayer(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+	lua_pop(L, 1);
+
+	switch (renderable->drawLayer()) {
+	case DrawLayer::Background: lua_pushstring(L, "background");    break;
+	case DrawLayer::World:      lua_pushstring(L, "world");  break;
+	case DrawLayer::Foreground: lua_pushstring(L, "foreground"); break;
+	default: lua_pushnil(L); break;
+	}
+
+	return 1;
+}
+
+int LuaRenderable_setDrawLayer(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+	const char *modeName = luaL_checkstring(L, 2);
+	lua_pop(L, 2);
+
+	DrawLayer layer = DrawLayer::World;
+	if (strcmp(modeName, "background") == 0) {
+		layer = DrawLayer::Background;
+	} else if (strcmp(modeName, "foreground") == 0) {
+		layer = DrawLayer::Foreground;
+	}
+
+	renderable->setDrawLayer(layer);
+	return 0;
+}
+
 int LuaRenderable_blendMode(lua_State *L) {
 	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 	lua_pop(L, 1);
@@ -201,18 +183,33 @@ int LuaRenderable_setBlendMode(lua_State *L) {
 	return 0;
 }
 
-int LuaRenderable_setShape(lua_State *L) {
+int LuaRenderable_boundingRect(lua_State *L) {
 	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
-	const char *type = luaL_checkstring(L, 2);
 
-	if (strcmp(type, "box") == 0) {
-		float width = luaL_checknumber(L, 3);
-		float height = luaL_checknumber(L, 4);
-		lua_pop(L, 4);
+	const Rect &rect = renderable->boundingRect();
+	lua_pushnumber(L, rect.center().x);
+	lua_pushnumber(L, rect.center().y);
+	lua_pushnumber(L, rect.size().x);
+	lua_pushnumber(L, rect.size().y);
+	return 4;
+}
 
-		renderable->setShape(Convex::fromSize(Vector2(width, height)));
-		return 0;
+int LuaRenderable_setBoundingRect(lua_State *L) {
+	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
+
+	Rect rect;
+	if (lua_gettop(L) <= 4) {
+		float w = luaL_checknumber(L, 2);
+		float h = luaL_checknumber(L, 3);
+		rect = Rect(Vector2(), Vector2(w, h), true);//lua_isnil(L, 4));
+	} else {
+		float x = luaL_checknumber(L, 2);
+		float y = luaL_checknumber(L, 3);
+		float w = luaL_checknumber(L, 4);
+		float h = luaL_checknumber(L, 5);
+		rect = Rect(Vector2(x, y), Vector2(w, h), lua_isnil(L, 6));
 	}
+	renderable->setBoundingRect(rect);
 
 	lua_pop(L, 2);
 	return 0;
@@ -237,23 +234,22 @@ int LuaRenderable_setScale(lua_State *L) {
 
 void LuaRenderable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
-		{ "new", LuaRenderable_new },
 		{ "register", LuaRenderable_register },
 		{ "unregister", LuaRenderable_unregister },
 		{ "positionable", LuaRenderable_positionable },
 		{ "setPositionable", LuaRenderable_setPositionable },
 		{ "color", LuaRenderable_color },
 		{ "setColor", LuaRenderable_setColor },
-		{ "gradient", LuaRenderable_gradient },
-		{ "setGradient", LuaRenderable_setGradient },
-		{ "setTexture", LuaRenderable_setTexture },
+		{ "drawLayer", LuaRenderable_drawLayer },
+		{ "setDrawLayer", LuaRenderable_setDrawLayer },
 		{ "zIndex", LuaRenderable_zIndex },
 		{ "setZIndex", LuaRenderable_setZIndex },
 		{ "parallax", LuaRenderable_parallax},
 		{ "setParallax", LuaRenderable_setParallax },
 		{ "blendMode", LuaRenderable_blendMode},
 		{ "setBlendMode", LuaRenderable_setBlendMode },
-		{ "setShape", LuaRenderable_setShape },
+		{ "boundingRect", LuaRenderable_boundingRect },
+		{ "setBoundingRect", LuaRenderable_setBoundingRect },
 		{ "scale", LuaRenderable_scale },
 		{ "setScale", LuaRenderable_setScale },
 		{ 0, 0 },

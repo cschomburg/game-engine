@@ -1,75 +1,96 @@
-local Object = {}
-Object.__index = Object
+local selector = require("selector").selector
 
-schematics = {}
+local Make = {}
+local mixins = {}
+Make.mixins = mixins
 
-make = {}
-local guid = 1
-function make:make(name, components)
-	if not name then
-		name = guid
-		guid = guid + 1
+local applyProperty
+local function apply(self, data)
+	if data == true then return end
+
+	if data.mixins then
+		for i, mixin in ipairs(data.mixins) do
+			if type(mixin) == "table" then
+				mixin = mixin.mixin or mixin
+			end
+			if type(mixin) == "string" then
+				mixin = mixins[mixin] or mixin
+			else
+			end
+			if not type(mixin) == "function" then
+				error("Unknown mixin '"..mixin.."'")
+			end
+			mixin(self, data)
+		end
 	end
-	components = components or {}
 
-	local object = setmetatable({}, Object)
-	object.name = name
-	object.components = {}
-	for _, cType in pairs(components) do
-		object:add(cType)
+	if data.name then
+		self.name = name
 	end
-	return object
-end
-setmetatable(make, {__call = make.make})
 
-function make:background(name)
-	local object = make(name, { "StaticPos", "Renderable" })
-	object.renderable:setPositionable(object.staticPos)
-	return object
-end
-
-function make:static(name)
-	local object = make(name, { "Body", "Renderable" })
-	object.body:setType("static")
-	object.renderable:setPositionable(object.body)
-	return object
-end
-
-function make:dynamic(name)
-	local object = make(name, { "Body", "Renderable" })
-	object.renderable:setPositionable(object.body)
-	return object
-end
-
-function make:player(name)
-	local object = make:dynamic(name or "Player")
-	object.body:setShape("box", 0.25, 0.25)
-	object.renderable:setShape("box", 0.5, 0.5)
-	object.renderable:setTexture("res/images/foo.png")
-	return object
-end
-
-function Object:register()
-	for _, component in pairs(self.components) do
-		if component.register then
-			component:register()
+	for key, value in pairs(data) do
+		if key ~= "mixins" and key ~= "name" then
+			applyProperty(self, key, value)
 		end
 	end
 end
+Make.apply = apply
 
-function Object:unregister()
-	for _, component in pairs(self.components) do
-		if component.unregister then
-			component:unregister()
-		end
+local function add(self, cType)
+	if not _G[cType] then
+		error("No component named '"..cType.."' found!")
 	end
-end
-
-function Object:add(cType)
-	local component = _G[cType].new(self.name)
+	if not _G[cType].new then
+		error("Component '"..cType.."' cannot be created!")
+	end
+	local component = _G[cType].new()
 	component.parent = self
-	self[cType:lowercap()] = component
+	self.components = self.components or {}
 	self.components[cType] = component
-
+	self[cType] = component
 end
 
+local function parseValue(self, value)
+	if type(value) ~= "string" then return value end
+
+	local ch = value:sub(1,1)
+	if ch == "$" or ch == ":" then
+		value = selector(self, value)
+	end
+
+	return value
+end
+
+function applyProperty(self, key, value)
+	if not key:islowercap() then
+		if not self.components or not self.components[key] then
+			add(self, key)
+		end
+		apply(self.components[key], value)
+	else
+		local func = self["set"..key:uppercap()]
+		if not func then
+			error("Unknown property '"..key.."'")
+		end
+		if type(value) == "table" then
+			func(self, unpack(value))
+		else
+			value = parseValue(self, value)
+			func(self, value)
+		end
+	end
+	-- TODO: selectors
+end
+
+function Make.mixin(self)
+	object.apply = apply
+	object.add = add
+end
+
+function Make.make(data)
+	local object = {}
+	apply(object, data)
+	return object
+end
+
+return Make

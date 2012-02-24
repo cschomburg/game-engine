@@ -9,10 +9,7 @@
 LuaClass luaBody("Body", &luaComponent);
 
 int LuaBody_new(lua_State *L) {
-	std::string name(luaL_checkstring(L, 1));
-	lua_pop(L, 1);
-
-	luaBody.push(L, Body::Ptr(new Body(name)));
+	luaBody.push(L, Body::Ptr(new Body()));
 	return 1;
 }
 

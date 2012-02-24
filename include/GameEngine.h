@@ -12,7 +12,6 @@ class PhysicsSubsystem;
 class GraphicsSubsystem;
 class LuaSubsystem;
 class InputSubsystem;
-class UISubsystem;
 class Profiler;
 
 class GameEngine {
@@ -38,8 +37,6 @@ public:
 	GraphicsSubsystem *graphics() const;
 	LuaSubsystem *lua() const;
 	InputSubsystem *input() const;
-	UISubsystem *ui() const;
-
 
 private:
 	bool init();
@@ -62,7 +59,6 @@ private:
 	std::unique_ptr<GraphicsSubsystem> m_graphics;
 	std::unique_ptr<LuaSubsystem> m_lua;
 	std::unique_ptr<InputSubsystem> m_input;
-	std::unique_ptr<UISubsystem> m_ui;
 };
 
 #endif /* end of include guard: GAMEENGINE_H */

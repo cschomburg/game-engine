@@ -8,7 +8,6 @@
 #include "subsystems/GraphicsSubsystem.h"
 #include "subsystems/LuaSubsystem.h"
 #include "subsystems/InputSubsystem.h"
-#include "subsystems/UISubsystem.h"
 
 GameEngine *sInstance = 0;
 
@@ -25,7 +24,6 @@ GameEngine::GameEngine() {
 	m_graphics = std::unique_ptr<GraphicsSubsystem>(new GraphicsSubsystem(this));
 	m_lua = std::unique_ptr<LuaSubsystem>(new LuaSubsystem(this));
 	m_input = std::unique_ptr<InputSubsystem>(new InputSubsystem(this));
-	m_ui = std::unique_ptr<UISubsystem>(new UISubsystem(this));
 }
 
 GameEngine::~GameEngine() {
@@ -88,7 +86,6 @@ bool GameEngine::init() {
 	m_graphics->init();
 	m_lua->init();
 	m_input->init();
-	m_ui->init();
 
 	// Load level
 	if (!m_lua->loadFile("res/lua/init.lua"))
@@ -130,7 +127,6 @@ void GameEngine::destroy() {
 	m_graphics->destroy();
 	m_lua->destroy();
 	m_input->destroy();
-	m_ui->destroy();
 
 	SDL_FreeSurface(m_display);
 	m_display = 0;
@@ -175,8 +171,4 @@ LuaSubsystem *GameEngine::lua() const {
 
 InputSubsystem *GameEngine::input() const {
 	return m_input.get();
-}
-
-UISubsystem *GameEngine::ui() const {
-	return m_ui.get();
 }

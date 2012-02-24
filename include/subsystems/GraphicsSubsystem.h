@@ -2,17 +2,19 @@
 #define GRAPHICSSUBSYSTEM_H
 
 #include <deque>
+#include <map>
 #include <memory>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-#include "Color.h"
-#include "Font.h"
-#include "GameEngine.h"
 #include "Rect.h"
 #include "Subsystem.h"
 #include "components/Renderable.h"
 #include "interfaces/IPositionable.h"
+
+class GameEngine;
+
+typedef std::deque<Renderable::Ptr> RenderableList;
 
 class GraphicsSubsystem : public Subsystem {
 public:
@@ -27,25 +29,15 @@ public:
 	IPositionable::Ptr camera();
 	void setCamera(IPositionable::Ptr positionable);
 
-	void setColor(const Color &color);
-
 	float scale() const;
 	void setScale(float scale);
 	Rect viewport() const;
 
-private:
 	void render(Renderable::Ptr renderable);
 
 private:
-	std::deque<Renderable::Ptr> m_renderables;
+	std::map<DrawLayer, RenderableList> m_renderables;
 	IPositionable::Ptr m_camera;
-	Font::Ptr m_font16;
-	Font::Ptr m_font32;
-	Font::Ptr m_font48;
-
-	int m_frameCount;
-	int m_lastSecond;
-	int m_fps;
 
 	float m_scale;
 	Rect m_viewport;

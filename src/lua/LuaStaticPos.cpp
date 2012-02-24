@@ -4,10 +4,7 @@
 LuaClass luaStaticPos("StaticPos", &luaComponent);
 
 int LuaStaticPos_new(lua_State *L) {
-	std::string name(luaL_checkstring(L, 1));
-	lua_pop(L, 1);
-
-	luaStaticPos.push(L, StaticPos::Ptr(new StaticPos(name)));
+	luaStaticPos.push(L, std::make_shared<StaticPos>());
 	return 1;
 }
 

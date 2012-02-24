@@ -1,7 +1,7 @@
 #include "components/StaticPos.h"
 
-StaticPos::StaticPos(const std::string &objectID)
-	: Component("StaticPos", objectID), IPositionable() {
+StaticPos::StaticPos()
+	: Component("StaticPos"), IPositionable() {
 	m_pos = Vector2();
 	m_angle = 0;
 }

@@ -1,12 +1,31 @@
-Game = make("Game", { "EventListener" })
-Game.eventListener:registerEvent("onQuit")
+local Events = require("events")
 
-function Game:onQuit()
-	print("Adios!")
+local Game = {}
+
+function Game.register(components)
+	for _, component in pairs(components) do
+		if component.register then
+			component:register()
+		end
+	end
 end
 
-Timer = make("Timer", { "EventListener" })
-Timer.eventListener:registerEvent("onUpdate")
+function Game.unregister(components)
+	for _, component in pairs(components) do
+		if component.unregister then
+			component:unregister()
+		end
+	end
+end
+
+function Game.mixin(self)
+	self.register = Game.register
+	self.unregister = Game.unregister
+end
+
+local Timer = {}
+Game.timer = Timer
+Events.register("onUpdate", Timer)
 Timer.events = {}
 
 function Timer:onUpdate(elapsed)
@@ -23,8 +42,9 @@ function Timer:register(when, func)
 	self.events[self.total+when] = func
 end
 
-CheckEvents = make("CheckEvents", { "EventListener" })
-CheckEvents.eventListener:registerEvent("onUpdate")
+local CheckEvents = {}
+Game.checkEvents = CheckEvents
+Events.register("onUpdate", CheckEvents)
 CheckEvents.events = {}
 function CheckEvents:onUpdate(elapsed)
 	for id, event in pairs(self.events) do
@@ -34,42 +54,4 @@ function CheckEvents:onUpdate(elapsed)
 	end
 end
 
-ControlState = {}
-function ControlState:onKeyDown(key, char)
-	local player = self.player
-	if not player then return end
-
-
-	if key == "`" then
-		States.push(UI.Console)
-	end
-	if key == "w" and player.groundContacts > 0 then
-		player.body:applyForceToCenter(0, 50)
-	end
-	if key == "a" then
-		player.xDir = player.xDir -1
-	end
-	if key == "d" then
-		player.xDir = player.xDir + 1
-	end
-end
-
-function ControlState:onKeyUp(key)
-	local player = self.player
-	if not player then return end
-	if key == "escape" then
-		--States.push(UI.MainMenu)
-	end
-	if key == "a" then
-		player.xDir = player.xDir + 1
-	end
-	if key == "d" then
-		player.xDir = player.xDir - 1
-	end
-	if key == "=" then
-		Graphics.setScale(Graphics.scale() * 1.1)
-	end
-	if key == "-" then
-		Graphics.setScale(Graphics.scale() / 1.1)
-	end
-end
+return Game

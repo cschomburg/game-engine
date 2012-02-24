@@ -12,7 +12,7 @@ class StaticPos : public Component, public IPositionable {
 public:
 	typedef std::shared_ptr<StaticPos> Ptr;
 
-	StaticPos(const std::string &objectID);
+	StaticPos();
 	virtual ~StaticPos();
 
 	Vector2 pos() const;

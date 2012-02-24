@@ -12,7 +12,7 @@ class Body : public Component, public IPositionable,
 public:
 	typedef std::shared_ptr<Body> Ptr;
 
-	Body(const std::string &objectID);
+	Body();
 	virtual ~Body();
 
 	b2BodyDef def() const;

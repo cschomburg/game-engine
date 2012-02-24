@@ -1,18 +1,18 @@
 #include <iostream>
 #include "Component.h"
 
-Component::Component(const std::string &type, const std::string &objectID) {
+Component::Component(const std::string &type) {
 	m_type = type;
-	m_objectID = objectID;
-	//std::cout << "[C] " << m_objectID << "::" << m_type << std::endl;
 }
 
-Component::~Component() {
-	//std::cout << "[D] " << m_objectID << "::" << m_type << std::endl;
-}
+Component::~Component() {}
 
 std::string Component::type() const {
 	return m_type;
+}
+
+void Component::setObjectID(const std::string &objectID) {
+	m_objectID = objectID;
 }
 
 std::string Component::objectID() const {

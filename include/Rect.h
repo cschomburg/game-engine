@@ -8,11 +8,11 @@
 class Rect {
 public:
 	Rect(float x = 0, float y = 0, float w = 0, float h = 0);
-	Rect(const Vector2 &pos, const Vector2 &size, bool centered = false);
+	Rect(const Vector2 &pos, const Vector2 &size, bool centered = true);
 
 	Vector2 pos() const;
 	Vector2 size() const;
-	void setPos(const Vector2 &pos, bool centered =false);
+	void setPos(const Vector2 &pos, bool centered = true);
 	void translate(const Vector2 &pos);
 	void setSize(const Vector2 &pos);
 
@@ -34,7 +34,7 @@ public:
 	Rect united(const Rect &other) const;
 	Rect intersected(const Rect &other) const;
 
-public:
+private:
 	float x;
 	float y;
 	float w;

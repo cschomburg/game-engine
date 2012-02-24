@@ -4,29 +4,25 @@
 #include "LuaClass.h"
 
 extern LuaClass luaGameEngine;
-extern LuaClass luaUI;
+extern LuaClass luaGraphics;
 
 extern LuaClass luaComponent;
 extern LuaClass luaBody;
-extern LuaClass luaGraphics;
+extern LuaClass luaFontRenderable;
 extern LuaClass luaRenderable;
+extern LuaClass luaSolidRenderable;
+extern LuaClass luaTextureRenderable;
 extern LuaClass luaStaticPos;
 
-extern LuaClass luaWidget;
-extern LuaClass luaSolidWidget;
-extern LuaClass luaTextWidget;
-
 void LuaGameEngine_classSetup(lua_State *L);
-void LuaUI_classSetup(lua_State *L);
+void LuaGraphics_classSetup(lua_State *L);
 
 void LuaComponent_classSetup(lua_State *L);
 void LuaBody_classSetup(lua_State *L);
-void LuaGraphics_classSetup(lua_State *L);
+void LuaFontRenderable_classSetup(lua_State *L);
 void LuaRenderable_classSetup(lua_State *L);
+void LuaSolidRenderable_classSetup(lua_State *L);
+void LuaTextureRenderable_classSetup(lua_State *L);
 void LuaStaticPos_classSetup(lua_State *L);
-
-void LuaWidget_classSetup(lua_State *L);
-void LuaSolidWidget_classSetup(lua_State *L);
-void LuaTextWidget_classSetup(lua_State *L);
 
 #endif /* end of include guard: LUACLASSES_H */

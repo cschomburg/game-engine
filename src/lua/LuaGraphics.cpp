@@ -55,8 +55,8 @@ int LuaGraphics_viewport(lua_State *L) {
 	const Rect &rect = GameEngine::instance()->graphics()->viewport();
 	lua_pushnumber(L, rect.bottomLeft().x);
 	lua_pushnumber(L, rect.bottomLeft().y);
-	lua_pushnumber(L, rect.w);
-	lua_pushnumber(L, rect.h);
+	lua_pushnumber(L, rect.size().x);
+	lua_pushnumber(L, rect.size().y);
 	return 4;
 }
 

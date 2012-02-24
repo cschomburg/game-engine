@@ -8,11 +8,12 @@ class Component {
 public:
 	typedef std::shared_ptr<Component> Ptr;
 
-	Component(const std::string &type, const std::string &objectID);
+	Component(const std::string &type);
 	virtual ~Component();
 
 	std::string type() const;
 	std::string objectID() const;
+	void setObjectID(const std::string &objectID);
 
 private:
 	std::string m_type;

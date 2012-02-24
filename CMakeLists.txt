@@ -42,32 +42,29 @@ set(
 		src/subsystems/GraphicsSubsystem.cpp
 		src/subsystems/InputSubsystem.cpp
 		src/subsystems/LuaSubsystem.cpp
-		src/subsystems/UISubsystem.cpp
 		src/subsystems/Profiler.cpp
 
 	src/Component.cpp
 		src/components/Body.cpp
 		src/components/Renderable.cpp
+			src/components/FontRenderable.cpp
+			src/components/SolidRenderable.cpp
+			src/components/TextureRenderable.cpp
 		src/components/StaticPos.cpp
 
 		include/interfaces/IPositionable.h
 
-	src/Widget.cpp
-		src/widgets/SolidWidget.cpp
-		src/widgets/TextWidget.cpp
-
 	src/LuaCall.cpp
 	src/LuaClass.cpp
 		src/lua/LuaGameEngine.cpp
-		src/lua/LuaUI.cpp
 		src/lua/LuaComponent.cpp
 			src/lua/LuaBody.cpp
 			src/lua/LuaGraphics.cpp
 			src/lua/LuaRenderable.cpp
+				src/lua/LuaFontRenderable.cpp
+				src/lua/LuaSolidRenderable.cpp
+				src/lua/LuaTextureRenderable.cpp
 			src/lua/LuaStaticPos.cpp
-		src/lua/LuaWidget.cpp
-			src/lua/LuaSolidWidget.cpp
-			src/lua/LuaTextWidget.cpp
 
 	src/main.cpp
 )

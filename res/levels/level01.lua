@@ -1,103 +1,107 @@
-local background = make:background("Background")
-background.renderable:setShape("box", 10.24, 10.24)
-background.renderable:setTexture("res/images/background/tile-1.png")
---background.renderable:setColor(159/255, 96/255, 65/255, 1)
-background.renderable:setParallax(1, 1)
-background:register()
+local Level = require("level")
+local ControlState = require("controlState")
+local States = require("states")
 
-local noise = make:background("Noise")
-noise.renderable:setShape("box", 20.24, 20.24)
-noise.renderable:setTexture("res/images/effects/noise.png")
-noise.renderable:setParallax(1, 1)
-noise.renderable:setZIndex(1)
-noise.renderable:setColor(1, 1, 1, 0.2)
-noise:register()
+local level = Level.new()
+level:load{
+	Background = {
+		StaticPos = true,
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {10.24, 10.24},
+			texture = D.img("background/tile-1.png"),
+			--color = { 159/255, 96/255, 65/255, 1 },
+			parallax = {1, 1},
+		},
+	},
+	Noise = {
+		StaticPos = true,
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {20.24, 20.24},
+			texture = D.img("effects/noise.png"),
+			parallax = {1, 1},
+			zIndex = 1,
+			color = {1, 1, 1, 0.2},
+		},
+	},
+	Sun = {
+		StaticPos = true,
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {10.24, 10.24},
+			blendMode = "add",
+			texture = D.img("background/sun1.png"),
+			parallax = {0.99, 0.99},
+		},
+	},
+	--[[SunEffect = {
+		StaticPos = true,
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {2, 2},
+			blendMode = "add",
+			texture = D.img("sun.png"),
+			parallax = {0.9, 0.9},
+			color = {1, 1, 1, 0.2},
+			zIndex = 1,
+		},
+	},]]
+	Cloud1 = {
+		StaticPos = {pos = {0, -28}},
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {9.47, 3.65},
+			texture = D.img("clouds/layer1.png"),
+			parallax = {0.9, 0.9},
+		},
+	},
+	Cloud2 = {
+		StaticPos = {pos = {18, 14}},
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {3.71, 3.13},
+			texture = D.img("clouds/single1.png"),
+			parallax = {0.8, 0.8},
+		},
+	},
+	Island = {
+		Body = {
+			type = "static",
+			shape = {"box", 1, 0.64},
+		},
+		TextureRenderable = {
+			positionable = "$.Body",
+			boundingRect = {2.02, 1.4},
+			texture = D.img("island.png"),
+		},
+	},
+	Tree = {
+		StaticPos = {pos = {0, 1.3}},
+		TextureRenderable = {
+			positionable = "$.StaticPos",
+			boundingRect = {2.23*3/5, 2.26*3/5},
+			texture = D.img("background/tree2.png"),
+		},
+	},
+	Player = {
+		Body = {
+			pos = {0, 1},
+			shape = {"box", 0.1, 0.25},
+		},
+		SolidRenderable = {
+			positionable = "$.Body",
+			boundingRect = {0.24, 0.54},
+			color = {0, 0, 0, 1},
+		},
+	},
+}
+level:register()
 
---[[
-local sun = make:background("Sun")
-sun.renderable:setShape("box", 4, 4)
-sun.renderable:setBlendMode("add")
-sun.renderable:setTexture("res/images/sun.png")
-sun.renderable:setParallax(0.9, 0.9)
-sun:register()
-]]
-
-local sun = make:background("Sun")
-sun.renderable:setShape("box", 10.24, 10.24)
-sun.renderable:setBlendMode("add")
-sun.renderable:setTexture("res/images/background/sun1.png")
-sun.renderable:setParallax(0.99, 0.99)
-sun:register()
-
---[[
-local sunEffect = make:background("Sun")
-sunEffect.renderable:setShape("box", 2, 2)
-sunEffect.renderable:setBlendMode("add")
-sunEffect.renderable:setTexture("res/images/sun.png")
-sunEffect.renderable:setParallax(0.9, 0.9)
-sunEffect.renderable:setColor(1, 1, 1, 0.2)
-sunEffect.renderable:setZIndex(1)
-sunEffect:register()
-]]
-
-local cloud1 = make:background()
-cloud1.staticPos:setPos(0, -28)
-cloud1.renderable:setShape("box", 9.47, 3.65)
-cloud1.renderable:setTexture("res/images/clouds/layer1.png")
-cloud1.renderable:setParallax(0.9, 0.9)
-cloud1:register()
-
-local cloud2 = make:background()
-cloud2.staticPos:setPos(18, 14)
-cloud2.renderable:setShape("box", 3.71, 3.13)
-cloud2.renderable:setTexture("res/images/clouds/single1.png")
-cloud2.renderable:setParallax(0.8, 0.8)
-cloud2:register()
-
---[[
-local cloud3 = make:background()
-cloud3.staticPos:setPos(-18, 14)
-cloud3.renderable:setShape("box", 5.64, 3.71)
-cloud3.renderable:setTexture("res/images/clouds/layer2.png")
-cloud3.renderable:setParallax(0.9, 0.9)
-cloud3:register()
-]]
-
-local island = make:static("Island")
-island.body:setShape("box", 1, 0.64)
-island.renderable:setShape("box", 2.02, 1.4)
-island.renderable:setTexture("res/images/island.png")
-island:register()
-
-local tree = make:background("Tree")
-tree.staticPos:setPos(0, 1.3)
-tree.renderable:setShape("box", 2.23*3/5, 2.26*3/5)
-tree.renderable:setTexture("res/images/background/tree2.png")
-tree:register()
-
-local bridge = make:static()
-bridge.body:setPos(8, 0.6)
-bridge.body:setShape("box", 8, 0.1)
-bridge.renderable:setShape("box", 16, 0.2)
-bridge.renderable:setColor(0, 0, 0, 1)
-bridge:register()
-
-local house = make:background("House-Outer")
-house.staticPos:setPos(8, 3.79)
-house.renderable:setShape("box", 5.63, 6.19)
-house.renderable:setTexture("res/images/house-out.png")
-house.renderable:setColor(159/255, 96/255, 65/255, 1)
-house:register()
-
-local player = make:dynamic("Player")
-player.body:setShape("box", 0.1, 0.25)
-player.renderable:setShape("box", 0.24, 0.54)
-player.renderable:setColor(0, 0, 0, 1)
+local player = level.Player
+player.body = player.components.Body
 player.xDir = 0
 player.groundContacts = 0
-player.body:setPos(0, 1)
-player:register()
---player.body:setGravityScale(0)
 ControlState.player = player
 Graphics.setCamera(player.body)
 States.push(ControlState)

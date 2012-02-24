@@ -1,28 +1,20 @@
-#include <string>
-#include <vector>
 #include <SDL/SDL_opengl.h>
 
-#include "GameEngine.h"
-#include "ResourceManager.h"
-#include "Texture.h"
 #include "components/Renderable.h"
 #include "subsystems/GraphicsSubsystem.h"
 
-Renderable::Renderable(std::string objectID)
-	: Component("Renderable", objectID) {
-	m_color = Color(1, 1, 1, 1);
-	m_gradient = Gradient();
-	m_texture = 0;
+Renderable::Renderable(const std::string &type)
+	: Component(type) {
 	m_zIndex = 0.0f;
-	m_blendMode = BlendMode::Blend;
+	m_drawLayer = DrawLayer::World;
+	m_parallax = Vector2();
+	m_boundingRect = Rect();
 	m_scale = 1.0f;
+	m_color = Color(1, 1, 1, 1);
+	m_blendMode = BlendMode::Blend;
 }
 
 Renderable::~Renderable() {}
-
-bool Renderable::isValid() const {
-	return !m_shape.points.empty();
-}
 
 IPositionable::Ptr Renderable::positionable() const {
 	return m_positionable;
@@ -32,28 +24,12 @@ void Renderable::setPositionable(IPositionable::Ptr positionable) {
 	m_positionable = positionable;
 }
 
-const Color &Renderable::color() const {
-	return m_color;
+DrawLayer Renderable::drawLayer() const {
+	return m_drawLayer;
 }
 
-void Renderable::setColor(const Color &color) {
-	m_color = color;
-}
-
-const Gradient &Renderable::gradient() const {
-	return m_gradient;
-}
-
-void Renderable::setGradient(const Gradient &gradient) {
-	m_gradient = gradient;
-}
-
-std::shared_ptr<Texture> Renderable::texture() const {
-	return m_texture;
-}
-
-void Renderable::setTexture(const std::string &texturePath) {
-	m_texture = GameEngine::instance()->manager()->texture(texturePath);
+void Renderable::setDrawLayer(DrawLayer layer) {
+	m_drawLayer = layer;
 }
 
 float Renderable::zIndex() const {
@@ -72,20 +48,12 @@ void Renderable::setParallax(const Vector2 &parallax) {
 	m_parallax = parallax;
 }
 
-BlendMode Renderable::blendMode() const {
-	return m_blendMode;
+const Rect &Renderable::boundingRect() const {
+	return m_boundingRect;
 }
 
-void Renderable::setBlendMode(BlendMode blendMode) {
-	m_blendMode = blendMode;
-}
-
-const Convex &Renderable::shape() const {
-	return m_shape;
-}
-
-void Renderable::setShape(const Convex &convex) {
-	m_shape = convex;
+void Renderable::setBoundingRect(const Rect &rect) {
+	m_boundingRect = rect;
 }
 
 float Renderable::scale() const {
@@ -94,4 +62,34 @@ float Renderable::scale() const {
 
 void Renderable::setScale(float scale) {
 	m_scale = scale;
+}
+
+const Color &Renderable::color() const {
+	return m_color;
+}
+
+void Renderable::setColor(const Color &color) {
+	m_color = color;
+}
+
+BlendMode Renderable::blendMode() const {
+	return m_blendMode;
+}
+
+void Renderable::setBlendMode(BlendMode blendMode) {
+	m_blendMode = blendMode;
+}
+
+void Renderable::render() {
+	glColor4f(color().r, color().g, color().b, color().a);
+
+	switch (m_blendMode) {
+	default:
+	case BlendMode::Blend:
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); break;
+	case BlendMode::Add:
+		glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA); break;
+	case BlendMode::Screen:
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); break;
+	}
 }

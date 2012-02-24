@@ -120,8 +120,8 @@ end
 	Private functions
 *******************************]]
 
-local updateFrame = make("LibFx-Updater", { make = "EventListener" })
-updateFrame.eventListener:registerEvent("onUpdate")
+local updateFrame = make("LibFx-Updater", { EventListener = true })
+updateFrame.components.EventListener:registerEvent("onUpdate")
 function updateFrame:onUpdate(elapsed)
 	for fx, _ in pairs(running) do
 		if(fx.rDelay) then

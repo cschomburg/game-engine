@@ -2,17 +2,18 @@
 #define RENDERABLE_H
 
 #include <memory>
-#include <string>
 #include <utility>
 
 #include "Color.h"
 #include "Component.h"
-#include "Convex.h"
+#include "Rect.h"
 #include "interfaces/IPositionable.h"
 
-class Texture;
-
-typedef std::pair<Color, Color> Gradient;
+enum class DrawLayer {
+	Background,
+	World,
+	Foreground,
+};
 
 enum class BlendMode {
 	Add,
@@ -24,22 +25,14 @@ class Renderable : public Component {
 public:
 	typedef std::shared_ptr<Renderable> Ptr;
 
-	Renderable(std::string objectID);
+	Renderable(const std::string &type);
 	virtual ~Renderable();
-
-	bool isValid() const;
 
 	IPositionable::Ptr positionable() const;
 	void setPositionable(IPositionable::Ptr positionable);
 
-	const Color &color() const;
-	void setColor(const Color &color);
-
-	const Gradient &gradient() const;
-	void setGradient(const Gradient &gradient);
-
-	std::shared_ptr<Texture> texture() const;
-	void setTexture(const std::string &texturePath);
+	DrawLayer drawLayer() const;
+	void setDrawLayer(DrawLayer layer);
 
 	float zIndex() const;
 	void setZIndex(float zIndex);
@@ -47,25 +40,29 @@ public:
 	const Vector2 &parallax() const;
 	void setParallax(const Vector2 &parallax);
 
-	BlendMode blendMode() const;
-	void setBlendMode(BlendMode blendMode);
-
-	const Convex &shape() const;
-	void setShape(const Convex &convex);
+	const Rect &boundingRect() const;
+	void setBoundingRect(const Rect &rect);
 
 	float scale() const;
 	void setScale(float scale);
 
+	const Color &color() const;
+	void setColor(const Color &color);
+
+	BlendMode blendMode() const;
+	void setBlendMode(BlendMode blendMode);
+
+	virtual void render();
+
 private:
 	IPositionable::Ptr m_positionable;
-	Color m_color;
-	Gradient m_gradient;
-	std::shared_ptr<Texture> m_texture;
 	float m_zIndex;
+	DrawLayer m_drawLayer;
 	Vector2 m_parallax;
-	BlendMode m_blendMode;
-	Convex m_shape;
+	Rect m_boundingRect;
 	float m_scale;
+	Color m_color;
+	BlendMode m_blendMode;
 };
 
 #endif /* end of include guard: RENDERABLE_H */

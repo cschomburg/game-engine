@@ -2,8 +2,7 @@
 --       Events Subsystem
 --********************************]]
 
-Events = {}
-
+local Events = {}
 local registered = {}
 
 function Events.call(event, ...)
@@ -14,13 +13,18 @@ function Events.call(event, ...)
 	for listener in pairs(registered[event]) do
 		if type(listener) == "function" then
 			listener(event, ...)
-		else 
-			listener:call(event, ...)
+		elseif listener[event] then
+			listener[event](listener, ...)
+		elseif listener.onEvent then
+			listener:onEvent(event, ...)
 		end
 	end
 end
 
-function Events.register(event, listener)
+function Events.register(listener, event)
+	if type(listener) == "string" and type(event) ~= "string" then
+		event, listener = listener, event
+	end
 	if not registered[event] then
 		registered[event] = {}
 		_G[event] = function(...)
@@ -31,7 +35,7 @@ function Events.register(event, listener)
 	registered[event][listener] = true
 end
 
-function Events.unregister(event, listener)
+function Events.unregister(listener, event)
 	if not registered[event] then
 		return
 	end
@@ -39,51 +43,9 @@ function Events.unregister(event, listener)
 	registered[event][listener] = nil
 end
 
-
---[[********************************
---     EventListener Component
---********************************]]
-
-EventListener = {}
-EventListener.__index = EventListener
-
-
-function EventListener.new()
-	return setmetatable({events = {}}, EventListener)
+function Events.mixin(object)
+	object.registerEvent = register
+	object.unregisterEvent = unregister
 end
 
-function EventListener:call(event, ...)
-	local target = self.parent or self
-	target[event](target, ...)
-end
-
-
-function EventListener:registerEvent(event)
-	self.events[event] = true
-	Events.register(event, self)
-end
-
-function EventListener:unregisterEvent(event)
-	self.events[event] = nil
-	Events.unregister(event, self)
-end
-
-function EventListener:register()
-	if not disabled then
-		return
-	end
-	disabled = false
-	for event in pairs(events) do
-		Events.register(event, self)
-	end
-end
-
-function EventListener:unregister()
-	if disabled then
-		return
-	end
-	disabled = true
-	for event in pairs(events) do
-		Events.unregister(event, self)
-	end
-end
+return Events
