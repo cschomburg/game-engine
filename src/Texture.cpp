@@ -69,16 +69,13 @@ void Texture::draw(const Rect &rect) {
 
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 1);
-		glVertex3f(rect.bottomLeft().x, rect.bottomLeft().y, 0.0f);
-
+		glVertex3f(rect.left(), rect.bottom(), 0.0f);
 		glTexCoord2i(1, 1);
-		glVertex3f(rect.bottomRight().x, rect.bottomRight().y, 0.0f);
-
+		glVertex3f(rect.right(), rect.bottom(), 0.0f);
 		glTexCoord2i(1, 0);
-		glVertex3f(rect.topRight().x, rect.topRight().y, 0.0f);
-
+		glVertex3f(rect.right(), rect.top(), 0.0f);
 		glTexCoord2i(0, 0);
-		glVertex3f(rect.topLeft().x, rect.topLeft().y, 0.0f);
+		glVertex3f(rect.left(), rect.top(), 0.0f);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);

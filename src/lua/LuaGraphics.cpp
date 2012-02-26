@@ -53,8 +53,8 @@ int LuaGraphics_setCamera(lua_State *L) {
 
 int LuaGraphics_viewport(lua_State *L) {
 	const Rect &rect = GameEngine::instance()->graphics()->viewport();
-	lua_pushnumber(L, rect.bottomLeft().x);
-	lua_pushnumber(L, rect.bottomLeft().y);
+	lua_pushnumber(L, rect.pos(Anchor::center).x);
+	lua_pushnumber(L, rect.pos(Anchor::center).y);
 	lua_pushnumber(L, rect.size().x);
 	lua_pushnumber(L, rect.size().y);
 	return 4;

@@ -1,32 +1,44 @@
+#include <algorithm>
+
 #include "Rect.h"
 
-Rect::Rect(float x, float y, float w, float h) {
-	this->x = x;
-	this->y = y;
-	this->w = w;
-	this->h = h;
+Rect::Rect() {
+	x  = 0.0f;
+	y  = 0.0f;
+	hw = 0.0f;
+	hh = 0.0f;
 }
 
-Rect::Rect(const Vector2 &pos, const Vector2 &size, bool centered) {
-	if (centered) {
-		setPos(pos - size/2);
-	} else {
-		setPos(pos);
-	}
+Rect::Rect(const Vector2 &pos, const Vector2 &size, Anchor anchor) {
+	setPos(pos, anchor);
 	setSize(size);
 }
 
-Vector2 Rect::pos() const {
-	return Vector2(x, y);
+Vector2 Rect::pos(Anchor anchor) const {
+	switch (anchor) {
+	default: case Anchor::center: return Vector2(x,    y);
+	case Anchor::topLeft:         return Vector2(x-hw, y+hh);
+	case Anchor::top:             return Vector2(x,    y+hh);
+	case Anchor::topRight:        return Vector2(x+hw, y+hh);
+	case Anchor::left:            return Vector2(x-hw, y);
+	case Anchor::right:           return Vector2(x+hw, y);
+	case Anchor::bottomLeft:      return Vector2(x-hw, y-hh);
+	case Anchor::bottom:          return Vector2(x,    y-hh);
+	case Anchor::bottomRight:     return Vector2(x+hw, y-hh);
+	}
 }
 
-void Rect::setPos(const Vector2 &pos, bool centered) {
-	if (centered) {
-		x = pos.x - w/2;
-		y = pos.y - h/2;
-	} else {
-		x = pos.x;
-		y = pos.y;
+void Rect::setPos(const Vector2 &pos, Anchor anchor) {
+	switch (anchor) {
+	default: case Anchor::center: x = pos.x;    y = pos.y;    break;
+	case Anchor::topLeft:         x = pos.x-hw; y = pos.y+hh; break;
+	case Anchor::top:             x = pos.x;    y = pos.y+hh; break;
+	case Anchor::topRight:        x = pos.x;    y = pos.y+hh; break;
+	case Anchor::left:            x = pos.x-hh; y = pos.y;    break;
+	case Anchor::right:           x = pos.x+hh; y = pos.y;    break;
+	case Anchor::bottomLeft:      x = pos.x-hh; y = pos.y-hh; break;
+	case Anchor::bottom:          x = pos.x;    y = pos.y-hh; break;
+	case Anchor::bottomRight:     x = pos.x+hh; y = pos.y-hh; break;
 	}
 }
 
@@ -36,38 +48,23 @@ void Rect::translate(const Vector2 &pos) {
 }
 
 Vector2 Rect::size() const {
-	return Vector2(w, h);
+	return Vector2(hw*2.0f, hh*2.0f);
 }
 
 void Rect::setSize(const Vector2 &size) {
-	w = size.x;
-	h = size.y;
+	hw = size.x/2.0f;
+	hh = size.y/2.0f;
 }
 
-float Rect::left() const { return x; }
-float Rect::right() const { return x + w; }
-float Rect::top() const { return y + h; }
-float Rect::bottom() const { return y; }
-
-Vector2 Rect::bottomLeft() const {
-	return pos();
+void Rect::scale(float factor) {
+	hw *= factor;
+	hh *= factor;
 }
 
-Vector2 Rect::bottomRight() const {
-	return Vector2(x + w, y);
-}
-
-Vector2 Rect::topRight() const {
-	return Vector2(x + w, y + h);
-}
-
-Vector2 Rect::topLeft() const {
-	return Vector2(x, y + h);
-}
-
-Vector2 Rect::center() const {
-	return pos() + size()/2;
-}
+float Rect::left()   const { return x-hw; }
+float Rect::right()  const { return x+hw; }
+float Rect::top()    const { return y+hh; }
+float Rect::bottom() const { return y-hh; }
 
 bool Rect::intersects(const Rect &other) const {
 	return !(  (left() > other.right() )
@@ -91,22 +88,26 @@ bool Rect::contains(const Rect &other) const {
 }
 
 Rect Rect::united(const Rect &other) const {
-	float nX = std::min(x, other.x);
-	float nY = std::min(y, other.y);
-	float nX2 = std::max(x + w, other.x + other.w);
-	float nY2 = std::max(y + h, other.y + other.y);
+	float l = std::min(left(), other.left());
+	float b = std::min(bottom(), other.bottom());
+	float r = std::max(right(), other.right());
+	float t = std::max(top(), other.top());
+	float w = r-l;
+	float h = t-b;
 
-	return Rect(nX, nY, nX2-nX, nY2-nY);
+	return Rect(Vector2(l+w/2.0f, b+h/2.0f), Vector2(w, h), Anchor::center);
 }
 
 Rect Rect::intersected(const Rect &other) const {
 	if (!intersects(other))
 		return Rect();
 
-	float nX = std::max(x, other.x);
-	float nY = std::max(y, other.y);
-	float nX2 = std::min(x + w, other.x + other.w);
-	float nY2 = std::min(y + h, other.y + other.y);
+	float l = std::max(left(), other.left());
+	float b = std::max(bottom(), other.bottom());
+	float r = std::min(right(), other.right());
+	float t = std::min(top(), other.top());
+	float w = r-l;
+	float h = t-b;
 
-	return Rect(nX, nY, nX2-nX, nY2-nY);
+	return Rect(Vector2(l+w/2.0f, b+h/2.0f), Vector2(w, h), Anchor::center);
 }

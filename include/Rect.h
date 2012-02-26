@@ -1,31 +1,37 @@
 #ifndef RECT_H
 #define RECT_H
 
-#include <algorithm>
-
 #include "Vector2.h"
+
+enum class Anchor {
+	topLeft,
+	top,
+	topRight,
+	left,
+	center,
+	right,
+	bottomLeft,
+	bottom,
+	bottomRight,
+};
 
 class Rect {
 public:
-	Rect(float x = 0, float y = 0, float w = 0, float h = 0);
-	Rect(const Vector2 &pos, const Vector2 &size, bool centered = true);
+	Rect();
+	Rect(const Vector2 &pos, const Vector2 &size, Anchor anchor = Anchor::center);
 
-	Vector2 pos() const;
-	Vector2 size() const;
-	void setPos(const Vector2 &pos, bool centered = true);
+	Vector2 pos(Anchor anchor = Anchor::center) const;
+	void setPos(const Vector2 &pos, Anchor anchor = Anchor::center);
 	void translate(const Vector2 &pos);
+
+	Vector2 size() const;
 	void setSize(const Vector2 &pos);
+	void scale(float factor);
 
 	float left() const;
 	float right() const;
 	float top() const;
 	float bottom() const;
-
-	Vector2 bottomLeft() const;
-	Vector2 bottomRight() const;
-	Vector2 topRight() const;
-	Vector2 topLeft() const;
-	Vector2 center() const;
 
 	bool intersects(const Rect &other) const;
 	bool contains(const Vector2 &point) const;
@@ -37,8 +43,8 @@ public:
 private:
 	float x;
 	float y;
-	float w;
-	float h;
+	float hw;
+	float hh;
 };
 
 #endif /* end of include guard: RECT_H */

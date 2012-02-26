@@ -1,5 +1,5 @@
-local console = {}
-UI.Console = console
+local States = require("states")
+local Console = {}
 
 local _print = print
 function print(...)
@@ -10,59 +10,73 @@ function print(...)
 		msg = msg..tostring(select(i, ...))
 	end
 	if msg == "" then return end
-	console:addMessage(msg)
+	Console:addMessage(msg)
 end
 
-function console:onKeyDown(key, char)
+function Console:onKeyDown(key, char)
 	if key == "`" then
 		States.pop()
 	elseif key == "escape" then
-		console:clearInput()
+		Console:clearInput()
 	elseif key == "backspace" then
-		console:deleteChar()
+		Console:deleteChar()
 	elseif key == "return" then
-		console:process()
+		Console:process()
 	else
-		console:addChar(char)
+		Console:addChar(char)
 	end
 	return true
 end
 
-function console:onKeyUp(key)
+function Console:onKeyUp(key)
 	return true
 end
 
-function console:init()
-	local bg = SolidWidget.new("Console")
-	bg:setShown(false)
-	bg:setParent(UI.root())
+function Console:init()
+	local z = 90
+
+	local bg = SolidRenderable.new()
+	do local pos = StaticPos.new()
+		pos:setPos(0, 0)
+		bg:setPositionable(pos)
+	end
+	bg:setDrawLayer("foreground")
+	bg:setZIndex(z)
 	bg:setColor(0, 0, 0, 0.8)
-	bg:setRect(-1024/2, -576/2, 1024, 576)
+	bg:setBoundingRect(1024, 576)
 	self.bg = bg
 
 	self.messages = {}
 	self.lines = {}
 	for i = 1, 21 do
-		local line = TextWidget.new("ConsoleLine"..i)
-		line:setParent(bg)
+		local line = FontRenderable.new()
+		line:setDrawLayer("foreground")
+		line:setZIndex(z+1)
 		line:setColor(1, 1, 1, 1)
 		line:setFont("res/font.ttf", 12)
-		line:setPos(-1024/2+30, 576/2 - 10 - i*24)
+		do local pos = StaticPos.new()
+			pos:setPos(-1024/2+30, 576/2 - 10 - i*24)
+			line:setPositionable(pos)
+		end
 		self.lines[i] = line
 	end
 
-	local edit = TextWidget.new("ConsoleInput")
-	edit:setParent(bg)
+	local edit = FontRenderable.new()
+	edit:setDrawLayer("foreground")
+	edit:setZIndex(z+1)
 	edit:setColor(1, 1, 1, 1)
 	edit:setFont("res/font.ttf", 12)
-	edit:setPos(-1024/2+30, -576/2 + 20)
+	do local pos = StaticPos.new()
+		pos:setPos(-1024/2+30, -576/2 + 20)
+		edit:setPositionable(pos)
+	end
 	self.edit = edit
 
 	self.input = ""
 	self:updateText()
 end
 
-function console:addMessage(msg)
+function Console:addMessage(msg)
 	if not msg or msg == "" then return end
 	if msg:find("\r?\n") then
 		for line in msg:gmatch("[^\r\n]+") do
@@ -80,41 +94,50 @@ function console:addMessage(msg)
 	self:redraw()
 end
 
-function console:onEnter()
-	if console.init then
-		console:init()
-		console.init = nil
+function Console:onEnter()
+	if self.init then
+		self:init()
+		self.init = nil
 	end
-	self.bg:setShown(true)
+
+	self.bg:register()
+	for _, line in pairs(self.lines) do
+		line:register()
+	end
+	self.edit:register()
 end
 
-function console:onLeave()
-	self.bg:setShown(false)
+function Console:onLeave()
+	self.bg:unregister()
+	for _, line in pairs(self.lines) do
+		line:unregister()
+	end
+	self.edit:unregister()
 end
 
-function console:clearInput()
+function Console:clearInput()
 	self.input = ""
 	self:updateText()
 end
 
-function console:addChar(char)
+function Console:addChar(char)
 	self.input = self.input..char
 	self:updateText()
 end
 
-function console:deleteChar()
+function Console:deleteChar()
 	if self.input == "" then return end
 	self.input = self.input:sub(1, #self.input-1)
 	self:updateText()
 end
 
-function console:updateText()
+function Console:updateText()
 	self.edit:setText("> "..self.input)
 end
 
-function console:process()
+function Console:process()
 	if self.input == "" then return end
-	console:addMessage("> "..self.input)
+	Console:addMessage("> "..self.input)
 	local func, err = loadstring(self.input)
 	if err then
 		return print(err)
@@ -127,9 +150,11 @@ function console:process()
 	end
 end
 
-function console:redraw()
+function Console:redraw()
 	if not self.lines then return end
 	for i, line in pairs(self.lines) do
 		line:setText(self.messages[i] or "")
 	end
 end
+
+return Console

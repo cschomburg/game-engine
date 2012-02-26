@@ -32,6 +32,7 @@ public:
 	float scale() const;
 	void setScale(float scale);
 	Rect viewport() const;
+	const Rect &screen() const;
 
 	void render(Renderable::Ptr renderable);
 
@@ -40,7 +41,7 @@ private:
 	IPositionable::Ptr m_camera;
 
 	float m_scale;
-	Rect m_viewport;
+	Rect m_screen;
 };
 
 #endif /* end of include guard: GRAPHICSSUBSYSTEM_H */

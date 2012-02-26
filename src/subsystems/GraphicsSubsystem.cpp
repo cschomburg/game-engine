@@ -21,11 +21,12 @@ GraphicsSubsystem::~GraphicsSubsystem() {}
 bool GraphicsSubsystem::init() {
 	int width = engine()->displayWidth();
 	int height = engine()->displayHeight();
+	m_screen = Rect(Vector2(), Vector2(width, height), Anchor::center);
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-float(width) / 2, float(width)/2, -float(height)/2, float(height)/2, -1.1f, 1.1f);
+	glOrtho(m_screen.left(), m_screen.right(), m_screen.bottom(), m_screen.top(), -1.1f, 1.1f);
 
 	setScale(100.f);
 
@@ -45,12 +46,11 @@ void GraphicsSubsystem::update() {
 		render(renderable);
 	}
 
-	Vector2 pos;
-	if (m_camera) {
-		pos = m_camera->pos();
-	}
 	glScalef(m_scale, m_scale, 1.0f);
-	glTranslatef(-pos.x, -pos.y, 0.0f);
+	if (m_camera) {
+		Vector2 pos = m_camera->pos();
+		glTranslatef(-pos.x, -pos.y, 0.0f);
+	}
 	for (auto renderable : m_renderables[DrawLayer::World]) {
 		render(renderable);
 	}
@@ -97,40 +97,43 @@ float GraphicsSubsystem::scale() const {
 }
 
 void GraphicsSubsystem::setScale(float scale) {
-	m_viewport = Rect(Vector2(), Vector2(
-		float(engine()->displayWidth())/scale,
-		float(engine()->displayHeight())/scale), true);
 	m_scale = scale;
 }
 
 Rect GraphicsSubsystem::viewport() const {
-	if (!m_camera) {
-		return m_viewport;
+	Rect viewport = m_screen;
+	viewport.scale(1.0f/m_scale);
+	if (m_camera) {
+		viewport.translate(m_camera->pos());
 	}
-
-	Rect viewport = m_viewport;
-	viewport.translate(m_camera->pos());
 	return viewport;
+}
+
+const Rect &GraphicsSubsystem::screen() const {
+	return m_screen;
 }
 
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	IPositionable::Ptr positionable = renderable->positionable();
 	Rect boundingRect = renderable->boundingRect();
-	if (!positionable || boundingRect.size().isZero())
+	if (!positionable)
 		return;
 
 	Vector2 pos = positionable->pos();
 	if (renderable->drawLayer() == DrawLayer::World) {
-		Vector2 camPos;
-		if (m_camera) {
-			camPos = m_camera->pos();
+		if (m_camera) { // Parallax
+			Vector2 camPos = m_camera->pos();
+			pos += (camPos - pos) * renderable->parallax();
 		}
-		pos -= (pos - camPos) * renderable->parallax();
-		boundingRect.translate(pos-camPos);
+		boundingRect.translate(pos);
+		if (!viewport().intersects(boundingRect))
+			return;
+	} else {
+		boundingRect.translate(pos);
+		if (!m_screen.intersects(boundingRect))
+			return;
 	}
 
-	if (!m_viewport.intersects(boundingRect))
-		return;
 
 	// Set position and scale
 	glPushMatrix();

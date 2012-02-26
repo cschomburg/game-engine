@@ -26,7 +26,6 @@ set(
 	src/GameEngine.cpp
 
 	src/Color.cpp
-	src/Convex.cpp
 	src/Font.cpp
 	src/Math.cpp
 	src/Rect.cpp

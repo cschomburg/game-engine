@@ -4,7 +4,6 @@
 #include <Box2D/Box2D.h>
 
 #include "Vector2.h"
-#include "Convex.h"
 
 b2Vec2 toBox2D(const Vector2 &vec);
 Vector2 fromBox2D(const b2Vec2 &vec);

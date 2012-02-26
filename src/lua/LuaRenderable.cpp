@@ -187,8 +187,8 @@ int LuaRenderable_boundingRect(lua_State *L) {
 	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
 
 	const Rect &rect = renderable->boundingRect();
-	lua_pushnumber(L, rect.center().x);
-	lua_pushnumber(L, rect.center().y);
+	lua_pushnumber(L, rect.pos(Anchor::center).x);
+	lua_pushnumber(L, rect.pos(Anchor::center).y);
 	lua_pushnumber(L, rect.size().x);
 	lua_pushnumber(L, rect.size().y);
 	return 4;
@@ -201,13 +201,13 @@ int LuaRenderable_setBoundingRect(lua_State *L) {
 	if (lua_gettop(L) <= 4) {
 		float w = luaL_checknumber(L, 2);
 		float h = luaL_checknumber(L, 3);
-		rect = Rect(Vector2(), Vector2(w, h), true);//lua_isnil(L, 4));
+		rect = Rect(Vector2(), Vector2(w, h), Anchor::center);//lua_isnil(L, 4));
 	} else {
 		float x = luaL_checknumber(L, 2);
 		float y = luaL_checknumber(L, 3);
 		float w = luaL_checknumber(L, 4);
 		float h = luaL_checknumber(L, 5);
-		rect = Rect(Vector2(x, y), Vector2(w, h), lua_isnil(L, 6));
+		rect = Rect(Vector2(x, y), Vector2(w, h), Anchor::center);
 	}
 	renderable->setBoundingRect(rect);
 
