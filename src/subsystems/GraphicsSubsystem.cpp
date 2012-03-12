@@ -1,7 +1,11 @@
+#define NO_SDL_GLEXT
+
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <fstream>
 #include <sstream>
+#include <GL/glew.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
@@ -33,6 +37,31 @@ bool GraphicsSubsystem::init() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_BLEND);
+
+	GLenum err = glewInit();
+	if (err != GLEW_OK) {
+		std::cout << "Error: "  << glewGetErrorString(err) << std::endl;
+		return false;
+	}
+
+	std::ifstream ifs("res/shaders/bloom1.frag");
+	std::string fs((std::istreambuf_iterator<char>(ifs)),
+	                std::istreambuf_iterator<char>());
+	const char *fsSource = fs.c_str();
+
+	GLhandleARB fragShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
+	glShaderSource(fragShader, 1, &fsSource, NULL);
+	glCompileShader(fragShader);
+
+
+	GLhandleARB program = glCreateProgramObjectARB();
+	glAttachObjectARB(program, fragShader);
+	glLinkProgramARB(program);
+	glUseProgramObjectARB(program);
+	GLenum errCode = glGetError();
+	if (errCode != GL_NO_ERROR) {
+		std::cout << gluErrorString(errCode) << std::endl;
+	}
 
 	return true;
 }

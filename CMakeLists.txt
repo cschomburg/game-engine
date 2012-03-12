@@ -88,6 +88,7 @@ endif(BUILD_STATIC)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 find_package(Boost 1.36.0 REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Box2D REQUIRED)
@@ -98,6 +99,7 @@ find_package(Box2D REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Wall")
 
+include_directories(${GLEW_INCLUDE_PATH})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${BOX2D_INLUCE_DIR})
@@ -109,6 +111,7 @@ endif(LUAJIT)
 include_directories("include")
 
 link_libraries(
+	${GLEW_LIBRARY}
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}

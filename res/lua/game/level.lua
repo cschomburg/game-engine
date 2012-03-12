@@ -1,6 +1,5 @@
-local make = require("make").make
-local Game = require("game")
-local UI = require("ui")
+local make = require("base.make").make
+local Game = require("game.main")
 
 local Level = {}
 Level.__index = Level

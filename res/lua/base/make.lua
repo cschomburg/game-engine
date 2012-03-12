@@ -1,4 +1,4 @@
-local selector = require("selector").selector
+local selector = require("base.selector").get
 
 local Make = {}
 local mixins = {}

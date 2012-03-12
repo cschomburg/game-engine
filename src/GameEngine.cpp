@@ -88,10 +88,7 @@ bool GameEngine::init() {
 	m_input->init();
 
 	// Load level
-	if (!m_lua->loadFile("res/lua/init.lua"))
-		return false;
-
-	if (!m_lua->loadFile("res/levels/level01.lua"))
+	if (!m_lua->loadFile("res/lua/main.lua"))
 		return false;
 
 	return true;

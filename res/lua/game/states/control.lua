@@ -1,5 +1,5 @@
-local Console = require("console")
-local States = require("states")
+local Console = require("ui.console")
+local States = require("game.states")
 
 local ControlState = {}
 

@@ -1,3 +1,8 @@
+function optrequire(...)
+	local success, lib = pcall(require, ...)
+	if(success) then return lib end
+end
+
 function string:uppercap()
 	return self:sub(1,1):upper()..self:sub(2)
 end
@@ -11,8 +16,8 @@ function string:islowercap()
 	return l == l:lower()
 end
 
-function math.clamp(value, min, max)
-	return math.min(math.max(value, min), max)
+function math.clamp(val, min, max)
+	return math.min(math.max(val, min), max)
 end
 
 function call(obj, func, ...)

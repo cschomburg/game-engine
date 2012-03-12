@@ -1,6 +1,6 @@
-local Events = require("events")
-local Game = require("game")
-local make = require("make").make
+local Events = require("base.events")
+local Game = require("game.main")
+local make = require("base.make").make
 
 local UI = {}
 
@@ -81,7 +81,7 @@ function fps:onUpdate(elapsed)
 	self.frameCount = (self.frameCount or 0) + 1
 
 	if self.lastUpdate > 1 then
-		print(self.frameCount)
+		--print(self.frameCount)
 		self.FontRenderable:setText("FPS: "..self.frameCount)
 		self.lastUpdate = 0
 		self.frameCount = 0

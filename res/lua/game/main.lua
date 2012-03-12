@@ -1,4 +1,6 @@
-local Events = require("events")
+local Events = require("base.events")
+local Store = require("base.store")
+local Persistence = require("base.persistence")
 
 local Game = {}
 
@@ -53,5 +55,14 @@ function CheckEvents:onUpdate(elapsed)
 		end
 	end
 end
+
+Events.register("onQuit", function()
+	Persistence.store("config.lua", Store:get("config"))
+end)
+Events.register("onInit", function()
+	Store:new("config", Persistence.load("config.lua"))
+end)
+
+Events.call("onInit")
 
 return Game

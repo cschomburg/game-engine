@@ -4,8 +4,6 @@
 #include <deque>
 #include <map>
 #include <memory>
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
 
 #include "Rect.h"
 #include "Subsystem.h"

@@ -1,4 +1,4 @@
-local States = require("states")
+local States = require("game.states")
 local Console = {}
 
 local _print = print
