@@ -89,7 +89,7 @@ find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(Boost 1.36.0 REQUIRED)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Box2D REQUIRED)
 
@@ -117,6 +117,7 @@ link_libraries(
 	${OPENGL_LIBRARIES}
 	${FREETYPE_LIBRARIES}
 	${BOX2D_LIBRARY}
+	${Boost_LIBRARIES}
 	SDLmain
 	dl
 )

@@ -73,11 +73,11 @@ bool LuaSubsystem::loadFile(const std::string &file) {
 
 std::shared_ptr<LuaCall> LuaSubsystem::startCall(const std::string &ident) {
 	LuaCall::Ptr call = m_lastCall.lock();
-	if (call) {
+	/*if (call) {
 		std::cout << "Lua err: " << ident << " requests call, but "
 				  << call->ident() << " is still active" << std::endl;
 		return 0;
-	}
+	}*/
 
 	call = std::make_shared<LuaCall>(L, ident);
 	m_lastCall = call;

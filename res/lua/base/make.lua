@@ -83,8 +83,8 @@ function applyProperty(self, key, value)
 end
 
 function Make.mixin(self)
-	object.apply = apply
-	object.add = add
+	self.apply = apply
+	self.add = add
 end
 
 function Make.make(data)

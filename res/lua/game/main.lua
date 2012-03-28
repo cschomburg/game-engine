@@ -4,25 +4,26 @@ local Persistence = require("base.persistence")
 
 local Game = {}
 
-function Game.register(components)
-	for _, component in pairs(components) do
-		if component.register then
-			component:register()
+function Game.register(object)
+	if object.register then
+		object:register()
+	end
+	if object.components then
+		for _, component in pairs(object.components) do
+			Game.register(component)
 		end
 	end
 end
 
-function Game.unregister(components)
-	for _, component in pairs(components) do
-		if component.unregister then
-			component:unregister()
+function Game.unregister(object)
+	if object.unregister then
+		object:unregister()
+	end
+	if object.components then
+		for _, component in pairs(object.components) do
+			Game.unregister(component)
 		end
 	end
-end
-
-function Game.mixin(self)
-	self.register = Game.register
-	self.unregister = Game.unregister
 end
 
 local Timer = {}

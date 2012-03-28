@@ -6,43 +6,29 @@ local Events = require("base.events")
 local Game = require("game.main")
 local States = require("game.states")
 local ControlState = require("game.states.control")
+local Player = require("entities.player")
 local UI = require("ui.main")
+local FileWatcher = require("debug.filewatcher")
+
+local make = require("base.make").make
 
 Events.call("onInit")
 
-local level = dofile("res/lua/levels/01.lua")
-level:register()
+local level
+FileWatcher.watch("res/lua/levels/01.lua", function(file)
+	local f, err = loadfile(file)
+	if not f then return print(err) end
 
-local player = level.Player
-player.body = player.components.Body
-player.xDir = 0
-player.groundContacts = 0
-ControlState.player = player
-Graphics.setCamera(player.body)
-States.push(ControlState)
+	local success, value = pcall(f)
+	if not success then return print(value) end
 
-function player.body:onContactBegin(other)
-	if not other.parent.noGround then
-		self.parent.groundContacts = self.parent.groundContacts + 1
-	end
-end
-
-function player.body:onContactEnd(other)
-	if not other.parent.noGround then
-		self.parent.groundContacts = self.parent.groundContacts - 1
-	end
-end
-
-Events.register("onPhysicsUpdate", function(dt)
-	player.body:applyForceToCenter(player.xDir, 0)
-	local x, y = player.body:linearVelocity()
-	player.body:setLinearVelocity(math.clamp(x, -3, 3), y)
-
-	local x, y = player.body:pos()
-	if y < - 30 then
-		player.body:setLinearVelocity(0, 0)
-		player.body:setAngularVelocity(0)
-		player.body:setPos(0, 1)
-		player.body:setAngle(0)
-	end
+	if level then Game.unregister(level) end
+	level = value
+	Game.register(level)
 end)
+
+player = Player.new()
+Game.register(player)
+Graphics.setCamera(player.Body)
+ControlState.player = player
+States.push(ControlState)
