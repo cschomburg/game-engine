@@ -45,7 +45,7 @@ function Player.new()
 	local player = make{Body, SolidRenderable}
 	player.comp.Body:setPos(0, 1)
 	player.comp.Body:setShape("box", 0.1, 0.25)
-	player.comp.SolidRenderable:setPositionable(player.comp.Body)
+	player.comp.SolidRenderable:setAnchor(player.comp.Body)
 	player.comp.SolidRenderable:setBoundingRect(0.24, 0.54)
 	player.comp.SolidRenderable:setColor(0, 0, 0, 1)
 

@@ -3,7 +3,7 @@
 #include "components/SolidRenderable.h"
 
 SolidRenderable::SolidRenderable()
-	: Renderable("SolidRenderable") {}
+	: Renderable() {}
 
 SolidRenderable::~SolidRenderable() {}
 

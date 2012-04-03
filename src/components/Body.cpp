@@ -1,8 +1,7 @@
 #include "Box2DCompat.h"
 #include "components/Body.h"
 
-Body::Body()
-	: Component("Body") {
+Body::Body() {
 	m_angle = 0;
 	m_body = 0;
 	m_shape = 0;

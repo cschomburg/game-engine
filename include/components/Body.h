@@ -3,11 +3,10 @@
 
 #include <memory>
 #include <Box2D/Box2D.h>
-#include "Component.h"
-#include "interfaces/IPositionable.h"
 #include "Vector2.h"
+#include "components/Positionable.h"
 
-class Body : public Component, public IPositionable,
+class Body : public Positionable,
              public std::enable_shared_from_this<Body> {
 public:
 	typedef std::shared_ptr<Body> Ptr;

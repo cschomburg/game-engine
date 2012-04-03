@@ -6,22 +6,12 @@
 LuaClass luaGraphics("Graphics");
 
 int LuaGraphics_camera(lua_State *L) {
-	IPositionable::Ptr positionable = GameEngine::instance()->graphics()->camera();
+	Positionable::Ptr positionable = GameEngine::instance()->graphics()->camera();
 	if (!positionable) {
 		return 0;
 	}
 
-	Component::Ptr component = std::dynamic_pointer_cast<Component>(positionable);
-	if (!component) {
-		return 0;
-	}
-	LuaClass *luaClass = LuaClass::get(component->type());
-	if (!luaClass)
-		luaClass = LuaClass::get("Component");
-	if (!luaClass)
-		return 0;
-
-	luaClass->push(L, component);
+	luaPositionable.push(L, positionable);
 	return 1;
 }
 
@@ -37,13 +27,9 @@ int LuaGraphics_setScale(lua_State *L) {
 }
 
 int LuaGraphics_setCamera(lua_State *L) {
-	IPositionable::Ptr positionable;
+	Positionable::Ptr positionable = 0;
 	if (lua_gettop(L) != 0 && !lua_isnil(L, 1)) {
-		Component::Ptr component = std::static_pointer_cast<Component>(luaComponent.check(L, 1));
-		positionable = std::dynamic_pointer_cast<IPositionable>(component);
-		if (!positionable) {
-			luaL_typerror(L, 1, "IPositionable");
-		}
+		positionable = luaPositionable.check<Positionable>(L, 1);
 	}
 	lua_settop(L, 0);
 

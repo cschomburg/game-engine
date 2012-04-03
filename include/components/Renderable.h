@@ -5,9 +5,8 @@
 #include <utility>
 
 #include "Color.h"
-#include "Component.h"
 #include "Rect.h"
-#include "interfaces/IPositionable.h"
+#include "components/Positionable.h"
 
 enum class DrawLayer {
 	Background,
@@ -21,15 +20,12 @@ enum class BlendMode {
 	Screen,
 };
 
-class Renderable : public Component {
+class Renderable : public Positionable {
 public:
 	typedef std::shared_ptr<Renderable> Ptr;
 
-	Renderable(const std::string &type);
+	Renderable();
 	virtual ~Renderable();
-
-	IPositionable::Ptr positionable() const;
-	void setPositionable(IPositionable::Ptr positionable);
 
 	DrawLayer drawLayer() const;
 	void setDrawLayer(DrawLayer layer);
@@ -55,7 +51,6 @@ public:
 	virtual void render();
 
 private:
-	IPositionable::Ptr m_positionable;
 	float m_zIndex;
 	DrawLayer m_drawLayer;
 	Vector2 m_parallax;

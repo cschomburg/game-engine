@@ -5,7 +5,7 @@
 #include "components/TextureRenderable.h"
 
 TextureRenderable::TextureRenderable()
-	: Renderable("TextureRenderable") {
+	: Renderable() {
 	m_texture = 0;
 }
 

@@ -3,8 +3,7 @@
 #include "components/Renderable.h"
 #include "subsystems/GraphicsSubsystem.h"
 
-Renderable::Renderable(const std::string &type)
-	: Component(type) {
+Renderable::Renderable() {
 	m_zIndex = 0.0f;
 	m_drawLayer = DrawLayer::World;
 	m_parallax = Vector2();
@@ -15,14 +14,6 @@ Renderable::Renderable(const std::string &type)
 }
 
 Renderable::~Renderable() {}
-
-IPositionable::Ptr Renderable::positionable() const {
-	return m_positionable;
-}
-
-void Renderable::setPositionable(IPositionable::Ptr positionable) {
-	m_positionable = positionable;
-}
 
 DrawLayer Renderable::drawLayer() const {
 	return m_drawLayer;

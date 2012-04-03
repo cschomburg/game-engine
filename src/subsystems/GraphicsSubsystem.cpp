@@ -77,7 +77,7 @@ void GraphicsSubsystem::update() {
 
 	glScalef(m_scale, m_scale, 1.0f);
 	if (m_camera) {
-		Vector2 pos = m_camera->pos();
+		Vector2 pos = m_camera->worldPos();
 		glTranslatef(-pos.x, -pos.y, 0.0f);
 	}
 	for (auto renderable : m_renderables[DrawLayer::World]) {
@@ -113,11 +113,11 @@ void GraphicsSubsystem::unregisterRenderable(Renderable::Ptr renderable) {
 	renderables.erase(it);
 }
 
-IPositionable::Ptr GraphicsSubsystem::camera() {
+Positionable::Ptr GraphicsSubsystem::camera() {
 	return m_camera;
 }
 
-void GraphicsSubsystem::setCamera(IPositionable::Ptr positionable) {
+void GraphicsSubsystem::setCamera(Positionable::Ptr positionable) {
 	m_camera = positionable;
 }
 
@@ -133,7 +133,7 @@ Rect GraphicsSubsystem::viewport() const {
 	Rect viewport = m_screen;
 	viewport.scale(1.0f/m_scale);
 	if (m_camera) {
-		viewport.translate(m_camera->pos());
+		viewport.translate(m_camera->worldPos());
 	}
 	return viewport;
 }
@@ -143,15 +143,12 @@ const Rect &GraphicsSubsystem::screen() const {
 }
 
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
-	IPositionable::Ptr positionable = renderable->positionable();
 	Rect boundingRect = renderable->boundingRect();
-	if (!positionable)
-		return;
 
-	Vector2 pos = positionable->pos();
+	Vector2 pos = renderable->worldPos();
 	if (renderable->drawLayer() == DrawLayer::World) {
 		if (m_camera) { // Parallax
-			Vector2 camPos = m_camera->pos();
+			Vector2 camPos = m_camera->worldPos();
 			pos += (camPos - pos) * renderable->parallax();
 		}
 		boundingRect.translate(pos);
@@ -167,7 +164,7 @@ void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	// Set position and scale
 	glPushMatrix();
 	glTranslatef(pos.x, pos.y, 0);
-	glRotatef(radToDeg(positionable->angle()), 0, 0, 1.0f);
+	glRotatef(radToDeg(renderable->angle()), 0, 0, 1.0f);
 	glScalef(renderable->scale(), renderable->scale(), 1.0f);
 
 	renderable->render();

@@ -5,7 +5,7 @@
 #include "components/FontRenderable.h"
 
 FontRenderable::FontRenderable()
-	: Renderable("FontRenderable") {
+	: Renderable() {
 	m_font = 0;
 }
 

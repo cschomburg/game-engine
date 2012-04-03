@@ -6,7 +6,7 @@
 #include "subsystems/PhysicsSubsystem.h"
 #include "lua/LuaClasses.h"
 
-LuaClass luaBody("Body", &luaComponent);
+LuaClass luaBody("Body", &luaPositionable);
 
 int LuaBody_new(lua_State *L) {
 	luaBody.push(L, Body::Ptr(new Body()));
@@ -62,42 +62,6 @@ int LuaBody_setShape(lua_State *L) {
 	}
 
 	lua_pop(L, 2);
-	return 0;
-}
-
-int LuaBody_pos(lua_State *L) {
-	Body::Ptr body = luaBody.check<Body>(L, 1);
-	lua_pop(L, 1);
-
-	lua_pushnumber(L, body->pos().x);
-	lua_pushnumber(L, body->pos().y);
-	return 2;
-}
-
-int LuaBody_setPos(lua_State *L) {
-	Body::Ptr body = luaBody.check<Body>(L, 1);
-	float x = luaL_checknumber(L, 2);
-	float y = luaL_checknumber(L, 3);
-	lua_pop(L, 3);
-
-	body->setPos(Vector2(x, y));
-	return 0;
-}
-
-int LuaBody_angle(lua_State *L) {
-	Body::Ptr body = luaBody.check<Body>(L, 1);
-	lua_pop(L, 1);
-
-	lua_pushnumber(L, body->angle());
-	return 1;
-}
-
-int LuaBody_setAngle(lua_State *L) {
-	Body::Ptr body = luaBody.check<Body>(L, 1);
-	float angle = luaL_checknumber(L, 2);
-	lua_pop(L, 2);
-
-	body->setAngle(angle);
 	return 0;
 }
 
@@ -474,10 +438,6 @@ void LuaBody_classSetup(lua_State *L) {
 		{ "type", LuaBody_type },
 		{ "setType", LuaBody_setType },
 		{ "setShape", LuaBody_setShape },
-		{ "pos", LuaBody_pos },
-		{ "setPos", LuaBody_setPos },
-		{ "angle", LuaBody_angle },
-		{ "setAngle", LuaBody_setAngle},
 		{ "worldCenter", LuaBody_worldCenter },
 		{ "localCenter", LuaBody_localCenter },
 		{ "linearVelocity", LuaBody_linearVelocity },

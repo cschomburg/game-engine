@@ -62,11 +62,10 @@ end
 mainMenu:init()
 ]]
 
-local fps = make{StaticPos, FontRenderable}
-fps.comp.StaticPos:setPos(1024/2 - 150, -576/2 + 14)
+local fps = make{FontRenderable}
 do local r = fps.comp.FontRenderable
+	r:setPos(1024/2 - 150, -576/2 + 14)
 	r:setDrawLayer("foreground")
-	r:setPositionable(fps.comp.StaticPos)
 	r:setColor(1, 0.8, 0.5, 1)
 	r:setFont("res/font.ttf", 18)
 	r:setText("FPS")

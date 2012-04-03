@@ -7,8 +7,8 @@
 
 #include "Rect.h"
 #include "Subsystem.h"
+#include "components/Positionable.h"
 #include "components/Renderable.h"
-#include "interfaces/IPositionable.h"
 
 class GameEngine;
 
@@ -24,8 +24,8 @@ public:
 
 	void registerRenderable(Renderable::Ptr renderable);
 	void unregisterRenderable(Renderable::Ptr renderable);
-	IPositionable::Ptr camera();
-	void setCamera(IPositionable::Ptr positionable);
+	Positionable::Ptr camera();
+	void setCamera(Positionable::Ptr positionable);
 
 	float scale() const;
 	void setScale(float scale);
@@ -36,7 +36,7 @@ public:
 
 private:
 	std::map<DrawLayer, RenderableList> m_renderables;
-	IPositionable::Ptr m_camera;
+	Positionable::Ptr m_camera;
 
 	float m_scale;
 	Rect m_screen;

@@ -6,7 +6,7 @@
 extern LuaClass luaGameEngine;
 extern LuaClass luaGraphics;
 
-extern LuaClass luaComponent;
+extern LuaClass luaPositionable;
 extern LuaClass luaBody;
 extern LuaClass luaFontRenderable;
 extern LuaClass luaRenderable;
@@ -17,7 +17,7 @@ extern LuaClass luaStaticPos;
 void LuaGameEngine_classSetup(lua_State *L);
 void LuaGraphics_classSetup(lua_State *L);
 
-void LuaComponent_classSetup(lua_State *L);
+void LuaPositionable_classSetup(lua_State *L);
 void LuaBody_classSetup(lua_State *L);
 void LuaFontRenderable_classSetup(lua_State *L);
 void LuaRenderable_classSetup(lua_State *L);

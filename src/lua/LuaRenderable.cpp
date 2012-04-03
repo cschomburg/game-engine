@@ -5,11 +5,10 @@
 #include "Rect.h"
 
 #include "components/Renderable.h"
-#include "interfaces/IPositionable.h"
 #include "subsystems/GraphicsSubsystem.h"
 #include "lua/LuaClasses.h"
 
-LuaClass luaRenderable("Renderable", &luaComponent);
+LuaClass luaRenderable("Renderable", &luaPositionable);
 
 int LuaRenderable_register(lua_State *L) {
 	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
@@ -24,42 +23,6 @@ int LuaRenderable_unregister(lua_State *L) {
 	lua_pop(L, 1);
 
 	GameEngine::instance()->graphics()->unregisterRenderable(renderable);
-	return 0;
-}
-
-int LuaRenderable_positionable(lua_State *L) {
-	Renderable::Ptr renderable = luaRenderable.check<Renderable>(L, 1);
-	lua_pop(L, 1);
-
-	IPositionable::Ptr positionable = renderable->positionable();
-	if (!positionable) {
-		return 0;
-	}
-
-	Component::Ptr component = std::dynamic_pointer_cast<Component>(positionable);
-	if (!component) {
-		return 0;
-	}
-	LuaClass *luaClass = LuaClass::get(component->type());
-	if (!luaClass)
-		luaClass = LuaClass::get("Component");
-	if (!luaClass)
-		return 0;
-
-	luaClass->push(L, component);
-	return 1;
-}
-
-int LuaRenderable_setPositionable(lua_State *L) {
-	Renderable::Ptr renderable = std::static_pointer_cast<Renderable>(luaRenderable.check(L, 1));
-	Component::Ptr component = std::static_pointer_cast<Component>(luaComponent.check(L, 2));
-	IPositionable::Ptr positionable = std::dynamic_pointer_cast<IPositionable>(component);
-	if (!positionable) {
-		luaL_typerror(L, 2, "IPositionable");
-	}
-	lua_pop(L, 2);
-
-	renderable->setPositionable(positionable);
 	return 0;
 }
 
@@ -236,8 +199,6 @@ void LuaRenderable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "register", LuaRenderable_register },
 		{ "unregister", LuaRenderable_unregister },
-		{ "positionable", LuaRenderable_positionable },
-		{ "setPositionable", LuaRenderable_setPositionable },
 		{ "color", LuaRenderable_color },
 		{ "setColor", LuaRenderable_setColor },
 		{ "drawLayer", LuaRenderable_drawLayer },
