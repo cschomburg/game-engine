@@ -25,6 +25,7 @@ public:
 
 	std::shared_ptr<LuaCall> startCall(const std::string &ident);
 	std::shared_ptr<LuaCall> startGlobalCall(const std::string &funcName);
+	std::shared_ptr<LuaCall> startEventCall(const std::string &funcName);
 	std::shared_ptr<LuaCall> startMethodCall(const std::string &className,
 			voidPtr instance, const std::string &methodName);
 

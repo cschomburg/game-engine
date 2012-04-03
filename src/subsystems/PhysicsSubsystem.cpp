@@ -65,7 +65,7 @@ void PhysicsSubsystem::update() {
 		m_worldTimeAccumulator -= m_timestep;
 		m_worldTime += m_timestep;
 		m_world->Step(m_timestep, m_velocityIterations, m_positionIterations);
-		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onPhysicsUpdate");
+		LuaCall::Ptr call = engine()->lua()->startEventCall("onPhysicsUpdate");
 		if (call) {
 			call->push(m_timestep);
 			call->execute();
@@ -88,15 +88,17 @@ void PhysicsSubsystem::BeginContact(b2Contact *contact) {
 	Body::Ptr bodyA = rawA->shared_from_this();
 	Body::Ptr bodyB = rawB->shared_from_this();
 
-	LuaCall::Ptr call = engine()->lua()->startMethodCall("Body", bodyA, "onContactBegin");
+	LuaCall::Ptr call = engine()->lua()->startEventCall("onContactBegin");
 	if (call) {
+		call->push("Body", bodyA);
 		call->push("Body", bodyB);
 		call->execute();
 	}
 	call = 0;
 
-	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactBegin");
+	call = engine()->lua()->startEventCall("onContactBegin");
 	if (call) {
+		call->push("Body", bodyB);
 		call->push("Body", bodyA);
 		call->execute();
 	}
@@ -109,15 +111,17 @@ void PhysicsSubsystem::EndContact(b2Contact *contact) {
 	Body::Ptr bodyA = rawA->shared_from_this();
 	Body::Ptr bodyB = rawB->shared_from_this();
 
-	LuaCall::Ptr call = engine()->lua()->startMethodCall("Body", bodyA, "onContactEnd");
+	LuaCall::Ptr call = engine()->lua()->startEventCall("onContactEnd");
 	if (call) {
+		call->push("Body", bodyA);
 		call->push("Body", bodyB);
 		call->execute();
 	}
 	call = 0;
 
-	call = engine()->lua()->startMethodCall("Body", bodyB, "onContactEnd");
+	call = engine()->lua()->startEventCall("onContactEnd");
 	if (call) {
+		call->push("Body", bodyB);
 		call->push("Body", bodyA);
 		call->execute();
 	}

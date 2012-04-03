@@ -10,42 +10,37 @@ function Events.call(event, ...)
 		return
 	end
 
-	for listener in pairs(registered[event]) do
-		if type(listener) == "function" then
-			listener(event, ...)
-		elseif listener[event] then
-			listener[event](listener, ...)
-		elseif listener.onEvent then
-			listener:onEvent(event, ...)
+	for destination, filters in pairs(registered[event]) do
+		local ignored = false
+		for i, filter in ipairs(filters) do
+			local arg = select(i, ...)
+			if type(filter) == "function" then
+				ignored = not filter(arg)
+			else
+				ignored = arg ~= filter
+			end
+			if ignored then break end
+		end
+
+		if not ignored then
+			if type(destination) == "function" then
+				destination(event, ...)
+			elseif destination[event] then
+				destination[event](destination, ...)
+			end
 		end
 	end
 end
 
-function Events.register(listener, event)
-	if type(listener) == "string" and type(event) ~= "string" then
-		event, listener = listener, event
-	end
-	if not registered[event] then
-		registered[event] = {}
-		_G[event] = function(...)
-			Events.call(event, ...)
-		end
-	end
-
-	registered[event][listener] = true
+function Events.register(event, destination, filters)
+	registered[event] = registered[event] or {}
+	registered[event][destination] = {filters}
 end
 
-function Events.unregister(listener, event)
-	if not registered[event] then
-		return
-	end
-
-	registered[event][listener] = nil
+function Events.unregister(event, destination)
+	registered[event][destination] = nil
 end
 
-function Events.mixin(object)
-	object.registerEvent = register
-	object.unregisterEvent = unregister
-end
+eventhandler = Events.call
 
 return Events

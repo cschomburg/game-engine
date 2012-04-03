@@ -1,6 +1,6 @@
 local Events = require("base.events")
 local Game = require("game.main")
-local make = require("base.make").make
+local make = require("base.make").newMake
 
 local UI = {}
 
@@ -62,19 +62,17 @@ end
 mainMenu:init()
 ]]
 
-local fps = make{
-	StaticPos = {pos={1024/2 - 150, -576/2 + 14}},
-	FontRenderable = {
-		drawLayer = "foreground",
-		positionable = "$.StaticPos",
-		color = {1, 0.8, 0.5, 1},
-		font = {"res/font.ttf", 18},
-		text = "FPS",
-		boundingRect = {1,1},
-	},
-}
+local fps = make{StaticPos, FontRenderable}
+fps.comp.StaticPos:setPos(1024/2 - 150, -576/2 + 14)
+do local r = fps.comp.FontRenderable
+	r:setDrawLayer("foreground")
+	r:setPositionable(fps.comp.StaticPos)
+	r:setColor(1, 0.8, 0.5, 1)
+	r:setFont("res/font.ttf", 18)
+	r:setText("FPS")
+	r:setBoundingRect(1, 1)
+end
 Game.register(fps)
-Events.register("onUpdate", fps)
 
 function fps:onUpdate(elapsed)
 	self.lastUpdate = (self.lastUpdate or 0) + elapsed
@@ -82,7 +80,7 @@ function fps:onUpdate(elapsed)
 
 	if self.lastUpdate > 1 then
 		--print(self.frameCount)
-		self.FontRenderable:setText("FPS: "..self.frameCount)
+		self.comp.FontRenderable:setText("FPS: "..self.frameCount)
 		self.lastUpdate = 0
 		self.frameCount = 0
 	end

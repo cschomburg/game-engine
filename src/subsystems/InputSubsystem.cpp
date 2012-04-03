@@ -67,7 +67,7 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 	}
 
 	case SDL_KEYDOWN: {
-		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onKeyDown");
+		LuaCall::Ptr call = engine()->lua()->startEventCall("onKeyDown");
 		if (call) {
 			call->push(std::string(SDL_GetKeyName(event->key.keysym.sym)));
 			//mods = modToString(event->key.keysym.mod);
@@ -82,7 +82,7 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 		break;
 	}
 	case SDL_KEYUP: {
-		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onKeyUp");
+		LuaCall::Ptr call = engine()->lua()->startEventCall("onKeyUp");
 		if (call) {
 			call->push(std::string(SDL_GetKeyName(event->key.keysym.sym)));
 			//mods = modToString(event->key.keysym.mod);
@@ -101,7 +101,7 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 		break;
 	}
 	case SDL_MOUSEBUTTONDOWN: {
-		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onMouseButtonDown");
+		LuaCall::Ptr call = engine()->lua()->startEventCall("onMouseButtonDown");
 		if (call) {
 			call->push(event->button.button);
 			call->push(event->button.x);
@@ -111,7 +111,7 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 		break;
 	}
 	case SDL_MOUSEBUTTONUP: {
-		LuaCall::Ptr call = engine()->lua()->startGlobalCall("onMouseButtonUp");
+		LuaCall::Ptr call = engine()->lua()->startEventCall("onMouseButtonUp");
 		if (call) {
 			call->push(event->button.button);
 			call->push(event->button.x);
@@ -167,7 +167,7 @@ void InputSubsystem::handleEvent(SDL_Event *event) {
 }
 
 void InputSubsystem::simpleCall(const std::string &event) {
-	LuaCall::Ptr call = engine()->lua()->startGlobalCall(event);
+	LuaCall::Ptr call = engine()->lua()->startEventCall(event);
 	if (call) {
 		call->execute();
 	}

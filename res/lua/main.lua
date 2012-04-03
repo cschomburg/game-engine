@@ -29,6 +29,6 @@ end)
 
 player = Player.new()
 Game.register(player)
-Graphics.setCamera(player.Body)
+Graphics.setCamera(player.comp.Body)
 ControlState.player = player
 States.push(ControlState)

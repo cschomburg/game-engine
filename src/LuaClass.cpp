@@ -78,6 +78,11 @@ void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_
 	luaL_register(L, name, methods); // Create methods table in globals
 	// [methods]
 
+	lua_pushliteral(L, "type");
+	lua_pushstring(L, name);
+	lua_rawset(L, -3); // methods.type = className
+	// [methods]
+
 	lua_newtable(L); // hidden class information
 	// [methods, hidden]
 
@@ -87,11 +92,6 @@ void LuaClass::registerClass(lua_State *L, const luaL_Reg methods[], const luaL_
 
 	lua_newtable(L); // Create new table for metamethods
 	luaL_register(L, 0, meta); // Populate metatable
-	// [methods, hidden, metatable]
-
-	lua_pushliteral(L, "class");
-	lua_pushstring(L, name);
-	lua_rawset(L, -3); // metatable.class = className
 	// [methods, hidden, metatable]
 
 	lua_pushliteral(L, "__index");

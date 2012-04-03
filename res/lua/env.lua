@@ -48,6 +48,3 @@ function dump(...)
 	end
 	print(str)
 end
-
-D = {}
-function D.img(file) return "res/images/"..file end

@@ -11,7 +11,7 @@ function ControlState:onKeyDown(key, char)
 		States.push(Console)
 	end
 	if key == "w" and player.groundContacts > 0 then
-		player.Body:applyForceToCenter(0, 50)
+		player.comp.Body:applyForceToCenter(0, 50)
 	end
 	if key == "a" then
 		player.xDir = player.xDir -1

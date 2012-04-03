@@ -5,13 +5,13 @@ local Persistence = require("base.persistence")
 local Game = {}
 
 function Game.register(object)
-	if object.register then
-		object:register()
-	end
-	if object.components then
-		for _, component in pairs(object.components) do
+	if object.comp then
+		for _, component in pairs(object.comp) do
 			Game.register(component)
 		end
+	end
+	if object.register then
+		object:register()
 	end
 end
 
@@ -19,8 +19,8 @@ function Game.unregister(object)
 	if object.unregister then
 		object:unregister()
 	end
-	if object.components then
-		for _, component in pairs(object.components) do
+	if object.comp then
+		for _, component in pairs(object.comp) do
 			Game.unregister(component)
 		end
 	end

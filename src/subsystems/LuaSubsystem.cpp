@@ -50,7 +50,7 @@ void LuaSubsystem::update() {
 	float elapsed = float(time - m_lastTime) / 1000.0f;
 	m_lastTime = time;
 
-	LuaCall::Ptr call = startGlobalCall("onUpdate");
+	LuaCall::Ptr call = startEventCall("onUpdate");
 	if (call) {
 		call->push(elapsed);
 		call->execute();
@@ -88,6 +88,14 @@ std::shared_ptr<LuaCall> LuaSubsystem::startGlobalCall(const std::string &funcNa
 	LuaCall::Ptr call = startCall(funcName);
 	if (!call->pushGlobal(funcName))
 		return 0;
+	return call;
+}
+
+std::shared_ptr<LuaCall> LuaSubsystem::startEventCall(const std::string &eventName) {
+	LuaCall::Ptr call = startCall("event::" + eventName);
+	if (!call->pushGlobal("eventhandler"))
+		return 0;
+	call->push(eventName);
 	return call;
 }
 
