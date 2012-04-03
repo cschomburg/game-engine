@@ -33,3 +33,10 @@ Vector2 Positionable::worldPos() const {
 	}
 	return m_anchor->worldPos() + pos();
 }
+
+float Positionable::worldAngle() const {
+	if (!m_anchor) {
+		return angle();
+	}
+	return m_anchor->worldAngle() + angle();
+}

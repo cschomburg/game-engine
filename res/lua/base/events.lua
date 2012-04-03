@@ -38,6 +38,7 @@ function Events.register(event, destination, filters)
 end
 
 function Events.unregister(event, destination)
+	if not registered[event] then return end
 	registered[event][destination] = nil
 end
 

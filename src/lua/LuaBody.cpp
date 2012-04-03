@@ -59,6 +59,14 @@ int LuaBody_setShape(lua_State *L) {
 		shape->SetAsBox(halfWidth, halfHeight);
 		body->setShape(shape);
 		return 0;
+	} else if (strcmp(type, "circle") == 0) {
+		float radius = luaL_checknumber(L, 3);
+		lua_pop(L, 3);
+
+		b2CircleShape *shape = new b2CircleShape();
+		shape->m_radius = radius;
+		body->setShape(shape);
+		return 0;
 	}
 
 	lua_pop(L, 2);

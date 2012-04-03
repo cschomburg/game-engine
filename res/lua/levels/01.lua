@@ -109,6 +109,21 @@ do local o = make{TextureRenderable, EventListener}
 	end
 end -- }}}
 
+-- Gear02 {{{
+do local o = make{Body, TextureRenderable}
+	level.comp.Gear02 = o
+	do local b = o.comp.Body
+		b:setPos(0.5, 2)
+		b:setType("dynamic")
+		b:setShape("circle", 0.25)
+	end
+	do local r = o.comp.TextureRenderable
+		r:setAnchor(o.comp.Body)
+		r:setBoundingRect(0.5, 0.5)
+		r:setTexture("res/images/gears/mid03.png")
+	end
+end -- }}}
+
 print("loaded")
 
 return level

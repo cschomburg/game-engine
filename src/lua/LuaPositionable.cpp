@@ -72,6 +72,14 @@ int LuaPositionable_worldPos(lua_State *L) {
 	return 2;
 }
 
+int LuaPositionable_worldAngle(lua_State *L) {
+	Positionable::Ptr positionable = luaPositionable.check<Positionable>(L, 1);
+	lua_pop(L, 1);
+
+	lua_pushnumber(L, positionable->worldAngle());
+	return 1;
+}
+
 void LuaPositionable_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "new", LuaPositionable_new },
@@ -82,6 +90,7 @@ void LuaPositionable_classSetup(lua_State *L) {
 		{ "anchor", LuaPositionable_anchor},
 		{ "setAnchor", LuaPositionable_setAnchor},
 		{ "worldPos", LuaPositionable_worldPos},
+		{ "worldAngle", LuaPositionable_worldAngle},
 		{ 0, 0 },
 	};
 

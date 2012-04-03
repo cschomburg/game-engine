@@ -22,7 +22,7 @@ public:
 	std::shared_ptr<Positionable> anchor() const;
 	void setAnchor(std::shared_ptr<Positionable> positionable);
 	Vector2 worldPos() const;
-
+	float worldAngle() const;
 
 private:
 	Vector2 m_pos;
