@@ -19,12 +19,10 @@ private:
 	void handleEvent(SDL_Event *event);
 	void simpleCall(const std::string &event);
 
-	std::string keyToString(SDLKey sym);
 	std::vector<std ::string> modToString(SDLMod mod);
 
 private:
-	static std::map<SDLKey, std::string> keyMap;
-	static std::map<SDLMod, std::string> modMap;
+	static std::map<int, std::string> modMap;
 };
 
 #endif /* end of include guard: INPUTSUBSYSTEM_H */

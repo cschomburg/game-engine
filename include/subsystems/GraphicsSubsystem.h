@@ -31,6 +31,7 @@ public:
 	void setScale(float scale);
 	Rect viewport() const;
 	const Rect &screen() const;
+	Vector2 toWorldPos(const Vector2 &pos, Anchor anchor = Anchor::center);
 
 	void render(Renderable::Ptr renderable);
 

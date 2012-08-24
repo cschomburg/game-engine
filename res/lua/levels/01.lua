@@ -10,10 +10,10 @@ level.comp = {}
 do local o = make{TextureRenderable}
 	level.comp.Background = o
 	do local r = o.comp.TextureRenderable
-		r:setBoundingRect(10.24, 10.24)
+		r:setDrawLayer("background")
+		r:setBoundingRect(1024, 1024)
 		r:setTexture("res/images/background/tile-1.png")
 		--r:setColor(159/255, 96/255, 65/255, 1)
-		r:setParallax(1, 1)
 		r:setZIndex(-3)
 	end
 end -- }}}

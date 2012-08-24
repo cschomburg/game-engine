@@ -142,6 +142,10 @@ const Rect &GraphicsSubsystem::screen() const {
 	return m_screen;
 }
 
+Vector2 GraphicsSubsystem::toWorldPos(const Vector2 &pos, Anchor anchor) {
+	return viewport().pos(anchor) + (pos * Vector2(1, -1) / m_scale);
+}
+
 void GraphicsSubsystem::render(Renderable::Ptr renderable) {
 	Rect boundingRect = renderable->boundingRect();
 

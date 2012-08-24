@@ -173,18 +173,22 @@ void InputSubsystem::simpleCall(const std::string &event) {
 	}
 }
 
-std::map<SDLMod, std::string> InputSubsystem::modMap{
-	{ KMOD_LSHIFT, "LShift" },
-	{ KMOD_RSHIFT, "RShift" },
-	{ KMOD_LCTRL, "LCtrl" },
-	{ KMOD_RCTRL, "RCtrl" },
-	{ KMOD_LALT, "LAlt" },
-	{ KMOD_RALT, "RAlt" },
-	{ KMOD_LMETA, "LMeta" },
-	{ KMOD_RMETA, "RMeta" },
-	{ KMOD_NUM, "NumLock" },
-	{ KMOD_CAPS, "CapsLock" },
+std::map<int, std::string> InputSubsystem::modMap{
+	{ KMOD_SHIFT, "shift" },
+	{ KMOD_LSHIFT, "lshift" },
+	{ KMOD_RSHIFT, "rshift" },
+	{ KMOD_CTRL, "ctrl" },
+	{ KMOD_LCTRL, "lctrl" },
+	{ KMOD_RCTRL, "rctrl" },
+	{ KMOD_ALT, "alt" },
+	{ KMOD_LALT, "lalt" },
+	{ KMOD_RALT, "ralt" },
+	{ KMOD_META, "meta" },
+	{ KMOD_LMETA, "lmeta" },
+	{ KMOD_RMETA, "rmeta" },
+	{ KMOD_NUM, "numlock" },
+	{ KMOD_CAPS, "capslock" },
 	{ KMOD_MODE, "Mode" },
-	{ KMOD_RESERVED, "Reserved" },
+	{ KMOD_RESERVED, "reserved" },
 };
 

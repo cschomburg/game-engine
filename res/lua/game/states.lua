@@ -37,5 +37,7 @@ end
 
 Events.register("onKeyDown", States.call)
 Events.register("onKeyUp", States.call)
+Events.register("onMouseButtonUp", States.call)
+Events.register("onMouseButtonDown", States.call)
 
 return States

@@ -20,7 +20,7 @@ end
 
 function Player:onPhysicsUpdate()
 	local body = self.comp.Body
-	body:applyForceToCenter(player.xDir, 0)
+	body:applyForceToCenter(self.xDir, 0)
 	local x, y = body:linearVelocity()
 	body:setLinearVelocity(math.clamp(x, -3, 3), y)
 

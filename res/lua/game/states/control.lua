@@ -1,4 +1,3 @@
-local Console = require("ui.console")
 local States = require("game.states")
 
 local ControlState = {}
@@ -7,9 +6,6 @@ function ControlState:onKeyDown(key, char)
 	local player = self.player
 	if not player then return end
 
-	if key == "`" then
-		States.push(Console)
-	end
 	if key == "w" and player.groundContacts > 0 then
 		player.comp.Body:applyForceToCenter(0, 50)
 	end
@@ -33,12 +29,6 @@ function ControlState:onKeyUp(key)
 	end
 	if key == "d" then
 		player.xDir = player.xDir - 1
-	end
-	if key == "=" then
-		Graphics.setScale(Graphics.scale() * 1.1)
-	end
-	if key == "-" then
-		Graphics.setScale(Graphics.scale() / 1.1)
 	end
 end
 

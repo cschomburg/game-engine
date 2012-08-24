@@ -46,6 +46,15 @@ int LuaGraphics_viewport(lua_State *L) {
 	return 4;
 }
 
+int LuaGraphics_toWorldPos(lua_State *L) {
+	float x = luaL_checknumber(L, 1);
+	float y = luaL_checknumber(L, 2);
+	Vector2 pos = GameEngine::instance()->graphics()->toWorldPos(Vector2(x, y), Anchor::topLeft);
+	lua_pushnumber(L, pos.x);
+	lua_pushnumber(L, pos.y);
+	return 2;
+}
+
 void LuaGraphics_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "camera", LuaGraphics_camera },
@@ -53,6 +62,7 @@ void LuaGraphics_classSetup(lua_State *L) {
 		{ "scale", LuaGraphics_scale },
 		{ "setScale", LuaGraphics_setScale },
 		{ "viewport", LuaGraphics_viewport },
+		{ "toWorldPos", LuaGraphics_toWorldPos },
 		{ 0, 0 },
 	};
 
