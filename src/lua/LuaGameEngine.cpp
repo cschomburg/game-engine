@@ -11,9 +11,19 @@ int LuaGameEngine_fileModified(lua_State *L) {
 	return 1;
 }
 
+int LuaGameEngine_setKeyRepeat(lua_State *L) {
+	int delay = luaL_checkint(L, 1);
+	int interval = luaL_checkint(L, 2);
+
+	SDL_EnableKeyRepeat(delay, interval);
+
+	return 0;
+}
+
 void LuaGameEngine_classSetup(lua_State *L) {
 	static const luaL_Reg methods[] = {
 		{ "fileModified", LuaGameEngine_fileModified },
+		{ "setKeyRepeat", LuaGameEngine_setKeyRepeat },
 		{ 0, 0 },
 	};
 

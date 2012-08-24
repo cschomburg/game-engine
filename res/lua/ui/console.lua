@@ -36,10 +36,7 @@ function Console:init()
 	local z = 90
 
 	local bg = SolidRenderable.new()
-	do local pos = StaticPos.new()
-		pos:setPos(0, 0)
-		bg:setPositionable(pos)
-	end
+	bg:setPos(0, 0)
 	bg:setDrawLayer("foreground")
 	bg:setZIndex(z)
 	bg:setColor(0, 0, 0, 0.8)
@@ -54,10 +51,7 @@ function Console:init()
 		line:setZIndex(z+1)
 		line:setColor(1, 1, 1, 1)
 		line:setFont("res/font.ttf", 12)
-		do local pos = StaticPos.new()
-			pos:setPos(-1024/2+30, 576/2 - 10 - i*24)
-			line:setPositionable(pos)
-		end
+		line:setPos(-1024/2+30, 576/2 - 10 - i*24)
 		self.lines[i] = line
 	end
 
@@ -66,10 +60,7 @@ function Console:init()
 	edit:setZIndex(z+1)
 	edit:setColor(1, 1, 1, 1)
 	edit:setFont("res/font.ttf", 12)
-	do local pos = StaticPos.new()
-		pos:setPos(-1024/2+30, -576/2 + 20)
-		edit:setPositionable(pos)
-	end
+	edit:setPos(-1024/2+30, -576/2 + 20)
 	self.edit = edit
 
 	self.input = ""
@@ -100,6 +91,8 @@ function Console:onEnter()
 		self.init = nil
 	end
 
+	GameEngine.setKeyRepeat(500, 30)
+
 	self.bg:register()
 	for _, line in pairs(self.lines) do
 		line:register()
@@ -108,6 +101,7 @@ function Console:onEnter()
 end
 
 function Console:onLeave()
+	GameEngine.setKeyRepeat(0, 0)
 	self.bg:unregister()
 	for _, line in pairs(self.lines) do
 		line:unregister()
