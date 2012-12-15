@@ -1,7 +1,8 @@
-local selector = require("base.selector").get
-
+-- Package Make provides a simple build system for objects containing components.
 local Make = {}
 
+-- Make returns a new object consisting of the mentioned components in the
+-- component table.
 function Make.newMake(components)
 	local object = {}
 	for name, class in pairs(components) do

@@ -13,10 +13,13 @@ local FileWatcher = require("debug.filewatcher")
 
 local make = require("base.make").make
 
+-- TODO: Make set-function instead of global var
+eventhandler = Events.call
 Events.call("onInit")
 
+-- 
 local level
-FileWatcher.watch("res/lua/levels/01.lua", function(file)
+FileWatcher.watch("res/lua/levels/01.lua", function(event, file)
 	local f, err = loadfile(file)
 	if not f then return print(err) end
 

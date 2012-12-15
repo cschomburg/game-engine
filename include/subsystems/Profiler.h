@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 #include "GameEngine.h"
 #include "Subsystem.h"
@@ -14,7 +15,7 @@ struct Profile {
 	float max;
 	float last;
 	float avg;
-	float start;
+	boost::posix_time::ptime start;
 };
 
 typedef std::map<std::string, Profile> ProfileMap;

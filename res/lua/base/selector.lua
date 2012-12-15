@@ -1,6 +1,18 @@
+-- Package selector enables simple multi-table traversing by specifing a path
+-- string to follow.
+--
+-- Example:
+--     local tbl = {}
+--     Selector.set(tbl, "deep.below.var", 25)
+--         => tbl == { deep = { below = { var = 25 }}},
+--     Selector.get(tbl, "deep.below.var")
+--         => returns: 25
+--
 local Selector = {}
 
-local function get(ref, str, fallback)
+-- Get returns the value of the table 'ref' along the path 'str'.
+-- If no value was found, 'fallback' is returned.
+function Selector.get(ref, str, fallback)
 	for w in str:gmatch("[^%.]+") do
 		if not ref then return fallback end
 		if w == "$" then
@@ -15,7 +27,10 @@ local function get(ref, str, fallback)
 	return ref
 end
 
-local function set(ref, str, val, noforce)
+-- Set stores the value in the table 'ref' along the path 'str'.
+-- If the optional 'noforce' is set, no new sub-tables will be created and
+-- the function fails silently.
+function Selector.set(ref, str, val, noforce)
 	local lastRef, lastW
 	for w in str:gmatch("[^%.]+") do
 		if not ref then
@@ -31,14 +46,6 @@ local function set(ref, str, val, noforce)
 		end
 	end
 	rawset(lastRef, lastW, val)
-end
-
-Selector.get = get
-Selector.set = set
-
-function Selector.mixin(self)
-	self.get = get
-	self.set = set
 end
 
 return Selector

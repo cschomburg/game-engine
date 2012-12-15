@@ -1,7 +1,14 @@
-local write, writeIndent, writers, refCount
-
+-- Package Persistence saves and loads Lua values in the file system.
+--
+-- Example:
+--     Persistence.save("/tmp/session", "hello!", 5, {a = "nope"})
+--     local str, num, tbl = Persistence.load("/tmp/session")
+--
 local Persistence = {}
 
+local write, writeIndent, writers, refCount
+
+-- Persistence.store saves multiple arguments at the specified file path.
 function Persistence.store(path, ...)
 	local n = select("#", ...)
 	if n == 0 then return end
@@ -17,6 +24,7 @@ function Persistence.store(path, ...)
 	file:close()
 end
 
+-- Persistence.load returns multiple variables saved at the specified file path.
 function Persistence.load(path)
 	local f, e = loadfile(path)
 	if not f then
