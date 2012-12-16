@@ -11,3 +11,5 @@ My own experimental 2D game engine in C++, OpenGL and Lua. It serves as a learni
 * component-based approach for entities
 * simple event-listener system with support for blocking coroutines
 * on the fly world reloading when world file is modified
+
+![Example](https://raw.github.com/xconstruct/game-engine/master/dev-screens/small.png)
